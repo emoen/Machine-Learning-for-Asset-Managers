@@ -5,68 +5,48 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import os
+import math
 
+#Resources:
+#Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
+#Review: [Book] Commented summary of Machine Learning for Asset Managers by Marcos Lopez de Prado
+#https://gmarti.gitlab.io/qfin/2020/04/12/commented-summary-machine-learning-for-asset-managers.html
+#Chapter 2: This chapter essentially describes an approach that Bouchaud and his crew from the CFM have 
+#pioneered and refined for the past 20 years. The latest iteration of this body of work is summarized in 
+#Joel Bun’s Cleaning large correlation matrices: Tools from Random Matrix Theory.
+#https://www.sciencedirect.com/science/article/pii/S0370157316303337
+#Condition number: https://dominus.ai/wp-content/uploads/2019/11/ML_WhitePaper_MarcoGruppo.pdf
 
-def test_charting(ticker, dir):
-    pho = yf.Ticker(ticker)  # "pho.ol"
-    # pho.info
-    hist = pho.history(period="max")
-
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    close = hist.Close.values
-    close = close.reshape(-1, 1)
-    open = hist.Open.values
-    open = open.reshape(-1, 1)
-    high = hist.High.values
-    high = high.reshape(-1, 1)
-    low = hist.Low.values
-    low = low.reshape(-1, 1)
-    volume = hist.Volume
-
-    nans = np.argwhere(np.isnan(close))
-    if len(nans) > 0:  # set previuous close as close when nan
-        prev_close = close[(nans[0] - 1)]
-        prev_open = open[(nans[0] - 1)]
-        prev_high = high[(nans[0] - 1)]
-        prev_low = low[(nans[0] - 1)]
-        for i in range(0, len(nans)):
-            close[nans[i]] = prev_close
-            open[nans[i]] = prev_open
-            high[nans[i]] = prev_high
-            low[nans[i]] = prev_low
-            volume[nans[i]] = 0
-
-    norm_close = scaler.fit_transform(close)
-    norm_open = scaler.fit_transform(open)
-    norm_high = scaler.fit_transform(high)
-    norm_low = scaler.fit_transform(low)
-
-    pho_norm = pd.DataFrame(
-        columns=['time', 'open', 'high', 'low', 'close', 'volume', 'ewm26', 'ewm12', 'macd', 'signal'])
-    pho_norm.time = hist.index
-    pho_norm.open = norm_open
-    pho_norm.close = norm_close
-    pho_norm.high = norm_high
-    pho_norm.low = norm_low
-    pho_norm.volume = volume = hist.Volume
-    pho_norm.ewm26 = pho_norm.close.ewm(span=26, adjust=False).mean()
-    pho_norm.ewm12 = pho_norm.close.ewm(span=12, adjust=False).mean()
-    pho_norm.macd = pho_norm.ewm12 - pho_norm.ewm26
-    pho_norm.signal = pho_norm.macd.ewm(span=9, adjust=False).mean()
-
-    pho_norm.volume = pho_norm.volume.fillna(0)
-
-    #for i in range(0, (len(pho_norm) - 30)):
-    #    chart_to_image(pho_norm[i:30 + i], dir + '/' + dir + str(i) + '.png')
-
-    # chart_to_image(pho_norm.tail(30), 'pho/pho_tail.png')
-    # print(pho_norm.shape)
-
-    # arr = chart_to_arr(pho_norm.tail(30))
-    # assert arr.shape == (3, 224, 224)
-
-
-def ol_tickers():
+# Excersize 2.9:
+# 2. Using a series of matrix of stock returns:
+#    a) Compute the covariance matrix. 
+#       What is the condition number of the correlation matrix
+#    b) Compute one hundretd efficient frontiers by drawing one hundred
+#       alternative vectors of expected returns from a Normal distribution
+#       with mean 10% and std 10%
+#    c) Compute the variance of the errors agains the mean efficient frontier.
+def covariance_of_OL():
+    
+    """ Create covariance matrix 
+    >>> import numpy as np
+    >>> n = 3
+    >>> T = 3
+    >>> S = np.array([[1,2,3],[6,4,2],[9,1,5]])
+    >>> M = np.sum(S, axis=1) * 1/n
+    >>> M
+    array([2, 4, 5])
+    >>> demeaned_M = (S.T - M).T
+    >>> print(demeaned_M)
+    [[-1  0  1]
+     [ 2  0 -2]
+     [ 4 -4  0]]
+    >>> covariance = np.dot(demeaned_M.T, demeaned_M) * (1.0/(n*T))
+    >>> print(covariance)
+    [[ 2.33333333 -1.77777778 -0.55555556]
+     [-1.77777778  1.77777778  0.        ]
+     [-0.55555556  0.          0.55555556]]
+    """
+        
     ol = pd.read_csv('ol_ticker.csv', sep='\t', header=None)
     ticker_name = ol[0]
     S = np.empty([10, 30])
@@ -88,7 +68,7 @@ def ol_tickers():
             portfolio_name[i-1] = ol_ticker
         else:
             print("no data for ticker:" + ticker)
-
+    
         #2.Average Price Of Stock
         mean_stonks= np.sum(S, axis=1)/T #sum along row
         #3.Demeaning The Prices
@@ -97,13 +77,21 @@ def ol_tickers():
         #Once we have the de-meaned price series, we establish the
         #covariance of different stocks by multiplying the transpose of
         #the de-meaned price series with itself and divide it by 'm'
-        covariance_matrix = (np.dot(de_meaned_S.T, de_meaned_S))/(n*T)
+        covariance = (np.dot(de_meaned_S.T, de_meaned_S))/(n*T)
         # The eigen-values of the covariance matrix is distributed like Marcenko-Pasture dist.
         #any any eigenvalues outside distribution is signal else noise.
-
-
-
+        
+        #Standard Model: Markowitz’ Curse
+        #The condition number of a covariance, correlation (or normal, thus diagonalizable) matrix is the absolute
+        #value of the ratio between its maximal and minimal (by moduli) eigenvalues. This number is lowest for a diagonal
+        #correlation matrix, which is its own inverse.        
+        eigenvalue, eigenvector = np.linalg.eig(covariance)
+        eigenvalue = abs(eigenvalue)
+        condition_num = max(eigenvalue) - min(eigenvalue)
 
 
 if __name__ == '__main__':
-    ol_tickers()
+    covariance_of_OL()
+    
+    import doctest
+    doctest.testmod()
