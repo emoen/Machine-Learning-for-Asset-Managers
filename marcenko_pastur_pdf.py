@@ -25,12 +25,15 @@ def getPCA(matrix):
 def fitKDE(obs, bWidth=.15, kernel='gaussian', x=None):
     #Fit kernel to a series of obs, and derive the prob of obs
     # x is the array of values on which the fit KDE will be evaluated
+    print(len(obs.shape) == 1)
     if len(obs.shape) == 1: obs = obs.reshape(-1,1)
     kde = KernelDensity(kernel = kernel, bandwidth = bWidth).fit(obs)
-    if x is None: x=np.unique(obs).reshape(-1,1)
-    if len(x.shape)==1: x=x.reshape(-1,1)
+    print(x is None)
+    if x is None: x = np.unique(obs).reshape(-1,1)
+    print(len(x.shape))
+    if len(x.shape) == 1: x = x.reshape(-1,1)
     logProb=kde.score_samples(x) # log(density)
-    pdf=pd.Series(np.exp(logProb), index=x.flatten())
+    pdf = pd.Series(np.exp(logProb), index=x.flatten())
     return pdf
 
 #snippet 2.3
@@ -72,12 +75,19 @@ bins = 50
 ax.hist(np.diag(eVal0), normed = True, bins=50) # Histogram the eigenvalues
 ax.set_autoscale_on(set_autoscale)
 
-#plt.plot(range(0,1000), pdf0, color='r', label="Marcenko-Pastur pdf")
 x_range = np.linspace(min(np.diag(eVal0)),max(np.diag(eVal0)),1000)
-plt.plot(x_range, pdf0, linewidth=4, color = 'r')
-#ax.hist(pdf1, normed = True, bins=50)
-plt.plot(range(0,1000), pdf2, color='b', label="Eigenvalues of random-matrix with signal")
-plt.plot(range(0,1000), pdf3, color='b', label="Eigenvalues of random-matrix with signal")
-plt.plot(range(0,1000), pdf4, color='b', label="Eigenvalues of random-matrix with signal")
-#plt.legend(loc="upper right")
+plt.plot(x_range, pdf0, color='r', label="Marcenko-Pastur pdf")
+plt.plot(x_range, pdf1, color='g', label="Eigenvalues of random-matrix")
+plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
+plt.legend(loc="upper right")
 plt.show()
+
+obs=np.diag(eVal0)
+def fitKDE(obs, bWidth=.15, kernel='gaussian', x=None):
+if len(obs.shape) == 1: obs = obs.reshape(-1,1)
+    kde = KernelDensity(kernel = kernel, bandwidth = bWidth).fit(obs)
+    if x is None: x = np.unique(obs).reshape(-1,1)
+    if len(x.shape) == 1: x = x.reshape(-1,1)
+    #logProb=kde.score_samples(x) # log(density)
+    pdf = pd.Series(np.exp(logProb), index=x.flatten())
+    return pdf
