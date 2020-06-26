@@ -4,6 +4,9 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import os
 import math
+import matplotlib.pylab as plt
+
+import marcenko_pastur_pdf as mp
 
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
@@ -52,48 +55,69 @@ def covariance_of_OL():
     >>> np.testing.assert_array_equal(correlation, np.corrcoef(S))
     """
         
-    ol = pd.read_csv('ol_ticker.csv', sep='\t', header=None)
-    ticker_name = ol[0]
-    S = np.empty([10, 30])
-    covariance_matrix = np.empty([10, 30])
-    n = 10 # num stocks in portfolio
-    T=30
-    portfolio_name = [ [ None ] for x in range( 10 ) ]
-    mean_stonks = np.empty([10])
-    for i in range(1, n+1):  #len(ticker_name)):  # 46
-        ticker = ticker_name[i]
-        print(ticker)
-        ol_ticker = ticker + '.ol'
-        df = yf.Ticker(ol_ticker)
-        #'shortName' in df.info and
+ol = pd.read_csv('ol_ticker.csv', sep='\t', header=None)
+ticker_name = ol[0]
+n=235# num stocks in portfolio
+T=235
+S = np.empty([n, T])
+covariance_matrix = np.empty([n, T])
+portfolio_name = [ [ None ] for x in range( n ) ]
+mean_stonks = np.empty([n])
+ticker_adder = 0
+for i in range(0, len(ticker_name)):  #len(ticker_name)):  # 46
+    ticker = ticker_name[i]
+    print(ticker)
+    ol_ticker = ticker + '.ol'
+    df = yf.Ticker(ol_ticker)
+    #'shortName' in df.info and
+    try:
+        ticker_df = df.history(period="max")
         if len(df.history(period="max")) > T:  # only read tickers with more than 30 days history
-            ticker_df = df.history(period="max")
             #1.Stock Data
-            S[i-1] = ticker_df['Close'][-30:].values
-            portfolio_name[i-1] = ol_ticker
+            S[ticker_adder] = ticker_df['Close'][-T:].values
+            portfolio_name[ticker_adder] = ol_ticker
+            ticker_adder += 1
         else:
             print("no data for ticker:" + ticker)
+    except ValueError:
+        print("no history:"+ol_ticker)
     
-        #2.Average Price Of Stock
-        mean_stonks= np.sum(S, axis=1)/T #sum along row
-        #3.Demeaning The Prices
-        de_meaned_S = S - M[:,None]
-        #4.Covariance Matrix
-        #Once we have the de-meaned price series, we establish the
-        #covariance of different stocks by multiplying the transpose of
-        #the de-meaned price series with itself and divide it by 'm'
-        covariance = (np.dot(de_meaned_S, de_meaned_S.T))/(n-1)
-        # The eigen-values of the covariance matrix is distributed like Marcenko-Pasture dist.
-        #any any eigenvalues outside distribution is signal else noise.
+    portfolio_name = portfolio_name[-1:]
+    S = S[:][:-1]
+    S = np.array(S, dtype=np.float)
+    np.argwhere(np.isnan(S))
+    
+    #2.Average Price Of Stock
+    M = np.sum(S, axis=1)/T #sum along row
+    #3.Demeaning The Prices
+    de_meaned_S = S - M[:,None]
+    #4.Covariance Matrix
+    #Once we have the de-meaned price series, we establish the
+    #covariance of different stocks by multiplying the transpose of
+    #the de-meaned price series with itself and divide it by 'm'
+    covariance = (np.dot(de_meaned_S, de_meaned_S.T))/(n-1)
+    # The eigen-values of the covariance matrix is distributed like Marcenko-Pasture dist.
+    #any any eigenvalues outside distribution is signal else noise.
+    
+    #Standard Model: Markowitz’ Curse
+    #The condition number of a covariance, correlation (or normal, thus diagonalizable) matrix is the absolute
+    #value of the ratio between its maximal and minimal (by moduli) eigenvalues. This number is lowest for a diagonal
+    #correlation matrix, which is its own inverse.        
+    corr = correlation_from_covariance(covariance)
+    eigenvalue, eigenvector = np.linalg.eig(np.corrcoef(S))
+    eigenvalue = abs(eigenvalue)
+    condition_num = max(eigenvalue) - min(eigenvalue)
         
-        #Standard Model: Markowitz’ Curse
-        #The condition number of a covariance, correlation (or normal, thus diagonalizable) matrix is the absolute
-        #value of the ratio between its maximal and minimal (by moduli) eigenvalues. This number is lowest for a diagonal
-        #correlation matrix, which is its own inverse.        
-        corr = correlation_from_covariance(covariance)
-        eigenvalue, eigenvector = np.linalg.eig(np.corrcoef(S))
-        eigenvalue = abs(eigenvalue)
-        condition_num = max(eigenvalue) - min(eigenvalue)
+    x = S
+    cor = np.corrcoef(S[:][:235], rowvar=1) # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
+eVal0 , eVec0 = mp.getPCA( cor ) 
+np.argwhere(np.isnan(eVal0))
+pdf0 = mp.mpPDF(1., q=x.shape[0]/float(x.shape[1]), pts=n)
+pdf1 = mp.fitKDE(np.diag(eVal0), bWidth=.01) #empirical pdf
+
+plt.plot(range(0,10), pdf1, color='g')
+plt.plot(range(0,10), pdf0, color='r')
+plt.show()
 
 def correlation_from_covariance(covariance):
     v = np.sqrt(np.diag(covariance))
