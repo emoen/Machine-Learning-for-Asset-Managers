@@ -16,7 +16,7 @@ def mpPDF(var, q, pts):
 #Test Marcenko-Pastur Thm
 def getPCA(matrix):
     # Get eVal, eVec from a Hermitian matrix
-    eVal, eVec=np.linalg.eigh(matrix) #complex Hermitian (conjugate symmetric) or a real symmetric matrix.
+    eVal, eVec=np.linalg.eig(matrix) #complex Hermitian (conjugate symmetric) or a real symmetric matrix.
     indices=eVal.argsort()[::-1] #arguments for sorting eval desc
     eVal,eVec = eVal[indices],eVec[:,indices]
     eVal=np.diagflat(eVal) # identity matrix with eigenvalues as diagonal
@@ -69,10 +69,12 @@ pdf2 = fitKDE(np.diag(eVal0), bWidth=.01) #empirical pdf
 fig = plt.figure()
 ax  = fig.add_subplot(111)
 bins = 50
-ax.hist(pdf1, normed = True, bins=50) # Histogram the eigenvalues
+ax.hist(np.diag(eVal0), normed = True, bins=50) # Histogram the eigenvalues
 ax.set_autoscale_on(set_autoscale)
 
-plt.plot(range(0,1000), pdf0, color='r', label="Marcenko-Pastur pdf")
+#plt.plot(range(0,1000), pdf0, color='r', label="Marcenko-Pastur pdf")
+x_range = np.linspace(min(np.diag(eVal0)),max(np.diag(eVal0)),1000)
+plt.plot(x_range, pdf0, linewidth=4, color = 'r')
 #ax.hist(pdf1, normed = True, bins=50)
 plt.plot(range(0,1000), pdf2, color='b', label="Eigenvalues of random-matrix with signal")
 plt.plot(range(0,1000), pdf3, color='b', label="Eigenvalues of random-matrix with signal")

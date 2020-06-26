@@ -30,8 +30,8 @@ if not show_top:
     # Clear top eigenvalue from plot
     e=e[ e <= x_max+1]
     
-    ax.hist(e, normed = True, bins=50) # Histogram the eigenvalues
-    ax.set_autoscale_on(set_autoscale)
+ax.hist(e, normed = True, bins=50) # Histogram the eigenvalues
+ax.set_autoscale_on(set_autoscale)
     
     # Plot the theoretical density
     #pdf=pd.Series(marchenko_pastur_pdf(x,Q,sigma=sigma), index=eVal)
@@ -43,7 +43,7 @@ x_max = np.power(sigma*(1 + np.sqrt(1./Q)),2)
 x = np.linspace(x_min,x_max,1000)
 pdf = f(x)
 #ax.plot(x,f(x), linewidth=4, color = 'r')
-plt.plot(x, f(x), linewidth=4, color = 'r')
+plt.plot(x, pdf, linewidth=4, color = 'r')
 plt.show()
     
 def data():
