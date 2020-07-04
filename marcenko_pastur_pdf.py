@@ -59,7 +59,7 @@ x = np.random.normal(0, 1, size = (T, N))
 cor = np.corrcoef(x, rowvar=0) # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
 eVal0 , eVec0 = getPCA( cor ) 
 pdf0 = mpPDF(1., q=x.shape[0]/float(x.shape[1]), pts=N)
-pdf1 = fitKDE(np.diag(eVal0), bWidth=.01) #empirical pdf
+pdf1 = fitKDE(np.diag(eVal0), bWidth=.005) #empirical pdf
     
     # code snippet 2.3 - random matrix with signal
 alpha, nCols, nFact, q = .995, 1000, 100, 10
@@ -67,27 +67,19 @@ cov = np.cov(np.random.normal(size=(nCols*q, nCols)), rowvar=0) #size = (1000*10
 cov = alpha*cov+(1-alpha)*getRndCov(nCols, nFact) # noise + signal
 corr0 = cov2corr(cov)
 eVal0, eVec0 = getPCA(corr0)
-pdf2 = fitKDE(np.diag(eVal0), bWidth=.01) #empirical pdf
+pdf2 = fitKDE(np.diag(eVal0), bWidth=.15) #empirical pdf
 
 fig = plt.figure()
 ax  = fig.add_subplot(111)
 bins = 50
 ax.hist(np.diag(eVal0), normed = True, bins=50) # Histogram the eigenvalues
-ax.set_autoscale_on(set_autoscale)
+#ax.set_autoscale_on(set_autoscale)
 
 x_range = np.linspace(min(np.diag(eVal0)),max(np.diag(eVal0)),1000)
-plt.plot(x_range, pdf0, color='r', label="Marcenko-Pastur pdf")
-plt.plot(x_range, pdf1, color='g', label="Eigenvalues of random-matrix")
-plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
+plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")
+plt.plot(pdf1.keys(), pdf1, color='g', label="Eigenvalues of random-matrix")
+#plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
 plt.legend(loc="upper right")
 plt.show()
 
-obs=np.diag(eVal0)
-def fitKDE(obs, bWidth=.15, kernel='gaussian', x=None):
-if len(obs.shape) == 1: obs = obs.reshape(-1,1)
-    kde = KernelDensity(kernel = kernel, bandwidth = bWidth).fit(obs)
-    if x is None: x = np.unique(obs).reshape(-1,1)
-    if len(x.shape) == 1: x = x.reshape(-1,1)
-    #logProb=kde.score_samples(x) # log(density)
-    pdf = pd.Series(np.exp(logProb), index=x.flatten())
-    return pdf
+
