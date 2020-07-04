@@ -57,8 +57,8 @@ def covariance_of_OL():
         
 ol = pd.read_csv('ol_ticker.csv', sep='\t', header=None)
 ticker_name = ol[0]
-n=235# num stocks in portfolio
-T=235
+n=234# num stocks in portfolio
+T=234
 S = np.empty([n, T])
 covariance_matrix = np.empty([n, T])
 portfolio_name = [ [ None ] for x in range( n ) ]
@@ -72,7 +72,8 @@ for i in range(0, len(ticker_name)):  #len(ticker_name)):  # 46
     #'shortName' in df.info and
     try:
         ticker_df = df.history(period="max")
-        if len(df.history(period="max")) > T:  # only read tickers with more than 30 days history
+        if ticker=='EMAS': print("****EMAS******")
+        if len(df.history(period="max")) > T and ticker!='EMAS':  # only read tickers with more than 30 days history
             #1.Stock Data
             S[ticker_adder] = ticker_df['Close'][-T:].values
             portfolio_name[ticker_adder] = ol_ticker
@@ -82,9 +83,6 @@ for i in range(0, len(ticker_name)):  #len(ticker_name)):  # 46
     except ValueError:
         print("no history:"+ol_ticker)
     
-    portfolio_name = portfolio_name[-1:]
-    S = S[:][:-1]
-    S = np.array(S, dtype=np.float)
     np.argwhere(np.isnan(S))
     
     #2.Average Price Of Stock
@@ -109,8 +107,10 @@ for i in range(0, len(ticker_name)):  #len(ticker_name)):  # 46
     condition_num = max(eigenvalue) - min(eigenvalue)
         
     x = S
-    cor = np.corrcoef(S[:][:235], rowvar=1) # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
+    # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
+cor = np.corrcoef(S[-177:][:], rowvar=1) 
 eVal0 , eVec0 = mp.getPCA( cor ) 
+eVal0 = np.diag(eVal0)
 np.argwhere(np.isnan(eVal0))
 pdf0 = mp.mpPDF(1., q=x.shape[0]/float(x.shape[1]), pts=n)
 pdf1 = mp.fitKDE(np.diag(eVal0), bWidth=.01) #empirical pdf

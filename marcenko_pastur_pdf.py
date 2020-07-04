@@ -81,5 +81,3 @@ plt.plot(pdf1.keys(), pdf1, color='g', label="Eigenvalues of random-matrix")
 #plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
 plt.legend(loc="upper right")
 plt.show()
-
-
