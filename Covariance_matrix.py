@@ -58,7 +58,7 @@ def covariance_of_OL():
 ol = pd.read_csv('ol_ticker.csv', sep='\t', header=None)
 ticker_name = ol[0]
 n=234# num stocks in portfolio
-T=234
+T=936
 S = np.empty([n, T])
 covariance_matrix = np.empty([n, T])
 portfolio_name = [ [ None ] for x in range( n ) ]
@@ -73,7 +73,8 @@ for i in range(0, len(ticker_name)):  #len(ticker_name)):  # 46
     try:
         ticker_df = df.history(period="max")
         if ticker=='EMAS': print("****EMAS******")
-        if len(df.history(period="max")) > T and ticker!='EMAS':  # only read tickers with more than 30 days history
+        if ticker=='AVM': print("****AVM*********")
+        if len(df.history(period="max")) > T and ticker!='EMAS' and ticker != 'AVM':  # only read tickers with more than 30 days history
             #1.Stock Data
             S[ticker_adder] = ticker_df['Close'][-T:].values
             portfolio_name[ticker_adder] = ol_ticker
@@ -106,18 +107,26 @@ for i in range(0, len(ticker_name)):  #len(ticker_name)):  # 46
     eigenvalue = abs(eigenvalue)
     condition_num = max(eigenvalue) - min(eigenvalue)
         
-    x = S
+    S = S[0:183]
+    n= 183
+    portfolio_name = portfolio_name[0:183]
+    
     # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
-cor = np.corrcoef(S[-177:][:], rowvar=1) 
-eVal0 , eVec0 = mp.getPCA( cor ) 
-eVal0 = np.diag(eVal0)
-np.argwhere(np.isnan(eVal0))
-pdf0 = mp.mpPDF(1., q=x.shape[0]/float(x.shape[1]), pts=n)
-pdf1 = mp.fitKDE(np.diag(eVal0), bWidth=.01) #empirical pdf
+    cor = np.corrcoef(S[:][:], rowvar=1) 
+    eVal0 , eVec0 = mp.getPCA( cor ) 
+    eVal0 = np.diag(eVal0)
+    print(np.argwhere(np.isnan(eVal0)))
+    pdf0 = mp.mpPDF(1., q=S.shape[1]/float(S.shape[0]), pts=n)
+    pdf1 = mp.fitKDE( eVal0, bWidth=.005) #empirical pdf
 
-plt.plot(range(0,10), pdf1, color='g')
-plt.plot(range(0,10), pdf0, color='r')
-plt.show()
+    fig = plt.figure()
+    ax  = fig.add_subplot(111)
+    bins = 50
+    ax.hist(eVal0, normed = True, bins=50) 
+
+    #plt.plot(pdf1.keys(), pdf1, color='g')
+    plt.plot(pdf0.keys(), pdf0, color='r')
+    plt.show()
 
 def correlation_from_covariance(covariance):
     v = np.sqrt(np.diag(covariance))
@@ -129,5 +138,5 @@ def correlation_from_covariance(covariance):
 if __name__ == '__main__':
     covariance_of_OL()
     
-    import doctest
-    doctest.testmod()
+    #import doctest
+    #doctest.testmod()
