@@ -53,20 +53,22 @@ def cov2corr(cov):
     corr[corr<-1], corr[corr>1] = -1,1 #for numerical errors
     return corr
     
-#snippet 2.4
+#snippet 2.4 - fitting the marcenko-pastur pdf - find variance
 #Fit error
 def errPDFs(var, eVal, q, bWidth, pts=1000):
     pdf0 = mpPDF(var, q, pts) #theoretical pdf
     pdf1 = fitKDE(eVal, bWidth, x=pdf0.index.values) #empirical pdf
     sse = np.sum((pdf1-pdf0)**2)
+    print("sse:"+str(sse))
     return sse
     
 #find max random eVal by fitting Marcenko's dist
 def findMaxEval(eVal, w, bWidth):
     bnds = ((float(1e5/10000000000), float(0.99999*-1)),)
-
     print(bnds)
     out = minimize(lambda*x: errPDFs(*x), .5, args=(eVal, q, bWidth), bounds=bnds)
+    print(out['success'])
+    print(out['x'][0])
     if out['success']: var = out['x'][0]
     else: var=1
     eMax = var*(1+(1./q)**.5)**2
