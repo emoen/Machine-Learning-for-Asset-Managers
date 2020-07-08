@@ -70,7 +70,7 @@ def denoise_OL(S, portfolio_name):
     print(np.argwhere(np.isnan(np.diag(eVal0))))
     pdf0 = mp.mpPDF(1., q=S.shape[0]/float(S.shape[1]), pts=N)
     pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
-
+    
     fig = plt.figure()
     ax  = fig.add_subplot(111)
     bins = 50
@@ -81,13 +81,15 @@ def denoise_OL(S, portfolio_name):
     plt.show()
         
     # code snippet 2.4 
+    q = float(S.shape[0])/S.shape[1]#T/N
     eMax0, var0 = mp.findMaxEval(np.diag(eVal0), q, bWidth=.01)
     nFacts0 = eVal0.shape[0]-np.diag(eVal0)[::-1].searchsorted(eMax0)
     
-    # code snippet 2.5
+    # code snippet 2.5 - denoising by constant residual eigenvalue
     corr1 = mp.denoisedCorr(eVal0, eVec0, nFacts0)
     eVal1, eVec1 = mp.getPCA(corr1)
     
+    return eVal0, eVal1
 
 def correlation_from_covariance(covariance):
     v = np.sqrt(np.diag(covariance))
@@ -148,15 +150,24 @@ def calculate_correlation(S, T=936, N=234):
     condition_num = max(eigenvalue) - min(eigenvalue)
     
 if __name__ == '__main__':
-    S = np.loadtxt('ol183.csv', delimiter=',')
-    portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
+S = np.loadtxt('ol183.csv', delimiter=',')
+portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
     if S.shape[0] <1:
         S, portfolio_name = get_OL_tickers_close()
         np.savetxt('ol183.csv', S, delimiter=',')
         np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
         
     calculate_correlation(S)
-    denoise_OL(S, portfolio_name)
+    eVal0, eVal1 = denoise_OL(S, portfolio_name)
+    
+    denoised_eigenvalue = np.diag(eVal1)
+    eigenvalue_prior = np.diag(eVal0)
+    plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+    plt.xlabel("Eigenvalue number")
+    plt.ylabel("Eigenvalue (log-scale)")
+    plt.legend(loc="upper right")
+    plt.show()
     
     import doctest
     doctest.testmod()

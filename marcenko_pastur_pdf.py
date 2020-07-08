@@ -64,7 +64,7 @@ def errPDFs(var, eVal, q, bWidth, pts=1000):
     return sse 
     
 #find max random eVal by fitting Marcenko's dist
-def findMaxEval(eVal, w, bWidth):
+def findMaxEval(eVal, q, bWidth):
     out = minimize(lambda *x: errPDFs(*x), x0=np.array(0.5), args=(eVal, q, bWidth), bounds=((1E-5, 1-1E-5),))
     print(out['x'][0])
     if out['success']: var = out['x'][0]
@@ -82,6 +82,40 @@ def denoisedCorr(eVal, eVec, nFacts):
     corr1 = cov2corr(corr1)
     return corr1
     
+# chapter 2.6 - detoning
+# ref: mlfinlab/portfolio_optimization/risk_estimators.py
+def _detoned_corr(self, corr, eigenvalues, eigenvectors, num_facts, market_component=1):
+    """
+    De-tones the correlation matrix by removing the market component.
+    The input is the eigenvalues and the eigenvectors of the correlation matrix and the number
+    of the first eigenvalue that is above the maximum theoretical eigenvalue and the number of
+    eigenvectors related to a market component.
+    :param corr: (np.array) Correlation matrix to detone.
+    :param eigenvalues: (np.array) Matrix with eigenvalues on the main diagonal.
+    :param eigenvectors: (float) Eigenvectors array.
+    :param num_facts: (float) Threshold for eigenvalues to be fixed.
+    :param market_component: (int) Number of fist eigevectors related to a market component. (1 by default)
+    :return: (np.array) De-toned correlation matrix.
+    """
+
+    # Getting the de-noised correlation matrix
+    corr = self._denoised_corr(eigenvalues, eigenvectors, num_facts)
+
+    # Getting the eigenvalues and eigenvectors related to market component
+    eigenvalues_mark = eigenvalues[:market_component, :market_component]
+    eigenvectors_mark = eigenvectors[:, :market_component]
+
+    # Calculating the market component correlation
+    corr_mark = np.dot(eigenvectors_mark, eigenvalues_mark).dot(eigenvectors_mark.T)
+
+    # Removing the market component from the de-noised correlation matrix
+    corr = corr - corr_mark
+
+    # Rescaling the correlation matrix to have 1s on the main diagonal
+    corr = self.cov_to_corr(corr)
+
+    return corr
+
 if __name__ == '__main__':
     # code snippet 2.2 - marcenko-pastur pdf explains eigenvalues of random matrix x
     N = 1000
