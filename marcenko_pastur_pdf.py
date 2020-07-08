@@ -76,10 +76,16 @@ def findMaxEval(eVal, q, bWidth):
 # Remove noise from corr by fixing random eigenvalue
 def denoisedCorr(eVal, eVec, nFacts):
     eVal_ = np.diag(eVal).copy()
+    print(eVal_.shape)
     eVal_[nFacts:] = eVal_[nFacts:].sum()/float(eVal_.shape[0] - nFacts)
+    print(eVal_.shape)
     eVal_ = np.diag(eVal_)
+    print(eVal_.shape)
+    print(eVal_[nFacts:].sum()/float(eVal_.shape[0] - nFacts))
+    print(len(eVal_[nFacts:]))
+    print(eVal_[nFacts:][-10:][-10:])
     corr1 = np.dot(eVec, eVal_).dot(eVec.T)
-    corr1 = cov2corr(corr1)
+    corr1 = cov2corr(corr1) # Rescaling the correlation matrix to have 1s on the main diagonal
     return corr1
     
 # chapter 2.6 - detoning
