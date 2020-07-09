@@ -42,16 +42,16 @@ def get_OL_tickers_close(T=936, N=234):
         df = yf.Ticker(ol_ticker)
         #'shortName' in df.info and
         try:
-            ticker_df = df.history(period="max")
+            ticker_df = df.history(period="7y")
             if ticker=='EMAS': print("****EMAS******")
             if ticker=='AVM': print("****AVM*********")
-            if len(df.history(period="max")) > T and ticker!='EMAS' and ticker != 'AVM':  # only read tickers with more than 30 days history
+            if ticker_df.shape[0] > T and ticker!='EMAS' and ticker != 'AVM':  # only read tickers with more than 30 days history
                 #1.Stock Data
                 S[:,ticker_adder] = ticker_df['Close'][-T:].values # inserted from oldest tick to newest tick
                 portfolio_name[ticker_adder] = ol_ticker
                 ticker_adder += 1
             else:
-                print("no data for ticker:" + ticker)
+                print("no data for ticker:" + ol_ticker)
         except ValueError:
             print("no history:"+ol_ticker)
     
@@ -60,9 +60,9 @@ def get_OL_tickers_close(T=936, N=234):
 def denoise_OL(S, portfolio_name):
     
     np.argwhere( np.isnan(S) )
-    S = S[:,0:183]
-    N = 183
-    portfolio_name = portfolio_name[0:183]
+    N = 184
+    S = S[:,0:N]
+    portfolio_name = portfolio_name[0:N]
     
     # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
     cor = np.corrcoef(S, rowvar=0) 
@@ -150,12 +150,12 @@ def calculate_correlation(S, T=936, N=234):
     condition_num = max(eigenvalue) - min(eigenvalue)
     
 if __name__ == '__main__':
-S = np.loadtxt('ol183.csv', delimiter=',')
-portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
+    S = np.loadtxt('ol184.csv', delimiter=',')
+    portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
     if S.shape[0] <1:
-        S, portfolio_name = get_OL_tickers_close()
-        np.savetxt('ol183.csv', S, delimiter=',')
-        np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
+    S, portfolio_name = get_OL_tickers_close()
+    np.savetxt('ol184.csv', S, delimiter=',')
+    np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
         
     calculate_correlation(S)
     eVal0, eVal1 = denoise_OL(S, portfolio_name)

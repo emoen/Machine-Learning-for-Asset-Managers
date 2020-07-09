@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
 from sklearn.neighbors.kde import KernelDensity
@@ -74,17 +75,12 @@ def findMaxEval(eVal, q, bWidth):
     
 #snippet 2.5 - denoising by constant residual eigenvalue
 # Remove noise from corr by fixing random eigenvalue
+# Operation invariante to trace(Correlation)
 def denoisedCorr(eVal, eVec, nFacts):
     eVal_ = np.diag(eVal).copy()
-    print(eVal_.shape)
-    eVal_[nFacts:] = eVal_[nFacts:].sum()/float(eVal_.shape[0] - nFacts)
-    print(eVal_.shape)
-    eVal_ = np.diag(eVal_)
-    print(eVal_.shape)
-    print(eVal_[nFacts:].sum()/float(eVal_.shape[0] - nFacts))
-    print(len(eVal_[nFacts:]))
-    print(eVal_[nFacts:][-10:][-10:])
-    corr1 = np.dot(eVec, eVal_).dot(eVec.T)
+    eVal_[nFacts:] = eVal_[nFacts:].sum()/float(eVal_.shape[0] - nFacts) #all but 0..i values equals (1/N-i)sum(eVal_[i..N]))
+    eVal_ = np.diag(eVal_) #square matrix with eigenvalues as diagonal: eVal_.I
+    corr1 = np.dot(eVec, eVal_).dot(eVec.T) #Eigendecomposition of a symmetric matrix: S = QΛQT
     corr1 = cov2corr(corr1) # Rescaling the correlation matrix to have 1s on the main diagonal
     return corr1
     
@@ -157,7 +153,7 @@ if __name__ == '__main__':
     nFacts0 = eVal01.shape[0]-np.diag(eVal01)[::-1].searchsorted(eMax0)
 
     # code snippet 2.5 - denoising by constant residual eigenvalue
-    corr1 = denoisedCorr(eVal01, eVec0, nFacts0)
+    corr1 = denoisedCorr(eVal01, eVec0, nFacts0)   
     eVal1, eVec1 = getPCA(corr1)
 
     denoised_eigenvalue = np.diag(eVal1)
