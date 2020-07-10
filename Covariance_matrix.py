@@ -89,7 +89,7 @@ def denoise_OL(S, portfolio_name):
     corr1 = mp.denoisedCorr(eVal0, eVec0, nFacts0)
     eVal1, eVec1 = mp.getPCA(corr1)
     
-    return eVal0, eVal1
+    return eVal0, eVec0, eVal1, eVec1, corr1
 
 def correlation_from_covariance(covariance):
     v = np.sqrt(np.diag(covariance))
@@ -153,21 +153,34 @@ if __name__ == '__main__':
     S = np.loadtxt('ol184.csv', delimiter=',')
     portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
     if S.shape[0] <1:
-    S, portfolio_name = get_OL_tickers_close()
-    np.savetxt('ol184.csv', S, delimiter=',')
-    np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
+        S, portfolio_name = get_OL_tickers_close()
+        np.savetxt('ol184.csv', S, delimiter=',')
+        np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
         
     calculate_correlation(S)
-    eVal0, eVal1 = denoise_OL(S, portfolio_name)
+    eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr = denoise_OL(S, portfolio_name)
+    detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec)
+    detoned_eVal, detoned_eVec = np.linalg.eig(detoned_corr)
     
-    denoised_eigenvalue = np.diag(eVal1)
-    eigenvalue_prior = np.diag(eVal0)
-    plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
-    plt.xlabel("Eigenvalue number")
-    plt.ylabel("Eigenvalue (log-scale)")
-    plt.legend(loc="upper right")
-    plt.show()
+denoised_eigenvalue = np.diag(denoised_eVal)
+eigenvalue_prior = np.diag(eVal0)
+plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+plt.xlabel("Eigenvalue number")
+plt.ylabel("Eigenvalue (log-scale)")
+plt.legend(loc="upper right")
+plt.show()
+    
+fig = plt.figure()
+ax  = fig.add_subplot(111)
+bins = 50
+ax.hist(np.diag(denoised_eVal), normed = True, bins=50) 
+pdf_detoned = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
+
+#plt.plot(pdf1.keys(), pdf1, color='g') #no point in drawing this
+plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+plt.plot(range(0, len(detoned_eVal)), np.log(detoned_eVal), color='b', label="Denoised eigen-function")
+plt.show()
     
     import doctest
     doctest.testmod()
