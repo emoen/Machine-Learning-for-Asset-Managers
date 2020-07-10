@@ -94,6 +94,9 @@ def denoisedCorr(eVal, eVec, nFacts):
 # ref: mlfinlab/portfolio_optimization/risk_estimators.py
 # This method assumes a sorted set of eigenvalues and eigenvectors.
 # The market component is the first eigenvector with highest eigenvalue.
+# it returns singular correlation matrix: 
+# "the detoned correlation matrix is singualar, as a result of eliminating (at least) one eigenvector."
+# Page 32
 def detoned_corr(corr, eigenvalues, eigenvectors, market_component=1):
     """
     De-tones the de-noised correlation matrix by removing the market component.
@@ -121,85 +124,90 @@ def detoned_corr(corr, eigenvalues, eigenvectors, market_component=1):
     corr = cov2corr(corr)
     
     return corr
+    
+def test_detone():
+    # ------ Test detone --------
+    cov_matrix = np.array([[0.01, 0.002, -0.001],
+                           [0.002, 0.04, -0.006],
+                           [-0.001, -0.006, 0.01]])
+    cor_test = np.corrcoef(cov_matrix, rowvar=0) 
+    eVal_test, eVec_test = getPCA(cor_test)
+    eMax_test, var_test = findMaxEval(np.diag(eVal_test), q, bWidth=.01)
+    nFacts_test = eVal_test.shape[0]-np.diag(eVal_test)[::-1].searchsorted(eMax_test)   
+    corr1_test = denoisedCorr(eVal_test, eVec_test, nFacts_test) 
+    eVal_denoised_test, eVec_denoised_test = getPCA(corr1_test)
+    corr_detoned_denoised_test = detoned_corr(corr1_test, eVal_denoised_test, eVec_denoised_test)       
+    eVal_detoned_denoised_test, _ = getPCA(corr_detoned_denoised_test)     
+    np.diag(eVal_denoised_test)
+    np.diag(eVal_detoned_denoised_test)
+    
+    expected_detoned_denoised_corr = np.array([ 1.56236229e+00,  1.43763771e+00, -2.22044605e-16])    
+    
+    np.testing.assert_almost_equal(np.diag(eVal_detoned_denoised_test), expected_detoned_denoised_corr, decimal=4)
+    np.testing.assert_almost_equal(sum(np.diag(eVal_denoised_test)), sum(np.diag(eVal_detoned_denoised_test)), decimal=4 )
 
 if __name__ == '__main__':
     # code snippet 2.2 - marcenko-pastur pdf explains eigenvalues of random matrix x
-N = 1000
-T = 10000
-x = np.random.normal(0, 1, size = (T, N))
-cor = np.corrcoef(x, rowvar=0) # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
-eVal0 , eVec0 = getPCA( cor ) 
-pdf0 = mpPDF(1., q=x.shape[0]/float(x.shape[1]), pts=N)
-pdf1 = fitKDE(np.diag(eVal0), bWidth=.005) #empirical pdf
-        
-# code snippet 2.3 - random matrix with signal
-alpha, nCols, nFact, q = .995, 1000, 100, 10
-cov = np.cov(np.random.normal(size=(nCols*q, nCols)), rowvar=0) #size = (1000*10,1000)
-cov = alpha*cov+(1-alpha)*getRndCov(nCols, nFact) # noise + signal
-corr0 = cov2corr(cov)
-eVal01, eVec01 = getPCA(corr0)
-pdf2 = fitKDE(np.diag(eVal01), bWidth=.15) #empirical pdf
+    N = 1000
+    T = 10000
+    x = np.random.normal(0, 1, size = (T, N))
+    cor = np.corrcoef(x, rowvar=0) # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
+    eVal0 , eVec0 = getPCA( cor ) 
+    pdf0 = mpPDF(1., q=x.shape[0]/float(x.shape[1]), pts=N)
+    pdf1 = fitKDE(np.diag(eVal0), bWidth=.005) #empirical pdf
+            
+    # code snippet 2.3 - random matrix with signal
+    alpha, nCols, nFact, q = .995, 1000, 100, 10
+    cov = np.cov(np.random.normal(size=(nCols*q, nCols)), rowvar=0) #size = (1000*10,1000)
+    cov = alpha*cov+(1-alpha)*getRndCov(nCols, nFact) # noise + signal
+    corr0 = cov2corr(cov)
+    eVal01, eVec01 = getPCA(corr0)
+    pdf2 = fitKDE(np.diag(eVal01), bWidth=.15) #empirical pdf
 
-# Figure 2.1 Plot empirical:KDE and Marcenko-Pastur, and histogram
-fig = plt.figure()
-ax  = fig.add_subplot(111)
-bins = 50
-ax.hist(np.diag(eVal0), normed = True, bins=50) # Histogram the eigenvalues
+    # Figure 2.1 Plot empirical:KDE and Marcenko-Pastur, and histogram
+    fig = plt.figure()
+    ax  = fig.add_subplot(111)
+    bins = 50
+    ax.hist(np.diag(eVal0), normed = True, bins=50) # Histogram the eigenvalues
 
-plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")
-plt.plot(pdf1.keys(), pdf1, color='g', label="Empirical:KDE")
-#plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
-plt.legend(loc="upper right")
-plt.show()
+    plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")
+    plt.plot(pdf1.keys(), pdf1, color='g', label="Empirical:KDE")
+    #plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
+    plt.legend(loc="upper right")
+    plt.show()
 
-# code snippet 2.4 - fitting the marcenko-pastur pdf - find variance
-eMax0, var0 = findMaxEval(np.diag(eVal01), q, bWidth=.01)
-nFacts0 = eVal01.shape[0]-np.diag(eVal01)[::-1].searchsorted(eMax0)
+    # code snippet 2.4 - fitting the marcenko-pastur pdf - find variance
+    eMax0, var0 = findMaxEval(np.diag(eVal01), q, bWidth=.01)
+    nFacts0 = eVal01.shape[0]-np.diag(eVal01)[::-1].searchsorted(eMax0)
 
-# code snippet 2.5 - denoising by constant residual eigenvalue
-# ------ Test detone --------
-cov_matrix = np.array([[0.01, 0.002, -0.001],
-                       [0.002, 0.04, -0.006],
-                       [-0.001, -0.006, 0.01]])
-cor_test = np.corrcoef(cov_matrix, rowvar=0) 
-eVal_test, eVec_test = getPCA(cor_test)
-eMax_test, var_test = findMaxEval(np.diag(eVal_test), q, bWidth=.01)
-nFacts_test = eVal_test.shape[0]-np.diag(eVal_test)[::-1].searchsorted(eMax_test)   
-corr1_test = denoisedCorr(eVal_test, eVec_test, nFacts_test) 
-eVal_denoised_test, eVec_denoised_test = getPCA(corr1_test)
-corr_detoned_denoised_test = detoned_corr(corr1_test, eVal_denoised_test, eVec_denoised_test)       
-eVal_detoned_denoised_test, _ = getPCA(corr_detoned_denoised_test)     
-np.diag(eVal_denoised_test)
-np.diag(eVal_detoned_denoised_test)
+    # code snippet 2.5 - denoising by constant residual eigenvalue
+    corr1 = denoisedCorr(eVal01, eVec01, nFacts0)   
+    eVal1, eVec1 = getPCA(corr1)
 
-                               
-corr1 = denoisedCorr(eVal01, eVec01, nFacts0)   
-eVal1, eVec1 = getPCA(corr1)
+    denoised_eigenvalue = np.diag(eVal1)
+    eigenvalue_prior = np.diag(eVal01)
+    plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+    plt.xlabel("Eigenvalue number")
+    plt.ylabel("Eigenvalue (log-scale)")
+    plt.legend(loc="upper right")
+    plt.show()
 
-denoised_eigenvalue = np.diag(eVal1)
-eigenvalue_prior = np.diag(eVal01)
-plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
-plt.xlabel("Eigenvalue number")
-plt.ylabel("Eigenvalue (log-scale)")
-plt.legend(loc="upper right")
-plt.show()
+    corr_detoned_denoised = detoned_corr(corr1, eVal1, eVec1)
 
+    eVal1_detoned, eVec1_detoned = getPCA(corr_detoned_denoised)
+    eVal1-eVal1_detoned
+    print(corr_detoned_denoised[0:10, 0:10])
+    detoned_denoised_eigenvalue = np.diag(eVal1_detoned)
+    denoised_eigenvalue = np.diag(eVal1)
+    eigenvalue_prior = np.diag(eVal01)
 
-corr_detoned_denoised = detoned_corr(corr1, eVal1, eVec1)
+    plt.plot(range(0, len(detoned_denoised_eigenvalue)), np.log(detoned_denoised_eigenvalue), color='b', label="Detoned, denoised eigen-function")
+    plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+    plt.xlabel("Eigenvalue number")
+    plt.ylabel("Eigenvalue (log-scale)")
+    plt.legend(loc="upper right")
+    plt.show()
 
-eVal1_detoned, eVec1_detoned = getPCA(corr_detoned_denoised)
-eVal1-eVal1_detoned
-print(corr_detoned_denoised[0:10, 0:10])
-detoned_denoised_eigenvalue = np.diag(eVal1_detoned)
-denoised_eigenvalue = np.diag(eVal1)
-eigenvalue_prior = np.diag(eVal01)
-
-plt.plot(range(0, len(detoned_denoised_eigenvalue)), np.log(detoned_denoised_eigenvalue), color='b', label="Detoned, denoised eigen-function")
-plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
-plt.xlabel("Eigenvalue number")
-plt.ylabel("Eigenvalue (log-scale)")
-plt.legend(loc="upper right")
-plt.show()
     

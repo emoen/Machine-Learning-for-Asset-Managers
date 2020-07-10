@@ -150,6 +150,8 @@ def calculate_correlation(S, T=936, N=234):
     condition_num = max(eigenvalue) - min(eigenvalue)
     
 if __name__ == '__main__':
+    N=234
+    T=936
     S = np.loadtxt('ol184.csv', delimiter=',')
     portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
     if S.shape[0] <1:
@@ -162,25 +164,30 @@ if __name__ == '__main__':
     detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec)
     detoned_eVal, detoned_eVec = np.linalg.eig(detoned_corr)
     
-denoised_eigenvalue = np.diag(denoised_eVal)
-eigenvalue_prior = np.diag(eVal0)
-plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
-plt.xlabel("Eigenvalue number")
-plt.ylabel("Eigenvalue (log-scale)")
-plt.legend(loc="upper right")
-plt.show()
-    
-fig = plt.figure()
-ax  = fig.add_subplot(111)
-bins = 50
-ax.hist(np.diag(denoised_eVal), normed = True, bins=50) 
-pdf_detoned = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
+    denoised_eigenvalue = np.diag(denoised_eVal)
+    eigenvalue_prior = np.diag(eVal0)
+    plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+    plt.xlabel("Eigenvalue number")
+    plt.ylabel("Eigenvalue (log-scale)")
+    plt.legend(loc="upper right")
+    plt.show()
+            
+    fig = plt.figure()
+    ax  = fig.add_subplot(111)
+    bins = 50
+    ax.hist(np.diag(denoised_eVal), normed = True, bins=50) 
+    pdf0 = mpPDF(1., q=S.shape[0]/float(S.shape[1]), pts=N) #theoretic pdf
+    pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
+    pdf_denoised = mp.fitKDE( denoised_eigenvalue, bWidth=.005) #empirical pdf
+    pdf_detoned = mp.fitKDE( detoned_eVal, bWidth=.005) #empirical pdf
 
-#plt.plot(pdf1.keys(), pdf1, color='g') #no point in drawing this
-plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-plt.plot(range(0, len(detoned_eVal)), np.log(detoned_eVal), color='b', label="Denoised eigen-function")
-plt.show()
+    plt.plot(pdf0.keys(), pdf0, color='g')  
+    plt.plot(pdf_denoised.keys(), pdf_denoised, color='r', label="Denoised eigen-function")
+    plt.plot(pdf_detoned.keys(), pdf_detoned, color='b', label="Detoned eigen-function")
+    #plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+    #plt.plot(range(0, len(detoned_eVal)), np.log(detoned_eVal), color='b', label="Detoned eigen-function")
+    plt.show()
     
     import doctest
     doctest.testmod()
