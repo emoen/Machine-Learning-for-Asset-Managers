@@ -196,8 +196,6 @@ if __name__ == '__main__':
     corr_detoned_denoised = detoned_corr(corr1, eVal1, eVec1)
 
     eVal1_detoned, eVec1_detoned = getPCA(corr_detoned_denoised)
-    eVal1-eVal1_detoned
-    print(corr_detoned_denoised[0:10, 0:10])
     detoned_denoised_eigenvalue = np.diag(eVal1_detoned)
     denoised_eigenvalue = np.diag(eVal1)
     eigenvalue_prior = np.diag(eVal01)
