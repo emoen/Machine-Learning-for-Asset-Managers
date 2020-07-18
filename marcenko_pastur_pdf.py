@@ -29,12 +29,12 @@ def getPCA(matrix):
 def fitKDE(obs, bWidth=.15, kernel='gaussian', x=None):
     #Fit kernel to a series of obs, and derive the prob of obs
     # x is the array of values on which the fit KDE will be evaluated
-    print(len(obs.shape) == 1)
+    #print(len(obs.shape) == 1)
     if len(obs.shape) == 1: obs = obs.reshape(-1,1)
     kde = KernelDensity(kernel = kernel, bandwidth = bWidth).fit(obs)
-    print(x is None)
+    #print(x is None)
     if x is None: x = np.unique(obs).reshape(-1,1)
-    print(len(x.shape))
+    #print(len(x.shape))
     if len(x.shape) == 1: x = x.reshape(-1,1)
     logProb = kde.score_samples(x) # log(density)
     pdf = pd.Series(np.exp(logProb), index=x.flatten())
@@ -65,13 +65,13 @@ def errPDFs(var, eVal, q, bWidth, pts=1000):
     pdf0 = mpPDF(var, q, pts) #theoretical pdf
     pdf1 = fitKDE(eVal, bWidth, x=pdf0.index.values) #empirical pdf
     sse = np.sum((pdf1-pdf0)**2)
-    print("sse:"+str(sse))
+    #print("sse:"+str(sse))
     return sse 
     
 #find max random eVal by fitting Marcenko's dist
 def findMaxEval(eVal, q, bWidth):
     out = minimize(lambda *x: errPDFs(*x), x0=np.array(0.5), args=(eVal, q, bWidth), bounds=((1E-5, 1-1E-5),))
-    print(out['x'][0])
+    #print(out['x'][0])
     if out['success']: var = out['x'][0]
     else: var=1
     eMax = var*(1+(1./q)**.5)**2
