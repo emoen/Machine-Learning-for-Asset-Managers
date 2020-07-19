@@ -53,14 +53,19 @@ def deNoiseCov(cov0, q, bWidth):
     return cov1
     
 # code snippet 2.10
-# Derive minimum-variance-portfolio 
+# Derive minimum-variance-portfolio
+# Returns a column vector of persentage allocations
+# should be subject to lagrangian constraints:
+# 1. lambda_1*(sum(expectation(x_i)*x_i) - d = 0
+# 2. lambda_2*(sum(x_i - 1))=0
+# where d is expected rate of return
 def optPort(cov, mu = None):
     inv = np.linalg.inv(cov)
     ones = np.ones(shape = (inv.shape[0], 1)) # column vector 1's
     if mu is None: 
         mu = ones
     w = np.dot(inv, mu)
-    w /= np.dot(ones.T, w) # def: w = w / sum(w)
+    w /= np.dot(ones.T, w) # def: w = w / sum(w) - w is column vector
     return w
     
     
@@ -79,7 +84,7 @@ for i in range(nTrials):
     mu1, cov1 = simCovMu(mu0, cov0, nObs, shrink = shrink)
     if minVarPortf: mu1 = None
     cov1_d = deNoiseCov(cov1, nObs*1./cov1.shape[1], bWidth)
-    w1.loc[i] = optPort(cov1, mu1).flatten()
+    w1.loc[i] = optPort(cov1, mu1).flatten() # add column vector w as row in w1
     w1_d.loc[i] = optPort(cov1_d, mu1).flatten()
         
     #code snippet 2.11
