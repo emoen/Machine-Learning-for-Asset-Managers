@@ -59,6 +59,7 @@ def deNoiseCov(cov0, q, bWidth):
 # 1. lambda_1*(sum(expectation(x_i)*x_i) - d = 0
 # 2. lambda_2*(sum(x_i - 1))=0
 # where d is expected rate of return
+# w*=C^−1*μ/I.T*C^−1*μ - is minimum-variance-portfolio
 def optPort(cov, mu = None):
     inv = np.linalg.inv(cov)
     ones = np.ones(shape = (inv.shape[0], 1)) # column vector 1's
@@ -70,27 +71,29 @@ def optPort(cov, mu = None):
     
     
 if __name__ == '__main__':
-nBlocks, bSize, bCorr = 2, 2, .5
-np.random.seed(0)
-mu0, cov0 = formTrueMatrix(nBlocks, bSize, bCorr)
+    nBlocks, bSize, bCorr = 2, 2, .5
+    np.random.seed(0)
+    mu0, cov0 = formTrueMatrix(nBlocks, bSize, bCorr)
 
-# code snippet 2.10
-nObs, nTrials, bWidth, shrink, minVarPortf = 5, 5, .01, False, True
-w1 = pd.DataFrame(columns = range(cov0.shape[0]), index = range(nTrials), dtype=float)
+    # code snippet 2.10
+    nObs, nTrials, bWidth, shrink, minVarPortf = 5, 5, .01, False, True
+    w1 = pd.DataFrame(columns = range(cov0.shape[0]), index = range(nTrials), dtype=float)
 
-w1_d = w1.copy(deep=True)
-np.random.seed(0)
-for i in range(nTrials):
-    mu1, cov1 = simCovMu(mu0, cov0, nObs, shrink = shrink)
-    if minVarPortf: mu1 = None
-    cov1_d = deNoiseCov(cov1, nObs*1./cov1.shape[1], bWidth)
-    w1.loc[i] = optPort(cov1, mu1).flatten() # add column vector w as row in w1
-    w1_d.loc[i] = optPort(cov1_d, mu1).flatten()
-        
+    w1_d = w1.copy(deep=True)
+    np.random.seed(0)
+    for i in range(nTrials):
+        mu1, cov1 = simCovMu(mu0, cov0, nObs, shrink = shrink)
+        if minVarPortf: mu1 = None
+        cov1_d = deNoiseCov(cov1, nObs*1./cov1.shape[1], bWidth)
+        w1.loc[i] = optPort(cov1, mu1).flatten() # add column vector w as row in w1
+        w1_d.loc[i] = optPort(cov1_d, mu1).flatten() # np.sum(w1_d, axis=1) is vector of 1's. sum(np.sum(w1_d, axis=0)= nTrials
+        # so minimum-variance-portfolio is 1./nTrials*(np.sum(w1_d, axis=0)) - but distribution not stationary
+    
+    min_var_port = 1./nTrials*(np.sum(w1_d, axis=0)) 
     #code snippet 2.11
-w0 = optPort(cov0, None if minVarPortf else mu0) # w0 true percentage asset allocation
-w0 = np.repeat(w0.T, w1.shape[0], axis=0) #???
-rmsd = np.mean((w1-w0).values.flatten()**2)**.5     #RMSE not denoised
-rmsd_d = np.mean((w1_d-w0).values.flatten()**2)**.5 #RMSE denoised
-print rmsd, rmsd_d
+    w0 = optPort(cov0, None if minVarPortf else mu0) # w0 true percentage asset allocation
+    w0 = np.repeat(w0.T, w1.shape[0], axis=0) 
+    rmsd = np.mean((w1-w0).values.flatten()**2)**.5     #RMSE not denoised
+    rmsd_d = np.mean((w1_d-w0).values.flatten()**2)**.5 #RMSE denoised
+    print rmsd, rmsd_d
     
