@@ -95,5 +95,6 @@ if __name__ == '__main__':
     w0 = np.repeat(w0.T, w1.shape[0], axis=0) 
     rmsd = np.mean((w1-w0).values.flatten()**2)**.5     #RMSE not denoised
     rmsd_d = np.mean((w1_d-w0).values.flatten()**2)**.5 #RMSE denoised
-    print rmsd, rmsd_d
+    print("RMSE not denoised:"+str( rmsd))
+    print("RMSE denoised:"+str( rmsd_d))
     

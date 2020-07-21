@@ -68,7 +68,8 @@ def errPDFs(var, eVal, q, bWidth, pts=1000):
     #print("sse:"+str(sse))
     return sse 
     
-#find max random eVal by fitting Marcenko's dist
+# find max random eVal by fitting Marcenko's dist
+# and return variance
 def findMaxEval(eVal, q, bWidth):
     out = minimize(lambda *x: errPDFs(*x), x0=np.array(0.5), args=(eVal, q, bWidth), bounds=((1E-5, 1-1E-5),))
     #print(out['x'][0])

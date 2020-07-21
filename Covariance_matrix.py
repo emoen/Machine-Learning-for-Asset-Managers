@@ -8,6 +8,7 @@ import math
 import matplotlib.pylab as plt
 
 import marcenko_pastur_pdf as mp
+import chap2_monte_carlo_experiment as mc
 
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
@@ -60,7 +61,7 @@ def get_OL_tickers_close(T=936, N=234):
 def denoise_OL(S, portfolio_name):
     
     np.argwhere( np.isnan(S) )
-    N = 184
+    N = 2
     S = S[:,0:N]
     portfolio_name = portfolio_name[0:N]
     
@@ -74,12 +75,14 @@ def denoise_OL(S, portfolio_name):
     fig = plt.figure()
     ax  = fig.add_subplot(111)
     bins = 50
-    ax.hist(np.diag(eVal0), normed = True, bins=50) 
- 
+    print(eVal0.shape)
+    ax.hist(np.diag(eVal0), bins=50)  #normed = True, 
+    print(eVal0.shape)
+    
     #plt.plot(pdf1.keys(), pdf1, color='g') #no point in drawing this
     plt.plot(pdf0.keys(), pdf0, color='r')
     plt.show()
-        
+    
     # code snippet 2.4 
     q = float(S.shape[0])/S.shape[1]#T/N
     eMax0, var0 = mp.findMaxEval(np.diag(eVal0), q, bWidth=.01)
@@ -89,7 +92,7 @@ def denoise_OL(S, portfolio_name):
     corr1 = mp.denoisedCorr(eVal0, eVec0, nFacts0)
     eVal1, eVec1 = mp.getPCA(corr1)
     
-    return eVal0, eVec0, eVal1, eVec1, corr1
+    return eVal0, eVec0, eVal1, eVec1, corr1, var0
 
 def correlation_from_covariance(covariance):
     v = np.sqrt(np.diag(covariance))
@@ -150,19 +153,21 @@ def calculate_correlation(S, T=936, N=234):
     condition_num = max(eigenvalue) - min(eigenvalue)
     
 if __name__ == '__main__':
-    N=234
-    T=936
-    S = np.loadtxt('ol184.csv', delimiter=',')
-    portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
+N= 3 #234
+T=936
+S = np.loadtxt('ol184.csv', delimiter=',')
+portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
+S = S[:,6:9]
+portfolio_name = portfolio_name[6:9]
     if S.shape[0] <1:
         S, portfolio_name = get_OL_tickers_close()
         np.savetxt('ol184.csv', S, delimiter=',')
         np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
         
     #calculate_correlation(S)
-    eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr = denoise_OL(S, portfolio_name)
-    detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec)
-    detoned_eVal, detoned_eVec = mp.getPCA(detoned_corr)
+eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S, portfolio_name)
+detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec, market_component=0)
+detoned_eVal, detoned_eVec = mp.getPCA(detoned_corr)
 
     denoised_eigenvalue = np.diag(denoised_eVal)
     eigenvalue_prior = np.diag(eVal0)
@@ -197,6 +202,12 @@ if __name__ == '__main__':
     plt.plot(range(0, len(np.diag(detoned_eVal))), np.log(np.diag(detoned_eVal)), color='b', label="Detoned eigen-function")
     plt.legend(loc='upper right')
     plt.show()
+    
+    #from code snippet 2.10
+    detoned_cov = mc.corr2cov(detoned_corr, var0)
+    w = mc.optPort(detoned_cov)
+    #min_var_port = 1./nTrials*(np.sum(w, axis=0)) 
+    print(min_var_port)
     
     import doctest
     doctest.testmod()
