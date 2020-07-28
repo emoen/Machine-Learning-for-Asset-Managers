@@ -151,23 +151,43 @@ def calculate_correlation(S, T=936, N=234):
     eigenvalue, eigenvector = np.linalg.eig(np.corrcoef(S))
     eigenvalue = abs(eigenvalue)
     condition_num = max(eigenvalue) - min(eigenvalue)
+
+#consider using log-returns
+def calculate_returns( S ):
+    ret = np.zeros((S.shape[0]-1, 2))
+    cum_sums = np.zeros(S.shape[1])
+    for j in range(0, S.shape[1]):
+        cum_return = 0
+        S_ret = np.zeros(S.shape[0]-1)
+        for i in range(0,S.shape[0]-1):
+            S_ret[i] = 1+((S[i+1,j]-S[i,j])/S[i,j])
+            
+        cum_return = np.prod(S_ret)-1    
+        
+        cum_sums[j] = cum_return
+        ret[:, j] = S_ret
+
+    #print performance ascending    
+    np.asarray(portfolio_name)[np.argsort(cum_sums)]
+    
+    return ret, cum_sums
     
 if __name__ == '__main__':
-N= 3 #234
-T=936
-S = np.loadtxt('ol184.csv', delimiter=',')
-portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
-S = S[:,6:9]
-portfolio_name = portfolio_name[6:9]
+    N= 3 #234
+    T=936
+    S = np.loadtxt('ol184.csv', delimiter=',')
+    portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
+    S = S[:,6:9] # S = S[:,1:184]
+    portfolio_name = portfolio_name[6:9] #portfolio_name = portfolio_name[:,1:184]
     if S.shape[0] <1:
         S, portfolio_name = get_OL_tickers_close()
         np.savetxt('ol184.csv', S, delimiter=',')
         np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
         
     #calculate_correlation(S)
-eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S, portfolio_name)
-detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec, market_component=0)
-detoned_eVal, detoned_eVec = mp.getPCA(detoned_corr)
+    eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S, portfolio_name)
+    detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec, market_component=0)
+    detoned_eVal, detoned_eVec = mp.getPCA(detoned_corr)
 
     denoised_eigenvalue = np.diag(denoised_eVal)
     eigenvalue_prior = np.diag(eVal0)
