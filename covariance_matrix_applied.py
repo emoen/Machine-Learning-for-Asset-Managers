@@ -192,37 +192,19 @@ if __name__ == '__main__':
     detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec, market_component=1)
     detoned_eVal, detoned_eVec = mp.getPCA(detoned_corr)
 
-denoised_eigenvalue = np.diag(denoised_eVal)
-eigenvalue_prior = np.diag(eVal0)
-plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
-plt.xlabel("Eigenvalue number")
-plt.ylabel("Eigenvalue (log-scale)")
-plt.legend(loc="upper right")
-plt.show()
-                
-    fig = plt.figure()
-    ax  = fig.add_subplot(111)
-    ax.hist(np.diag(denoised_eVal), normed = True, bins=50, label="denoised") 
-    ax.hist(np.diag(detoned_eVal), normed = True, bins=50, label="detoned") 
-
-    pdf0 = mpPDF(var0, q=S.shape[0]/float(S.shape[1]), pts=N) #theoretic pdf
-    pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
-    pdf_denoised = mp.fitKDE( denoised_eigenvalue, bWidth=.005) #empirical pdf
-    pdf_detoned = mp.fitKDE( np.diag(detoned_eVal), bWidth=.005) #empirical pdf
-
-    #plt.plot(pdf0.keys(), pdf0, color='g')  
-    #plt.plot(pdf_denoised.keys(), pdf_denoised, color='r', label="Denoised eigen-function")
-    #plt.plot(pdf_detoned.keys(), pdf_detoned, color='b', label="Detoned eigen-function")
-    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+    denoised_eigenvalue = np.diag(denoised_eVal)
+    eigenvalue_prior = np.diag(eVal0)
     plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-    plt.plot(range(0, len(np.diag(detoned_eVal))), np.log(np.diag(detoned_eVal)), color='b', label="Detoned eigen-function")
-    plt.legend(loc='upper right')
+    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+    plt.xlabel("Eigenvalue number")
+    plt.ylabel("Eigenvalue (log-scale)")
+    plt.legend(loc="upper right")
     plt.show()
     
     #from code snippet 2.10
     detoned_cov = mc.corr2cov(detoned_corr, var0)
     w = mc.optPort(detoned_cov)
+    print(w)
     #min_var_port = 1./nTrials*(np.sum(w, axis=0)) 
     #print(min_var_port)
     
