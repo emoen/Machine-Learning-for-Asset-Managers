@@ -58,7 +58,7 @@ def get_OL_tickers_close(T=936, N=234):
     
     return S, portfolio_name
     
-def denoise_OL(S):
+def denoise_OL(S, do_plot=True):
     
     np.argwhere( np.isnan(S) )
     
@@ -66,21 +66,23 @@ def denoise_OL(S):
     cor = np.corrcoef(S, rowvar=0) 
     eVal0 , eVec0 = mp.getPCA( cor ) 
     print(np.argwhere(np.isnan(np.diag(eVal0))))
-    pdf0 = mp.mpPDF(1., q=S.shape[0]/float(S.shape[1]), pts=N)
-    pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
-    
-    fig = plt.figure()
-    ax  = fig.add_subplot(111)
-    ax.hist(np.diag(eVal0), bins=50, normed = True)  #normed = True, 
-    
-    #plt.plot(pdf1.keys(), pdf1, color='g') #no point in drawing this
-    plt.plot(pdf0.keys(), pdf0, color='r')
-    plt.show()
-    
+        
     # code snippet 2.4 
     q = float(S.shape[0])/S.shape[1]#T/N
     eMax0, var0 = mp.findMaxEval(np.diag(eVal0), q, bWidth=.01)
     nFacts0 = eVal0.shape[0]-np.diag(eVal0)[::-1].searchsorted(eMax0)
+    
+    if do_plot:
+        fig = plt.figure()
+        ax  = fig.add_subplot(111)
+        ax.hist(np.diag(eVal0), bins=100, normed = True)  #normed = True, 
+        
+        pdf0 = mp.mpPDF(var0, q=S.shape[0]/float(S.shape[1]), pts=N)
+        pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
+        
+        #plt.plot(pdf1.keys(), pdf1, color='g') #no point in drawing this
+        plt.plot(pdf0.keys(), pdf0, color='r')
+        plt.show()
     
     # code snippet 2.5 - denoising by constant residual eigenvalue
     corr1 = mp.denoisedCorr(eVal0, eVec0, nFacts0)
@@ -205,12 +207,7 @@ if __name__ == '__main__':
     ax.hist(np.diag(denoised_eVal), normed = True, bins=50, label="denoised") 
     ax.hist(np.diag(detoned_eVal), normed = True, bins=50, label="detoned") 
 
-    #>>> np.max(np.diag(denoised_eVal))
-    #91.82278143260741
-    #>>> np.max(np.diag(detoned_eVal))
-    #53.6193972404088
-
-    pdf0 = mpPDF(1., q=S.shape[0]/float(S.shape[1]), pts=N) #theoretic pdf
+    pdf0 = mpPDF(var0, q=S.shape[0]/float(S.shape[1]), pts=N) #theoretic pdf
     pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
     pdf_denoised = mp.fitKDE( denoised_eigenvalue, bWidth=.005) #empirical pdf
     pdf_detoned = mp.fitKDE( np.diag(detoned_eVal), bWidth=.005) #empirical pdf
