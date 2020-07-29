@@ -50,6 +50,8 @@ Fitting the covariance matrix to the marcenko-pasture distribution assumes the e
 0.8858105886313286
 ```
 Fitting denoised_corr to the marcenko-pasture pdf:
-
+| ![marcenko-pastur of oslo børs last 936 trading days](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/ol_n_183_T_936.png) | 
+|:--:| 
+| *Marcenko-Pasture theoretical probability density function, and empirical density function from 183 instruments the last 936 trading days:* |
 
 ```
