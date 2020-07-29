@@ -22,13 +22,17 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 
 ## Chapter 3 Distance Metrics
 
-* definition of a metric: 1. identity of indiscernibles d(x,y) = 0 => x=y 2. Symmetry d(x,y) = d(y,x) 3.triangle inequality. 1,2,3 => non-negativ, d(x,y) >= 0 
+* definition of a metric: 
+   - 1. identity of indiscernibles d(x,y) = 0 => x=y 
+   - 2. Symmetry d(x,y) = d(y,x) 
+   - 3.triangle inequality. 
+   - 1,2,3 => non-negativ, d(x,y) >= 0 
 * pearson correlation
 * distance correlation
 * angular distance
 * Information-theoretic codependence/entropy dependence
-    ** cross-entropy
-    ** Kullback-Leilbler divergence
-    ** Mutual information
-    ** variation of information
+    - cross-entropy
+    - Kullback-Leilbler divergence
+    - Mutual information
+    - variation of information
     
