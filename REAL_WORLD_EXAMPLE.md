@@ -54,4 +54,5 @@ Fitting denoised_corr to the marcenko-pasture pdf:
 |:--:| 
 | *Marcenko-Pasture theoretical probability density function, and empirical density function from 183 instruments the last 936 trading days:* |
 
-```
+The largest eigenvalues of 24.02 is the market and can be de-toned
+
