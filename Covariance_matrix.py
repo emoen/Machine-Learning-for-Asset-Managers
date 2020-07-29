@@ -189,21 +189,20 @@ if __name__ == '__main__':
         
     #calculate_correlation(S)
     eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S)
-    detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec, market_component=0)
+    detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec, market_component=1)
     detoned_eVal, detoned_eVec = mp.getPCA(detoned_corr)
 
-    denoised_eigenvalue = np.diag(denoised_eVal)
-    eigenvalue_prior = np.diag(eVal0)
-    plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
-    plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
-    plt.xlabel("Eigenvalue number")
-    plt.ylabel("Eigenvalue (log-scale)")
-    plt.legend(loc="upper right")
-    plt.show()
+denoised_eigenvalue = np.diag(denoised_eVal)
+eigenvalue_prior = np.diag(eVal0)
+plt.plot(range(0, len(denoised_eigenvalue)), np.log(denoised_eigenvalue), color='r', label="Denoised eigen-function")
+plt.plot(range(0, len(eigenvalue_prior)), np.log(eigenvalue_prior), color='g', label="Original eigen-function")
+plt.xlabel("Eigenvalue number")
+plt.ylabel("Eigenvalue (log-scale)")
+plt.legend(loc="upper right")
+plt.show()
                 
     fig = plt.figure()
     ax  = fig.add_subplot(111)
-    bins = 50
     ax.hist(np.diag(denoised_eVal), normed = True, bins=50, label="denoised") 
     ax.hist(np.diag(detoned_eVal), normed = True, bins=50, label="detoned") 
 
