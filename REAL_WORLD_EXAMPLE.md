@@ -54,7 +54,13 @@ Fitting denoised_corr to the marcenko-pasture pdf:
 |:--:| 
 | *Marcenko-Pasture theoretical probability density function, and empirical density function from 183 instruments the last 936 trading days:* |
 
-The largest eigenvalues of 24.02 is the market and can be de-toned
+The largest eigenvalues of 24.02 is the market and can be de-toned.
+
+The eigenvalues before and after denoising:
+| ![eigenvalues before and after denoising](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/ol_eigenvalue_method_w_osebx.png) | 
+|:--:| 
+| *A comparison of eigenvalues before and after applying the residual eigenvalue method:* |
+
 
 The minimum-variance-portfolio with a long/short strategy gives VVL.OL as biggest long, and STB.OL as biggest short:
 ```
