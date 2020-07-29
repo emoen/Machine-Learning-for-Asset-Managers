@@ -168,7 +168,6 @@ if __name__ == '__main__':
     # Figure 2.1 Plot empirical:KDE and Marcenko-Pastur, and histogram
     fig = plt.figure()
     ax  = fig.add_subplot(111)
-    bins = 50
     ax.hist(np.diag(eVal0), normed = True, bins=50) # Histogram the eigenvalues
 
     plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")

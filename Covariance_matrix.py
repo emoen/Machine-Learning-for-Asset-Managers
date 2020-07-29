@@ -58,11 +58,9 @@ def get_OL_tickers_close(T=936, N=234):
     
     return S, portfolio_name
     
-def denoise_OL(S, portfolio_name, N):
+def denoise_OL(S):
     
     np.argwhere( np.isnan(S) )
-    S = S[:,0:N]
-    portfolio_name = portfolio_name[0:N]
     
     # cor.shape = (1000,1000). If rowvar=1 - row represents a var, with observations in the columns.
     cor = np.corrcoef(S, rowvar=0) 
@@ -73,10 +71,7 @@ def denoise_OL(S, portfolio_name, N):
     
     fig = plt.figure()
     ax  = fig.add_subplot(111)
-    bins = 50
-    print(eVal0.shape)
-    ax.hist(np.diag(eVal0), bins=50)  #normed = True, 
-    print(eVal0.shape)
+    ax.hist(np.diag(eVal0), bins=50, normed = True)  #normed = True, 
     
     #plt.plot(pdf1.keys(), pdf1, color='g') #no point in drawing this
     plt.plot(pdf0.keys(), pdf0, color='r')
@@ -152,15 +147,18 @@ def calculate_correlation(S, T=936, N=234):
     condition_num = max(eigenvalue) - min(eigenvalue)
 
 #consider using log-returns
-def calculate_returns( S ):
+def calculate_returns( S, percentageAsProduct=False ):
     ret = np.zeros((S.shape[0]-1, S.shape[1]))
     cum_sums = np.zeros(S.shape[1])
     for j in range(0, S.shape[1]):
         cum_return = 0
         S_ret = np.zeros(S.shape[0]-1)
         for i in range(0,S.shape[0]-1):
-            S_ret[i] = 1+((S[i+1,j]-S[i,j])/S[i,j])
-            
+            if percentageAsProduct==True:
+                S_ret[i] = 1+((S[i+1,j]-S[i,j])/S[i,j])
+            else:
+                S_ret[i] = ((S[i+1,j]-S[i,j])/S[i,j])
+        
         cum_return = np.prod(S_ret)-1    
         
         cum_sums[j] = cum_return
@@ -169,8 +167,8 @@ def calculate_returns( S ):
     return ret, cum_sums
     
 if __name__ == '__main__':
-    N= 234 #3
-    T=936
+    N = 234 #3
+    T = 936
     S_value = np.loadtxt('ol184.csv', delimiter=',')
     portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
     S_value = S_value[:,1:184] # S = S[:,6:9]
@@ -182,12 +180,13 @@ if __name__ == '__main__':
         
     # use matrix of returns to calc correlation
     S, instrument_returns = calculate_returns(S_value)
+    _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
     S = S_value
     #print performance ascending    
     print(np.asarray(portfolio_name)[np.argsort(instrument_returns)])
         
     #calculate_correlation(S)
-    eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S, portfolio_name, N)
+    eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S)
     detoned_corr = mp.detoned_corr(denoised_corr, denoised_eVal, denoised_eVec, market_component=0)
     detoned_eVal, detoned_eVec = mp.getPCA(detoned_corr)
 
