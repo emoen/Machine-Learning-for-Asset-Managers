@@ -65,14 +65,14 @@ def errPDFs(var, eVal, q, bWidth, pts=1000):
     pdf0 = mpPDF(var, q, pts) #theoretical pdf
     pdf1 = fitKDE(eVal, bWidth, x=pdf0.index.values) #empirical pdf
     sse = np.sum((pdf1-pdf0)**2)
-    #print("sse:"+str(sse))
+    print("sse:"+str(sse))
     return sse 
     
 # find max random eVal by fitting Marcenko's dist
 # and return variance
 def findMaxEval(eVal, q, bWidth):
     out = minimize(lambda *x: errPDFs(*x), x0=np.array(0.5), args=(eVal, q, bWidth), bounds=((1E-5, 1-1E-5),))
-    #print(out['x'][0])
+    print("found errPDFs"+str(out['x'][0]))
     if out['success']: var = out['x'][0]
     else: var=1
     eMax = var*(1+(1./q)**.5)**2

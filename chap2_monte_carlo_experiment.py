@@ -60,15 +60,33 @@ def deNoiseCov(cov0, q, bWidth):
 # 2. lambda_2*(sum(x_i - 1))=0
 # where d is expected rate of return
 # w*=C^−1*μ/I.T*C^−1*μ - is minimum-variance-portfolio
+ #short sales are allowed
 def optPort(cov, mu = None):
     inv = np.linalg.inv(cov)
     ones = np.ones(shape = (inv.shape[0], 1)) # column vector 1's
     if mu is None: 
         mu = ones
     w = np.dot(inv, mu)
-    w /= np.dot(ones.T, w) # def: w = w / sum(w) - w is column vector
+    w /= np.dot(ones.T, w) # def: w = w / sum(w) ~ w is column vector
     return w
+
+#According to the question 'Tangent portfolio weights without short sales?' 
+#there is no analytical solution to the GMV problem with no short-sales constraints
+#So - set the negative weights in WGV to 0, and make w sum up to 1
+def optPortLongOnly(cov, mu = None):
+    inv = np.linalg.inv(cov)
+    ones = np.ones(shape = (inv.shape[0], 1)) # column vector 1's
+    if mu is None: 
+        mu = ones
+    w = np.dot(inv, mu)
+    w /= np.dot(ones.T, w) # def: w = w / sum(w) ~ w is column vector
+    w = w.flatten()
+    threshold = w < 0
+    wpluss = w.copy()
+    wpluss[threshold] = 0
+    wpluss = wpluss/np.sum(wpluss)
     
+    return wpluss
     
 if __name__ == '__main__':
     nBlocks, bSize, bCorr = 2, 2, .5
