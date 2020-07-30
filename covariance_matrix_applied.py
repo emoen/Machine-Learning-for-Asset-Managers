@@ -208,5 +208,17 @@ if __name__ == '__main__':
     #min_var_port = 1./nTrials*(np.sum(w, axis=0)) 
     #print(min_var_port)
     
+    #expected portfolio variance: W^T.(Cov).W
+    #https://blog.quantinsti.com/calculating-covariance-matrix-portfolio-variance/
+    minVarPortfolio_var = np.dot(np.dot(w.T, detnoed_corr), w)
+    
+    #Expected return: w.T . mu  
+    # https://www.mn.uio.no/math/english/research/projects/focustat/publications_2/shatthik_barua_master2017.pdf p8
+    # or I.T.cov^-1.mu / I.T.cov^-1.I
+    inv = np.linalg.inv(cov)
+    e_r = np.dot(np.dot(ones.T, inv), mu) / np.dot(ones.T, np.dot(ones.T, inv))
+    
+    
+    
     import doctest
     doctest.testmod()
