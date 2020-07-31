@@ -54,7 +54,7 @@ def deNoiseCov(cov0, q, bWidth):
     
 # code snippet 2.10
 # Derive minimum-variance-portfolio
-# Returns a column vector of persentage allocations
+# Returns a column vector of percentage allocations
 # should be subject to lagrangian constraints:
 # 1. lambda_1*(sum(expectation(x_i)*x_i) - d = 0
 # 2. lambda_2*(sum(x_i - 1))=0
@@ -62,12 +62,14 @@ def deNoiseCov(cov0, q, bWidth):
 # w*=C^−1*μ/I.T*C^−1*μ - is minimum-variance-portfolio
  #short sales are allowed
 def optPort(cov, mu = None):
-    inv = np.linalg.inv(cov)
+    inv = np.linalg.inv(cov) #The precision matrix: contains information about the partial correlation between variables,
+    #  the covariance between pairs i and j, conditioned on all other variables (https://www.mn.uio.no/math/english/research/projects/focustat/publications_2/shatthik_barua_master2017.pdf)
     ones = np.ones(shape = (inv.shape[0], 1)) # column vector 1's
     if mu is None: 
         mu = ones
     w = np.dot(inv, mu)
     w /= np.dot(ones.T, w) # def: w = w / sum(w) ~ w is column vector
+    
     return w
 
 #According to the question 'Tangent portfolio weights without short sales?' 
