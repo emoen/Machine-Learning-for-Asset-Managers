@@ -22,7 +22,6 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 
 ## Chapter 3 Distance Metrics
 
- h<sub>&theta;</sub>(x) = &theta;<sub>o</sub> x + &theta;<sub>1</sub>x
 * definition of a metric: 
    1. identity of indiscernibles d(x,y) = 0 => x=y 
    2. Symmetry d(x,y) = d(y,x) 
@@ -32,7 +31,7 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 * distance correlation
 * angular distance
 * Information-theoretic codependence/entropy dependence
-    - cross-entropy
+    - cross-entropy:  H[X] = p[x] &sigma;<sub>s$elementS</sub> x + &theta;<sub>1</sub>x
     - Kullback-Leilbler divergence
     - Mutual information
     - variation of information
