@@ -49,4 +49,14 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 ```
 1 bit of information in coin toss. 0 bit of information in deterministic outcome, less than 1 bit of information in unfair coin toss.  
 
+## Chapter 4 Optimal Clustering
+
+Use unsupervised learning to maximize intragroup similarities and minimize intergroup similarities. Consider matrix X of shape N x F. N objects and F features. Features are used to compute proximity(correlation, mutual information) to N objects in an NxN matrix.
+
+There are 2 types of clustering algorithms. Partitional and hierarchical:
+1. Connectivity: hierarchical clustering
+2. Centroids: like k-means
+3. Distribution: gaussians
+4. Density: search for connected dense regions like DBSCAN, OPTICS
+5. Subspace: modeled on two dimension, feature and observation. [example](https://quantdare.com/biclustering-time-series/)
     
