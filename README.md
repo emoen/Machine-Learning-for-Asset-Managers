@@ -37,4 +37,16 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
     - Mutual information: Decrease in uncertainty in X from knowing Y: I[X,Y] = H[X] - H[X|Y] = H[X] + H[Y] - H[X,Y] = E<sub>X</sub>[D<sub>KL</sub>[p[y|x]||p[y]]]
     - variation of information: VI[X,Y] = H[X|Y] + H[Y|X] = H[X,Y] - I[X,Y]. It is uncertainty we expect in one variable given another variable: VI[X,Y] = 0 <=> X=Y
     - Kullback-Leilbler divergence is not a metric while variation of information is.
+   
+ 
+ ```
+ >>> ss.entropy([1./2,1./2], base=2)
+1.0
+>>> ss.entropy([1,0], base=2)
+0.0
+>>> ss.entropy([1./3,2./3], base=2)
+0.9182958340544894
+```
+1 bit of information in coin toss. 0 bit of information in deterministic outcome, less than 1 bit of information in unfair coin toss.  
+
     
