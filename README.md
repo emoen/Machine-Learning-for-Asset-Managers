@@ -31,8 +31,8 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 * distance correlation
 * angular distance
 * Information-theoretic codependence/entropy dependence
-    - cross-entropy:  H[X] = - &Sigma;<sub>s $isin; S<sub>X</sub></sub> p[x] log (p[x])
-    - Kullback-Leilbler divergence:  D<sub>KL</sub>[p||q] = $isin; - &Sigma;<sub>s $isin; S<sub>X</sub></sub> p[x] log (q[x]/p[x]) = p[x] &Sigma;<sub>s $isin; S</sub> log (p[x]/q[x])
+    - cross-entropy:  H[X] = - &Sigma;<sub>s &isin; S<sub>X</sub></sub> p[x] log (p[x])
+    - Kullback-Leilbler divergence:  D<sub>KL</sub>[p||q] = &isin; - &Sigma;<sub>s &isin; S<sub>X</sub></sub> p[x] log (q[x]/p[x]) = p[x] &Sigma;<sub>s &isin; S</sub> log (p[x]/q[x])
     - Mutual information
     - variation of information
     
