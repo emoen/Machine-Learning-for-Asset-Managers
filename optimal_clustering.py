@@ -6,6 +6,7 @@ from sklearn.utils import check_random_state
 from scipy.linalg import block_diag
 
 import marcenko_pastur_pdf as mp
+import matplotlib.pylab as plt
 
 #codesnippet 4.1
 #base clustering
@@ -73,7 +74,7 @@ def getCovSub(nObs, nCols, sigma, random_state=None):
         return np.ones((1,1))
     ar0 = rng.normal(size=(nObs, 1)) #array of normal rv
     ar0 = np.repeat(ar0, nCols, axis=1) #matrix of columns repeating rv
-    ar0 += rng.normal(mean=0, scale=sigma, size=ar0.shape) #add N(0,1) to rv
+    ar0 += rng.normal(loc=0, scale=sigma, size=ar0.shape) #add N(0,1) to rv
     ar0 = np.cov(ar0, rowvar=False)
     return ar0
     
@@ -108,7 +109,18 @@ def randomBlockCorr(nCols, nBlocks, random_state=None, minBlockSize=1):
     
 if __name__ == '__main__':
     nCols, nBlocks = 10, 2
+    nObs = 8
+    sigma = 1.
     corr0 = randomBlockCorr(nCols, nBlocks)
+    testGetCovSub = getCovSub(nObs, nCols, sigma, random_state=None) # 10x10 matrix
+    tmp = testGetCovSub.flatten()
+    
+    fig = plt.figure()
+    ax  = fig.add_subplot(111)
+    ax.hist(tmp, bins=5, normed = True)
+    plt.show()
+        
+    testGetRndBlockCov = getRndBlockCov(10, 3)
        
         
     
