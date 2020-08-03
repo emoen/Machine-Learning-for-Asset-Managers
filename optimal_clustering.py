@@ -2,6 +2,10 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_samples
+from sklearn.utils import check_random_state
+from scipy.linalg import block_diag
+
+import marcenko_pastur_pdf as mp
 
 #codesnippet 4.1
 #base clustering
@@ -59,6 +63,52 @@ def clusterKMeansTop(corr0, maxNumClusters=None, n_init=10):
         corrTmp = corr0.loc[keysRedo, keysRedo]
         tStatMean=np.mean([clusterTstats[i] for i in redoClusters])
         corr2, clstrs2, silh2=clusterKmeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp,.shape[1]-1),n_init=n_init)
+        
+#codesnippet 4.3
+#Random block correlation matrix creation
+def getCovSub(nObs, nCols, sigma, random_state=None):
+    #sub correl matrix
+    rng = check_random_state(random_state)
+    if nCols==1:
+        return np.ones((1,1))
+    ar0 = rng.normal(size=(nObs, 1)) #array of normal rv
+    ar0 = np.repeat(ar0, nCols, axis=1) #matrix of columns repeating rv
+    ar0 += rng.normal(mean=0, scale=sigma, size=ar0.shape) #add N(0,1) to rv
+    ar0 = np.cov(ar0, rowvar=False)
+    return ar0
+    
+def getRndBlockCov(nCols, nBlocks, minBlockSize=1, sigma=1., random_state=None):
+    #generate a block random correlation matrix
+    rng=check_random_state(random_state)
+    parts = rng.choice(range(1, nCols-(minBlockSize-1)*nBlocks), nBlocks-1, replace=False)
+    parts.sort()
+    parts=np.append(parts, nCols-(minBlockSize-1)*nBlocks) #add largest number
+    parts=np.append(parts[0], np.diff(parts)-1+minBlockSize)
+    cov=None
+    for nCols_ in parts:
+        cov_=getCovSub(int(max(nCols_*(nCols_+1)/2., 100)), nCols_, sigma, random_state=rng)
+        if cov is None:
+            cov=cov_.copy()
+        else: 
+            cov=block_diag(cov, cov_)
+    
+    return cov
+
+def randomBlockCorr(nCols, nBlocks, random_state=None, minBlockSize=1):
+    #Form block corr
+    rng = check_random_state(random_state)
+    
+    cov0 = getRndBlockCov(nCols, nBlocks, 
+        minBlockSize=minBlockSize, sigma=.5, random_state=rng)
+    cov1 = getRndBlockCov(nCols, 1, minBlockSize=minBlockSize, sigma=1., random_state=rng)#add noise
+    cov0 += cov1
+    corr0 = mp.cov2corr(cov0)
+    corr0 = pd.DataFrame(corr0)
+    return corr0
+    
+if __name__ == '__main__':
+    nCols, nBlocks = 10, 2
+    corr0 = randomBlockCorr(nCols, nBlocks)
        
         
     
