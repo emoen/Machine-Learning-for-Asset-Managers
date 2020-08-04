@@ -62,6 +62,8 @@ There are 2 types of clustering algorithms. Partitional and hierarchical:
 4. Density: search for connected dense regions like DBSCAN, OPTICS
 5. Subspace: modeled on two dimension, feature and observation. [example](https://quantdare.com/biclustering-time-series/)
 
+
+Generating of random block correlation matrices is used to simulate instruments with correlation. The utility for doing this is in code snippet 4.3, and it used clustering algorithms <i>optimal number of cluster</i> (ONC) defined in snippet 4.1 and 4.2. It does not need a predefined number of clusters, but uses an elbow space to stop looking for more clusters. Where there is high intra-cluster correlation and low inter-cluster correlation.
 | ![random_block_corr_matrix.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_4_1_random_block_correlation_matrix.png) | 
 |:--:| 
 | *Random block correlation matrix. Light colors indicate a high correlation, and dark colors indicate a low correlation. In this example, the number of blocks K=6, minBlockSize=2, and number of instruments N=30* |
