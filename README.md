@@ -56,8 +56,7 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 * Absolute angular distance: p_d = sqrt(1/2 - (1-|rho|(X, Y)))
 * Squared angular distance: p_d = sqrt(1/2 - (1-rho^2(X, Y)))
 
-| ![fig_3_1_angular_distance.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_3_1_angular_distance.png) 
-![fig_3_1_abs_squared_angular_distance.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_3_1_abs_squared_angular_distance.png) | 
+| ![fig_3_1_angular_distance.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_3_1_angular_distance.png)|  ![fig_3_1_abs_squared_angular_distance.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_3_1_abs_squared_angular_distance.png) | 
 |:--:| 
 | Standard angular distance is better used for long-only portfolio appliacations. Squared and Absolute Angular Distances for long-short portfolios. |
 
