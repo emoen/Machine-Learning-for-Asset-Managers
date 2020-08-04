@@ -7,18 +7,21 @@ from scipy.linalg import block_diag
 
 import marcenko_pastur_pdf as mp
 import matplotlib.pylab as plt
+import matplotlib
 
 #codesnippet 4.1
 #base clustering
 def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
-    x, silh= ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
+    x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
+    maxNumClusters = min(maxNumClusters, x.shape[0]-1)
     for init in range(n_init):
         for i in range(2, maxNumClusters+1):
+            print(i)
             kmeans_ = KMeans(n_clusters=i, n_jobs=1, n_init=1)
             kmeans_ = kmeans_.fit(x)
             silh_ = silhouette_samples(x, kmeans_.labels_)
             stat = (silh_.mean()/silh_.std(), silh.mean()/silh.std())
-            if np.isnan(stat[l]) or stat[0]>stat[1]:
+            if np.isnan(stat[1]) or stat[0] > stat[1]:
                 silh, kmeans = silh_, kmeans_
     
     newIdx = np.argsort(kmeans.labels_)
@@ -52,8 +55,10 @@ def makeNewOutputs(corr0, clstrs, clstrs2):
     return corrNew, clstrsNew, silhNew
 
 def clusterKMeansTop(corr0, maxNumClusters=None, n_init=10):
-    if maxNumClusters == None:maxNumClusters=corr0.shape[1]-1
-    corr1, clstrs, silh=clusterKMeansBase(corr0, maxNumClusters=min(maxNumClusters, corr0.shape[1]-1), n_init=n_init)
+    if maxNumClusters == None:
+        maxNumClusters = corr0.shape[1]-1
+        
+    corr1, clstrs, silh = clusterKMeansBase(corr0, maxNumClusters=min(maxNumClusters, corr0.shape[1]-1), n_init=n_init)
     clusterTstats={i:np.mean(silh[clstrs[i]])/np.std(silh[clstrs[i]]) for i in clstrs.keys()}
     tStatMean = sum(clusterTstats.values())/len(clsterTstats)
     redoClusters=[i for i in clusterTstats.keys() if clusterTstats[i]<tStatMean]
@@ -92,12 +97,14 @@ def getCovSub(nObs, nCols, sigma, random_state=None):
 # If block > 1x1 matrix the diagonal is 2 or 2*sigma as the variance of
 # covariance from getCovSub() is Z=X+Y => 2*sigma
 def getRndBlockCov(nCols, nBlocks, minBlockSize=1, sigma=1., random_state=None):
-
+    
+    print("getRndBlockCov:"+str(minBlockSize))
     rng = check_random_state(random_state)
     parts = rng.choice(range(1, nCols-(minBlockSize-1)*nBlocks), nBlocks-1, replace=False)
     parts.sort()
     parts = np.append(parts, nCols-(minBlockSize-1)*nBlocks) #add nCols to list of parts, unless minBlockSize>1
     parts = np.append(parts[0], np.diff(parts)-1+minBlockSize)
+    print("block sizes:"+str(parts))
     cov=None
     for nCols_ in parts:
         cov_ = getCovSub(int(max(nCols_*(nCols_+1)/2., 100)), nCols_, sigma, random_state=rng)
@@ -117,6 +124,7 @@ def randomBlockCorr(nCols, nBlocks, random_state=None, minBlockSize=1):
     #Form block corr
     rng = check_random_state(random_state)
     
+    print("randomBlockCorr:"+str(minBlockSize))
     cov0 = getRndBlockCov(nCols, nBlocks, minBlockSize=minBlockSize, sigma=.5, random_state=rng)
     cov1 = getRndBlockCov(nCols, 1, minBlockSize=minBlockSize, sigma=1., random_state=rng) #add noise
     cov0 += cov1
@@ -132,6 +140,21 @@ if __name__ == '__main__':
     testGetCovSub = getCovSub(nObs, nCols, sigma, random_state=None) 
     tmp = testGetCovSub.flatten()
     
+    # recreate fig 4.1 colormap of random block correlation matrix
+nCols, nBlocks, minBlockSize = 30, 6, 2
+print("minBlockSize"+str(minBlockSize))
+corr0 = randomBlockCorr(nCols, nBlocks, minBlockSize=minBlockSize)
+#matplotlib.pyplot.matshow(corr0)
+
+matplotlib.pyplot.matshow(corr0)
+matplotlib.pyplot.colorbar()
+#ax = matplotlib.pyplot.gca()
+#ax.xaxis.tick_bottom()
+matplotlib.pyplot.show()
+
+
+
+
     fig = plt.figure()
     ax  = fig.add_subplot(111)
     ax.hist(tmp, bins=5, normed = True)
