@@ -61,4 +61,9 @@ There are 2 types of clustering algorithms. Partitional and hierarchical:
 3. Distribution: gaussians
 4. Density: search for connected dense regions like DBSCAN, OPTICS
 5. Subspace: modeled on two dimension, feature and observation. [example](https://quantdare.com/biclustering-time-series/)
+
+| ![random_block_corr_matrix.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_4_1_random_block_correlation_matrix.png) | 
+|:--:| 
+| *Random block correlation matrix. Light colors indicate a high correlation, and dark colors indicate a low correlation. In this example, the number of blocks K=6, minBlockSize=2, and number of instruments N=30* |
+
     
