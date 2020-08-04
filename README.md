@@ -47,7 +47,9 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 >>> ss.entropy([1./3,2./3], base=2)
 0.9182958340544894
 ```
-1 bit of information in coin toss. 0 bit of information in deterministic outcome, less than 1 bit of information in unfair coin toss.  
+- 1 bit of information in coin toss
+- 0 bit of information in deterministic outcome
+- less than 1 bit of information in unfair coin toss
 
 ## Chapter 4 Optimal Clustering
 
