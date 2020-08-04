@@ -30,7 +30,7 @@ import chap2_monte_carlo_experiment as mc
 #    c) Compute the variance of the errors agains the mean efficient frontier.
 def get_OL_tickers_close(T=936, N=234):       
     # N - num stocks in portfolio, T lookback time
-    ol = pd.read_csv('ol_ticker.csv', sep='\t', header=None)
+    ol = pd.read_csv('csv/ol_ticker.csv', sep='\t', header=None)
     ticker_names = ol[0]
     S = np.empty([T, N])
     covariance_matrix = np.empty([T, N])
@@ -171,14 +171,14 @@ def calculate_returns( S, percentageAsProduct=False ):
 if __name__ == '__main__':
     N = 234 #3
     T = 936
-    S_value = np.loadtxt('ol184.csv', delimiter=',')
-    portfolio_name = pd.read_csv('ol_names.csv', delimiter=',',header=None)[0].tolist()
+    S_value = np.loadtxt('csv/ol184.csv', delimiter=',')
+    portfolio_name = pd.read_csv('csv/ol_names.csv', delimiter=',',header=None)[0].tolist()
     S_value = S_value[:,1:184] # S = S[:,6:9]
     portfolio_name = portfolio_name[1:184] #portfolio_name = portfolio_name[6:9]
     if S_value.shape[0] <1:
         S_value, portfolio_name = get_OL_tickers_close()
-        np.savetxt('ol184.csv', S_value, delimiter=',')
-        np.savetxt('ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
+        np.savetxt('csv/ol184.csv', S_value, delimiter=',')
+        np.savetxt('csv/ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
         
     # use matrix of returns to calc correlation
     S, instrument_returns = calculate_returns(S_value)
