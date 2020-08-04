@@ -3,7 +3,7 @@
 Implementation of code snippets and exercises from [Machine Learning for Asset Managers (Elements in Quantitative Finance)](https://www.amazon.com/Machine-Learning-Managers-Elements-Quantitative/dp/1108792898)
 written by Prof. Marcos López de Prado.
 
-The project is for my own learning. If you want to use the consepts from the book - you should head over to Hudson & Thames. They have implemented these consepts and many more in [mlfinlab](https://github.com/hudson-and-thames/mlfinlab). Edit: seems like some of theyr work - like jupyter notebooks - has gone behind a paywall.
+The project is for my own learning. If you want to use the consepts from the book - you should head over to Hudson & Thames. They have implemented these consepts and many more in [mlfinlab](https://github.com/hudson-and-thames/mlfinlab). Edit: seems like some of theyr work - like jupyter notebooks - has gone behind a paywall - doh.
 
 ## Chapter 2 Denoising and Detoning
 
@@ -50,6 +50,9 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 1. 1 bit of information in coin toss
 2. 0 bit of information in deterministic outcome
 3. less than 1 bit of information in unfair coin toss
+
+Standard angular better used for long-only portfolio appliacations
+Squared and Absolute Angular Distances for long-short portfolios
 
 ## Chapter 4 Optimal Clustering
 
