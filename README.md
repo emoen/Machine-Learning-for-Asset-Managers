@@ -14,7 +14,7 @@ Marcenko-Pasture theoretical probability density function, and empirical density
 
 
 Denoising a random matrix with signal using the constant residual eigenvalue method. This is done by fixing random eigenvalues. See code snippet 2.5
-| ![eigenvalue_method.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/figure_2_3_eigenvalue_method.png) | 
+| ![eigenvalue_method.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/figure_2_3_eigenvalue_method.png) | 
 |:--:| 
 | *A comparison of eigenvalues before and after applying the residual eigenvalue method:* |
 
