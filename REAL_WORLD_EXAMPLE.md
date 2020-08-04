@@ -1,6 +1,6 @@
 
 
-# Machine-Learning-for-Asset-Managers
+# Machine-Learning-for-Asset-Managers - Oslo Børs
 Lets apply the lessons from the book to real world data using the data from the last 936 trading days from Oslo Børs. That means we have 183 instruments
 
 ## Chapter 2 Denoising and Detoning
@@ -50,14 +50,14 @@ Fitting the covariance matrix to the marcenko-pasture distribution assumes the e
 0.8858105886313286
 ```
 Fitting denoised_corr to the marcenko-pasture pdf:
-| ![marcenko-pastur of oslo børs last 936 trading days](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/ol_n_183_T_936.png) | 
+| ![marcenko-pastur of oslo børs last 936 trading days](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img_example_real_data/ol_n_183_T_936.png) | 
 |:--:| 
 | *Marcenko-Pasture theoretical probability density function, and empirical density function from 183 instruments the last 936 trading days:* |
 
 The largest eigenvalues of 24.02 is the market and can be de-toned.
 
 The eigenvalues before and after denoising:
-| ![eigenvalues before and after denoising](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/ol_eigenvalue_method_w_osebx.png) | 
+| ![eigenvalues before and after denoising](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img_example_real_data/ol_eigenvalue_method_w_osebx.png) | 
 |:--:| 
 | *A comparison of eigenvalues before and after applying the residual eigenvalue method:* |
 
