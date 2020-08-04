@@ -52,7 +52,11 @@ Detoned covariance matrix can be used to calculate minimum variance portfolio. T
 3. less than 1 bit of information in unfair coin toss
 
 Standard angular better used for long-only portfolio appliacations
-Squared and Absolute Angular Distances for long-short portfolios
+Squared and Absolute Angular Distances for long-short portfolios.
+
+* Angular distance: p_d = sqrt(1/2 - (1-rho(X, Y)))
+* Absolute angular distance: p_d = sqrt(1/2 - (1-|rho|(X, Y)))
+* Squared angular distance: p_d = sqrt(1/2 - (1-rho^2(X, Y)))
 
 ## Chapter 4 Optimal Clustering
 
