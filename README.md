@@ -8,7 +8,7 @@ The project is for my own learning. If you want to use the consepts from the boo
 ## Chapter 2 Denoising and Detoning
 
 Marcenko-Pasture theoretical probability density function, and empirical density function:
-| ![marcenko-pastur](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/gaussian_mp.png) | 
+| ![marcenko-pastur](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/gaussian_mp.png) | 
 |:--:| 
 | *Marcenko-Pasture theoretical probability density function, and empirical density function:* |
 
