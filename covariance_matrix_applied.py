@@ -223,6 +223,7 @@ if __name__ == '__main__':
     nCols, minBlockSize = 183, 2
     print("minBlockSize"+str(minBlockSize))
     corr0 = detoned_corr
+    
 
     matplotlib.pyplot.matshow(corr0) #invert y-axis to get origo at lower left corner
     matplotlib.pyplot.gca().xaxis.tick_bottom()

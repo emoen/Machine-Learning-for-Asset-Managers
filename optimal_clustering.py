@@ -12,11 +12,14 @@ import matplotlib
 #codesnippet 4.1
 #base clustering
 def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
-    x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
+    where_are_NaNs = np.isnan(corr0)
+    corr0[where_are_NaNs] = 0
+    #x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
+    x, silh = ((1-corr0)/2.)**.5, pd.Series() #observations matrix
     maxNumClusters = min(maxNumClusters, x.shape[0]-1)
     for init in range(n_init):
         for i in range(2, maxNumClusters+1):
-            print(i)
+            #print(i)
             kmeans_ = KMeans(n_clusters=i, n_jobs=1, n_init=1)
             kmeans_ = kmeans_.fit(x)
             silh_ = silhouette_samples(x, kmeans_.labels_)
@@ -44,9 +47,10 @@ def makeNewOutputs(corr0, clstrs, clstrs2):
     
     newIdx = [j for i in clstrsNew for j in clstrsNew[i]]
     corrNew = corr0.loc[newIdx, newIdx]
+    print(type(corr0))
     x = ((1-corr0.fillna(0))/2.)**.5
     kmeans_labels = np.zeros(len(x.columns))
-    for i in clstrsNew.keys()):
+    for i in clstrsNew.keys():
         idxs = [x.index.get_loc(k) for k in clstrsNew[i]]
         kmeans_labels[idxs]=i
     
@@ -62,15 +66,16 @@ def clusterKMeansTop(corr0, maxNumClusters=None, n_init=10):
     clusterTstats={i:np.mean(silh[clstrs[i]])/np.std(silh[clstrs[i]]) for i in clstrs.keys()}
     tStatMean = sum(clusterTstats.values())/len(clsterTstats)
     redoClusters=[i for i in clusterTstats.keys() if clusterTstats[i]<tStatMean]
+    print("redo cluster:"+str(redoClusters))
     if len(redoClusters)<=1:
         return corr1, clstrs, silh
     else:
         keysRedo= [j for i in redoClusters for j in clstrs[i]]
         corrTmp = corr0.loc[keysRedo, keysRedo]
         tStatMean=np.mean([clusterTstats[i] for i in redoClusters])
-        corr2, clstrs2, silh2=clusterKmeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp,.shape[1]-1),n_init=n_init)
+        corr2, clstrs2, silh2=clusterKmeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp,corrTmp.shape[1]-1),n_init=n_init)
         
-#codesnippet 4.3 - utility for monte-carlo simulation
+# codesnippet 4.3 - utility for monte-carlo simulation
 # Random block correlation matrix creation
 # Simulates a time-series of atleast 100 elements. 
 # So each column is highly correlated for small sigma and less correlated for large sigma (standard deviation)
@@ -144,6 +149,8 @@ if __name__ == '__main__':
     nCols, nBlocks, minBlockSize = 30, 6, 2
     print("minBlockSize"+str(minBlockSize))
     corr0 = randomBlockCorr(nCols, nBlocks, minBlockSize=minBlockSize) #pandas df
+    
+    corr1 = clusterKMeansTop(corr0) #corr0 is ground truth, corr1 is ONC
 
     matplotlib.pyplot.matshow(corr0) #invert y-axis to get origo at lower left corner
     matplotlib.pyplot.gca().xaxis.tick_bottom()
