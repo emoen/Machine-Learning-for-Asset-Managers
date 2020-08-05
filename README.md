@@ -76,4 +76,17 @@ Generating of random block correlation matrices is used to simulate instruments 
 |:--:| 
 | *Random block correlation matrix. Light colors indicate a high correlation, and dark colors indicate a low correlation. In this example, the number of blocks K=6, minBlockSize=2, and number of instruments N=30* |
 
+## Chapter 5 Financial Labels
+
+* Fixed-Horizon method
+* Time-bar method
+* Volume-bar method
+
+Tiple-Barrier Method involves holding a possition until
+1. Unrealized profit target achieved
+2. unrealized loss limit reached
+3. Position is held beyond a maximum number of bars
+
+Trend-scanning method: the idea is to identify trends and let them run for as long and as far as they may persists, without setting any barriers. 
+
     
