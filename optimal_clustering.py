@@ -103,7 +103,7 @@ def getRndBlockCov(nCols, nBlocks, minBlockSize=1, sigma=1., random_state=None):
     parts = rng.choice(range(1, nCols-(minBlockSize-1)*nBlocks), nBlocks-1, replace=False)
     parts.sort()
     parts = np.append(parts, nCols-(minBlockSize-1)*nBlocks) #add nCols to list of parts, unless minBlockSize>1
-    parts = np.append(parts[0], np.diff(parts)-1+minBlockSize)
+    parts = np.append(parts[0], np.diff(parts))-1+minBlockSize
     print("block sizes:"+str(parts))
     cov=None
     for nCols_ in parts:
@@ -141,24 +141,15 @@ if __name__ == '__main__':
     tmp = testGetCovSub.flatten()
     
     # recreate fig 4.1 colormap of random block correlation matrix
-nCols, nBlocks, minBlockSize = 30, 6, 2
-print("minBlockSize"+str(minBlockSize))
-corr0 = randomBlockCorr(nCols, nBlocks, minBlockSize=minBlockSize)
-#matplotlib.pyplot.matshow(corr0)
+    nCols, nBlocks, minBlockSize = 30, 6, 2
+    print("minBlockSize"+str(minBlockSize))
+    corr0 = randomBlockCorr(nCols, nBlocks, minBlockSize=minBlockSize) #pandas df
 
-matplotlib.pyplot.matshow(corr0)
-matplotlib.pyplot.colorbar()
-#ax = matplotlib.pyplot.gca()
-#ax.xaxis.tick_bottom()
-matplotlib.pyplot.show()
-
-
-
-
-    fig = plt.figure()
-    ax  = fig.add_subplot(111)
-    ax.hist(tmp, bins=5, normed = True)
-    plt.show()
+    matplotlib.pyplot.matshow(corr0) #invert y-axis to get origo at lower left corner
+    matplotlib.pyplot.gca().xaxis.tick_bottom()
+    matplotlib.pyplot.gca().invert_yaxis()
+    matplotlib.pyplot.colorbar()
+    matplotlib.pyplot.show()
         
     testGetRndBlockCov = getRndBlockCov(10, 3)
        

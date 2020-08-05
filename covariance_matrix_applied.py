@@ -218,7 +218,17 @@ if __name__ == '__main__':
     inv = np.linalg.inv(cov)
     e_r = np.dot(np.dot(ones.T, inv), mu) / np.dot(ones.T, np.dot(ones.T, inv))
     
-    
+    #Chapter 4 optimal clustering
+        # recreate fig 4.1 colormap of random block correlation matrix
+    nCols, minBlockSize = 183, 2
+    print("minBlockSize"+str(minBlockSize))
+    corr0 = detoned_corr
+
+    matplotlib.pyplot.matshow(corr0) #invert y-axis to get origo at lower left corner
+    matplotlib.pyplot.gca().xaxis.tick_bottom()
+    matplotlib.pyplot.gca().invert_yaxis()
+    matplotlib.pyplot.colorbar()
+    matplotlib.pyplot.show()
     
     import doctest
     doctest.testmod()
