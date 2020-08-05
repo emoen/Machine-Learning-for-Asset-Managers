@@ -219,7 +219,7 @@ if __name__ == '__main__':
     e_r = np.dot(np.dot(ones.T, inv), mu) / np.dot(ones.T, np.dot(ones.T, inv))
     
     #Chapter 4 optimal clustering
-        # recreate fig 4.1 colormap of random block correlation matrix
+    # recreate fig 4.1 colormap of random block correlation matrix
     nCols, minBlockSize = 183, 2
     print("minBlockSize"+str(minBlockSize))
     corr0 = detoned_corr
