@@ -12,9 +12,10 @@ import matplotlib
 #codesnippet 4.1
 #base clustering
 def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
-    where_are_NaNs = np.isnan(corr0)
-    corr0[where_are_NaNs] = 0
-    #x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
+    #where_are_NaNs = np.isnan(corr0)
+    #corr0[where_are_NaNs] = 0
+    corr0 = pandas.DataFrame(corr0)
+    x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
     x, silh = ((1-corr0)/2.)**.5, pd.Series() #observations matrix
     maxNumClusters = min(maxNumClusters, x.shape[0]-1)
     for init in range(n_init):
