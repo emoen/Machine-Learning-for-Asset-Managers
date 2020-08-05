@@ -15,7 +15,7 @@ Marcenko-Pasture theoretical probability density function, and empirical density
 
 Denoising a random matrix with signal using the constant residual eigenvalue method. This is done by fixing random eigenvalues. See code snippet 2.5
 | ![eigenvalue_method.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/figure_2_3_eigenvalue_method.png) | 
-|:--:| :--:| 
+|:--:| 
 | *A comparison of eigenvalues before and after applying the residual eigenvalue method:* |
 
 Detoned covariance matrix can be used to calculate minimum variance portfolio. The efficient frontier is the upper portion of the minimum variance frontier starting at the minimum variance portfolio. A denoised covariance matrix is less unstable to change.
