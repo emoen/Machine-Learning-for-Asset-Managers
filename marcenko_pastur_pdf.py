@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
-from sklearn.neighbors.kde import KernelDensity
+from sklearn.neighbors import KernelDensity
 import matplotlib.pylab as plt
 from scipy.optimize import minimize
 

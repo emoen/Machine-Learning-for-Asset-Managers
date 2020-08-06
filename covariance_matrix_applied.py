@@ -6,9 +6,11 @@ import pandas as pd
 import os
 import math
 import matplotlib.pylab as plt
+import matplotlib
 
 import marcenko_pastur_pdf as mp
 import chap2_monte_carlo_experiment as mc
+import onc as onc
 
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
@@ -75,7 +77,7 @@ def denoise_OL(S, do_plot=True):
     if do_plot:
         fig = plt.figure()
         ax  = fig.add_subplot(111)
-        ax.hist(np.diag(eVal0), bins=100, normed = True)  #normed = True, 
+        ax.hist(np.diag(eVal0), bins=100) #, normed = True)  #normed = True, 
         
         pdf0 = mp.mpPDF(var0, q=S.shape[0]/float(S.shape[1]), pts=N)
         pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
@@ -183,7 +185,7 @@ if __name__ == '__main__':
     # use matrix of returns to calc correlation
     S, instrument_returns = calculate_returns(S_value)
     _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
-    S = S_value
+    #S = S_value
     #print performance ascending    
     print(np.asarray(portfolio_name)[np.argsort(instrument_returns)])
         
@@ -223,6 +225,9 @@ if __name__ == '__main__':
     nCols, minBlockSize = 183, 2
     print("minBlockSize"+str(minBlockSize))
     corr0 = detoned_corr
+    corr1, clstrs, silh = oc.clusterKMeansTop(detoned_corr)
+    corr11, clstrs, silh = oc.clusterKMeansBase(detoned_corr, maxNumClusters=min(maxNumClusters, corr0.shape[1]-1), n_init=n_init)
+    corr1, clstrs, silh = onc.get_onc_clusters(pd.DataFrame(detoned_corr))
     
 
     matplotlib.pyplot.matshow(corr0) #invert y-axis to get origo at lower left corner

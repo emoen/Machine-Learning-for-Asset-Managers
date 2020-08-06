@@ -14,14 +14,14 @@ import matplotlib
 def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
     #where_are_NaNs = np.isnan(corr0)
     #corr0[where_are_NaNs] = 0
-    corr0 = pandas.DataFrame(corr0)
+    corr0 = pd.DataFrame(corr0)
     x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
     x, silh = ((1-corr0)/2.)**.5, pd.Series() #observations matrix
     maxNumClusters = min(maxNumClusters, x.shape[0]-1)
     for init in range(n_init):
         for i in range(2, maxNumClusters+1):
             #print(i)
-            kmeans_ = KMeans(n_clusters=i, n_jobs=1, n_init=1)
+            kmeans_ = KMeans(n_clusters=i, n_init=1) #n_jobs=None, n_init=1) #n_jobs=None - use all CPUs
             kmeans_ = kmeans_.fit(x)
             silh_ = silhouette_samples(x, kmeans_.labels_)
             stat = (silh_.mean()/silh_.std(), silh.mean()/silh.std())
@@ -59,22 +59,32 @@ def makeNewOutputs(corr0, clstrs, clstrs2):
     
     return corrNew, clstrsNew, silhNew
 
+#Recursivly cluster
 def clusterKMeansTop(corr0, maxNumClusters=None, n_init=10):
     if maxNumClusters == None:
         maxNumClusters = corr0.shape[1]-1
         
     corr1, clstrs, silh = clusterKMeansBase(corr0, maxNumClusters=min(maxNumClusters, corr0.shape[1]-1), n_init=n_init)
-    clusterTstats={i:np.mean(silh[clstrs[i]])/np.std(silh[clstrs[i]]) for i in clstrs.keys()}
-    tStatMean = sum(clusterTstats.values())/len(clsterTstats)
-    redoClusters=[i for i in clusterTstats.keys() if clusterTstats[i]<tStatMean]
+    clusterTstats = {i:np.mean(silh[clstrs[i]])/np.std(silh[clstrs[i]]) for i in clstrs.keys()}
+    tStatMean = sum(clusterTstats.values())/len(clusterTstats)
+    redoClusters = [i for i in clusterTstats.keys() if clusterTstats[i] < tStatMean]
     print("redo cluster:"+str(redoClusters))
-    if len(redoClusters)<=1:
+    if len(redoClusters) <= 1:
         return corr1, clstrs, silh
     else:
         keysRedo= [j for i in redoClusters for j in clstrs[i]]
         corrTmp = corr0.loc[keysRedo, keysRedo]
-        tStatMean=np.mean([clusterTstats[i] for i in redoClusters])
-        corr2, clstrs2, silh2=clusterKmeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp,corrTmp.shape[1]-1),n_init=n_init)
+        tStatMean = np.mean([clusterTstats[i] for i in redoClusters])
+        corr2, clstrs2, silh2 = clusterKmeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp,corrTmp.shape[1]-1),n_init=n_init)
+        #Make new outputs, if necessary
+        # how does this even work - do recursive call then return on base case len(redoCluster)<=1, and return in recursive case also
+        corrNew, clstrsNew, silhNew = makeNewOutputs(corr0, {i:clstrs[i] for i in clstrs.keys() if i in clstrsNew.keys()}, clstrs2)
+        newTstatMean=np.mean([np.mean(silhNew[clstrsNew[i]])/np.std(silhNew[clstrsNew[i]]) for i in clstrsNew.keys()]) 
+        if newTstatMean<=meanRedoTstat: 
+            return corr1,clstrs,silh 
+        else: 
+            return corrNew,clstrsNew,silhNew
+        
         
 # codesnippet 4.3 - utility for monte-carlo simulation
 # Random block correlation matrix creation
