@@ -92,10 +92,5 @@ array([158, 106, 151,  38,  23,  22,  77,  10,   6,  54,  47, 111,   7,
 Running the ONC algorith on Oslo Børs with 183 instruments and time frame 934:
 | ![fig_4_1_ol_block_correlation_matrix.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img_example_real_data/fig_4_1_ol_block_correlation_matrix.png) | 
 |:--:| 
-| *There isnt much clustering. The small 3x3 cluster in the lower left corner is: 
-```
->>> portfolio_name[5:9]
-['AKA.ol', 'AKER.ol', 'AKERBP.ol', 'AKSO.ol']
-```
-* |
+| * There are 2 clusters. A small cluster of 8 instruments which are the salmon farming companies like AUSS.ol, BAKKA.ol, GSF.ol, LSG.ol and SALM.ol: * |
 
