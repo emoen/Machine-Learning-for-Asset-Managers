@@ -197,10 +197,11 @@ if __name__ == '__main__':
     matplotlib.pyplot.show()
 
     #draw prediction based on ONC
-    matplotlib.pyplot.matshow(denoised_corr1)#corr1) 
-    matplotlib.pyplot.gca().xaxis.tick_bottom()
-    matplotlib.pyplot.gca().invert_yaxis()
-    matplotlib.pyplot.colorbar()
-    matplotlib.pyplot.show()
+    corrNew, clstrsNew, silhNew = clusterKMeansTop(corr0)
+matplotlib.pyplot.matshow(corrNew) 
+matplotlib.pyplot.gca().xaxis.tick_bottom()
+matplotlib.pyplot.gca().invert_yaxis()
+matplotlib.pyplot.colorbar()
+matplotlib.pyplot.show()
         
     
