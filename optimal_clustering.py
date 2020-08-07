@@ -9,14 +9,17 @@ import marcenko_pastur_pdf as mp
 import matplotlib.pylab as plt
 import matplotlib
 
+'''
+Optimal Number of Clusters (ONC Algorithm)
+Detection of False Investment Strategies using Unsupervised Learning Methods
+https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3167017
+'''
+
 #codesnippet 4.1
 #base clustering
 def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
-    #where_are_NaNs = np.isnan(corr0)
-    #corr0[where_are_NaNs] = 0
-    corr0 = pd.DataFrame(corr0)
-    x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series() #observations matrix
-    x, silh = ((1-corr0)/2.)**.5, pd.Series() #observations matrix
+    x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series(dtype='float64') #observations matrix
+    x, silh = ((1-corr0)/2.)**.5, pd.Series(dtype='float64') #observations matrix
     maxNumClusters = min(maxNumClusters, x.shape[0]-1)
     for init in range(n_init):
         for i in range(2, maxNumClusters+1):
@@ -39,28 +42,49 @@ def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
     
 #codesnippet 4.2
 #Top level of clustering
+''' Improve number clusters using silh scores
+
+    :param corr_mat: (pd.DataFrame) Correlation matrix
+    :param clusters: (dict) Clusters elements
+    :param top_clusters: (dict) Improved clusters elements
+    :return: (tuple) [ordered correlation matrix, clusters, silh scores]
+'''
 def makeNewOutputs(corr0, clstrs, clstrs2):
-    clstrsNew={}
+    clstrsNew, newIdx = {}, []
     for i in clstrs.keys():
-        clstrsNew[len(clstrsNew.keys())]=list(clstrs[i])
+        clstrsNew[len(clstrsNew.keys())] = list(clstrs[i])
+    
     for i in clstrs2.keys():
         clstrsNew[len(clstrsNew.keys())] = list(clstrs2[i])
     
     newIdx = [j for i in clstrsNew for j in clstrsNew[i]]
     corrNew = corr0.loc[newIdx, newIdx]
-    print(type(corr0))
-    x = ((1-corr0.fillna(0))/2.)**.5
-    kmeans_labels = np.zeros(len(x.columns))
-    for i in clstrsNew.keys():
-        idxs = [x.index.get_loc(k) for k in clstrsNew[i]]
-        kmeans_labels[idxs]=i
     
-    silhNew = pd.Series(silhouette_samples(x, kmeans_labels), index=x.index)
+    dist = ((1 - corr0.fillna(0)) / 2.)**.5
+    kmeans_labels = np.zeros(len(dist.columns))
+    for i in clstrsNew.keys():
+        idxs = [dist.index.get_loc(k) for k in clstrsNew[i]]
+        kmeans_labels[idxs] = i
+    
+    silhNew = pd.Series(silhouette_samples(dist, kmeans_labels), index=dist.index)
     
     return corrNew, clstrsNew, silhNew
 
-#Recursivly cluster
-def clusterKMeansTop(corr0, maxNumClusters=None, n_init=10):
+''' Recursivly cluster
+    Typical output: e.g if there are 4 clusters:
+>>> _,_,_=clusterKMeansTop(corr0)
+redo cluster:[0, 1, 2, 5]
+redo cluster:[0, 1, 2]
+redo cluster:[1]
+redoCluster <=1:[1]
+newTstatMean > tStatMean
+newTstatMean > tStatMean
+>>>
+
+So it returns first time on base-case  >>>if len(redoClusters) <= 1
+Then sub-sequent returnes are after the tail-recurrsion
+'''
+def clusterKMeansTop(corr0: pd.DataFrame, maxNumClusters=None, n_init=10):
     if maxNumClusters == None:
         maxNumClusters = corr0.shape[1]-1
         
@@ -70,22 +94,24 @@ def clusterKMeansTop(corr0, maxNumClusters=None, n_init=10):
     redoClusters = [i for i in clusterTstats.keys() if clusterTstats[i] < tStatMean]
     print("redo cluster:"+str(redoClusters))
     if len(redoClusters) <= 1:
+        print("redoCluster <=1:"+str(redoClusters))
         return corr1, clstrs, silh
     else:
-        keysRedo= [j for i in redoClusters for j in clstrs[i]]
+        keysRedo = [j for i in redoClusters for j in clstrs[i]]
         corrTmp = corr0.loc[keysRedo, keysRedo]
         tStatMean = np.mean([clusterTstats[i] for i in redoClusters])
-        corr2, clstrs2, silh2 = clusterKmeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp,corrTmp.shape[1]-1),n_init=n_init)
+        _, clstrs2, _ = clusterKMeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp.shape[1]-1), n_init=n_init)
         #Make new outputs, if necessary
-        # how does this even work - do recursive call then return on base case len(redoCluster)<=1, and return in recursive case also
-        corrNew, clstrsNew, silhNew = makeNewOutputs(corr0, {i:clstrs[i] for i in clstrs.keys() if i in clstrsNew.keys()}, clstrs2)
-        newTstatMean=np.mean([np.mean(silhNew[clstrsNew[i]])/np.std(silhNew[clstrsNew[i]]) for i in clstrsNew.keys()]) 
-        if newTstatMean<=meanRedoTstat: 
-            return corr1,clstrs,silh 
+        dict_redo_clstrs = {i:clstrs[i] for i in clstrs.keys() if i not in redoClusters}
+        corrNew, clstrsNew, silhNew = makeNewOutputs(corr0, dict_redo_clstrs, clstrs2)
+        newTstatMean = np.mean([np.mean(silhNew[clstrsNew[i]])/np.std(silhNew[clstrsNew[i]]) for i in clstrsNew.keys()]) 
+        if newTstatMean <= tStatMean: 
+            print("newTstatMean <= tStatMean")
+            return corr1, clstrs, silh 
         else: 
-            return corrNew,clstrsNew,silhNew
-        
-        
+            print("newTstatMean > tStatMean")
+            return corrNew, clstrsNew, silhNew
+             
 # codesnippet 4.3 - utility for monte-carlo simulation
 # Random block correlation matrix creation
 # Simulates a time-series of atleast 100 elements. 
@@ -163,13 +189,18 @@ if __name__ == '__main__':
     
     corr1 = clusterKMeansTop(corr0) #corr0 is ground truth, corr1 is ONC
 
+    #Draw ground truth
     matplotlib.pyplot.matshow(corr0) #invert y-axis to get origo at lower left corner
     matplotlib.pyplot.gca().xaxis.tick_bottom()
     matplotlib.pyplot.gca().invert_yaxis()
     matplotlib.pyplot.colorbar()
     matplotlib.pyplot.show()
-        
-    testGetRndBlockCov = getRndBlockCov(10, 3)
-       
+
+    #draw prediction based on ONC
+    matplotlib.pyplot.matshow(denoised_corr1)#corr1) 
+    matplotlib.pyplot.gca().xaxis.tick_bottom()
+    matplotlib.pyplot.gca().invert_yaxis()
+    matplotlib.pyplot.colorbar()
+    matplotlib.pyplot.show()
         
     
