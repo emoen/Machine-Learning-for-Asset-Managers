@@ -72,11 +72,11 @@ There are 2 types of clustering algorithms. Partitional and hierarchical:
 
 
 Generating of random block correlation matrices is used to simulate instruments with correlation. The utility for doing this is in code snippet 4.3, and it uses clustering algorithms <i>optimal number of cluster</i> (ONC) defined in snippet 4.1 and 4.2, which does not need a predefined number of clusters (unlike k-means), but uses an 'elbow method' to stop adding clusters. The optimal number of clusters are achived when there is high intra-cluster correlation and low inter-cluster correlation. The [silhouette score](https://en.wikipedia.org/wiki/Silhouette_(clustering)) is used to minimize within-group distance and maximize between-group distance. 
-| ![random_block_corr_matrix.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_4_1_random_block_correlation_matrix.png | width=400) | 
+| ![random_block_corr_matrix.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_4_1_random_block_correlation_matrix.png) | 
 |:--:| 
 | *Random block correlation matrix. Light colors indicate a high correlation, and dark colors indicate a low correlation. In this example, the number of blocks K=6, minBlockSize=2, and number of instruments N=30* |
 
-| ![fig_4_1_random_block_correlation_matrix_onc.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_4_1_random_block_correlation_matrix_onc.png) | width=400 | 
+| ![fig_4_1_random_block_correlation_matrix_onc.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_4_1_random_block_correlation_matrix_onc.png) | 
 |:--:| 
 | *Applying the ONC algorithm to the random block correlation matrix. ONC finds all the clusters.* |
 
