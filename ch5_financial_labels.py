@@ -5,6 +5,8 @@ import numpy as np
 #Trend scanning method
 
 #code snippet 5.1
+# Fit linear regression on close
+# Return the t-statistic for a given parameter estimate.
 def tValLinR(close):
     #tValue from a linear trend
     x = np.ones((close.shape[0],2))
@@ -36,10 +38,13 @@ def getBinsFromTrend(molecule, close, span):
     out['t1'] = pd.to_datetime(out['t1'])
     out['bin'] = pd.to_numeric(out['bin'], downcast='signed')
     return out.dropna(subset=['bin'])
+
+if __name__ == '__main__':
+    #snippet 5.3
+    df0 = pd.Series(np.random.normal(0, .1, 100)).cumsum()
+    df0 += np.sin(np.linspace(0, 10, df0.shape[0]))
+    mp1.scatter(df1.index, df0.loc[df1.index].values, mp1.savefig('fig5.1.png)); mp1.clf(); mp1.close()
+    mp1.scatter(df1.index, df0.loc[df1.index].values, c=c, cmap='viridis')
     
-#snippet 5.3
-df0 = pd.Series(np.random.normal(0, .1, 100)).cumsum()
-df0 += np.sin(np.linspace(0, 10, df0.shape[0]))
-mp1.scatter(df1.index, df0.loc[df1.index].values, mp1.savefig('fig5.1.png)); mp1.clf(); mp1.close()
-mp1.scatter(df1.index, df0.loc[df1.index].values, c=c, cmap='viridis')
-    
+    #Test methods
+    ols_tvalue = tValLinR( np.array([3.0, 3.5, 4.0]) )

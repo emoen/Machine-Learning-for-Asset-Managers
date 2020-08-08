@@ -179,8 +179,7 @@ if __name__ == '__main__':
     nObs = 8
     sigma = 1.
     corr0 = randomBlockCorr(nCols, nBlocks)
-    testGetCovSub = getCovSub(nObs, nCols, sigma, random_state=None) 
-    tmp = testGetCovSub.flatten()
+    testGetCovSub = getCovSub(nObs, nCols, sigma, random_state=None) #6x6 matrix
     
     # recreate fig 4.1 colormap of random block correlation matrix
     nCols, nBlocks, minBlockSize = 30, 6, 2
@@ -198,10 +197,10 @@ if __name__ == '__main__':
 
     #draw prediction based on ONC
     corrNew, clstrsNew, silhNew = clusterKMeansTop(corr0)
-matplotlib.pyplot.matshow(corrNew) 
-matplotlib.pyplot.gca().xaxis.tick_bottom()
-matplotlib.pyplot.gca().invert_yaxis()
-matplotlib.pyplot.colorbar()
-matplotlib.pyplot.show()
+    matplotlib.pyplot.matshow(corrNew) 
+    matplotlib.pyplot.gca().xaxis.tick_bottom()
+    matplotlib.pyplot.gca().invert_yaxis()
+    matplotlib.pyplot.colorbar()
+    matplotlib.pyplot.show()
         
     

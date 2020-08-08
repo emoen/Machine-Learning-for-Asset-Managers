@@ -225,12 +225,10 @@ if __name__ == '__main__':
     nCols, minBlockSize = 183, 2
     print("minBlockSize"+str(minBlockSize))
     corr0 = detoned_corr
-    corr1, clstrs, silh = oc.clusterKMeansTop(detoned_corr)
-    corr11, clstrs, silh = oc.clusterKMeansBase(detoned_corr, maxNumClusters=min(maxNumClusters, corr0.shape[1]-1), n_init=n_init)
-    corr1, clstrs, silh = onc.get_onc_clusters(pd.DataFrame(detoned_corr))
+    corr1, clstrs, silh = oc.clusterKMeansTop(pd.DataFrame(detoned_corr)) #1: [18, 24, 57, 81, 86, 99, 112, 120, 134, 165]
+    corr11, clstrs11, silh11 = onc.get_onc_clusters(pd.DataFrame(detoned_corr)) #test with mlfinlab impl: 1: [18, 24, 57, 81, 86, 99, 112, 120, 134, 165]
     
-
-    matplotlib.pyplot.matshow(corr0) #invert y-axis to get origo at lower left corner
+    matplotlib.pyplot.matshow(corr11) #invert y-axis to get origo at lower left corner
     matplotlib.pyplot.gca().xaxis.tick_bottom()
     matplotlib.pyplot.gca().invert_yaxis()
     matplotlib.pyplot.colorbar()
