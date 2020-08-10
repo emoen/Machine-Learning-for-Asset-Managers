@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import statsmodels.api as sm1
 import numpy as np
+import matplotlib.pylab as plt
 
 #Trend scanning method
 
@@ -24,8 +25,10 @@ def getBinsFromTrend(molecule, close, span):
       - bin: Sign of the trend
     '''
     out = pd.DataFrame(index=molecule, columns=['t1', 'tVal', 'bin'])
+    hrzns = range(*span)
+    print(hrzns)
     for dt0 in molecule:
-        df0 = pd.Series()
+        df0 = pd.Series(dtype='float64')
         iloc0 = close.index.get_loc(dt0)
         if iloc0+max(hrzns) > close.shape[0]:
             continue
@@ -43,8 +46,12 @@ if __name__ == '__main__':
     #snippet 5.3
     df0 = pd.Series(np.random.normal(0, .1, 100)).cumsum()
     df0 += np.sin(np.linspace(0, 10, df0.shape[0]))
-    mp1.scatter(df1.index, df0.loc[df1.index].values, mp1.savefig('fig5.1.png)); mp1.clf(); mp1.close()
-    mp1.scatter(df1.index, df0.loc[df1.index].values, c=c, cmap='viridis')
+    df1 = getBinsFromTrend(df0.index, df0, [3,10,1]) #[3,10,1] = range(3,10)
+    plt.scatter(df1.index, df0.loc[df1.index].values, c=df1['bin'].values, cmap='viridis')
+    plt.savefig('fig5.1.png')
+    plt.clf()
+    plt.close()
+    plt.scatter(df1.index, df0.loc[df1.index].values, c=c, cmap='viridis')
     
     #Test methods
     ols_tvalue = tValLinR( np.array([3.0, 3.5, 4.0]) )
