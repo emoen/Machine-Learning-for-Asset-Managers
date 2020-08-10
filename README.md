@@ -93,7 +93,7 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 
 | ![fig_5_1_trend_scanning.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_5_1_trend_scanning.png) | 
 |:--:| 
-| *Example of trend-scanning labels on sine wave with gaussian noice:* |
+| *Example of trend-scanning labels on sine wave with gaussian noise:* |
 
 
     
