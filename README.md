@@ -8,13 +8,13 @@ The project is for my own learning. If you want to use the consepts from the boo
 ## Chapter 2 Denoising and Detoning
 
 Marcenko-Pasture theoretical probability density function, and empirical density function:
-| ![marcenko-pastur](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/gaussian_mp.png) | 
+| ![marcenko-pastur.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/gaussian_mp.png) | 
 |:--:| 
 | *Marcenko-Pasture theoretical probability density function, and empirical density function:* |
 
 
 Denoising a random matrix with signal using the constant residual eigenvalue method. This is done by fixing random eigenvalues. See code snippet 2.5
-| ![eigenvalue_method.jpg](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/figure_2_3_eigenvalue_method.png) | 
+| ![eigenvalue_method.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/figure_2_3_eigenvalue_method.png) | 
 |:--:| 
 | *A comparison of eigenvalues before and after applying the residual eigenvalue method:* |
 
@@ -90,5 +90,10 @@ Tiple-Barrier Method involves holding a possition until
 3. Position is held beyond a maximum number of bars
 
 Trend-scanning method: the idea is to identify trends and let them run for as long and as far as they may persists, without setting any barriers. 
+
+| ![fig_5_1_trend_scanning.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_5_1_trend_scanning.png) | 
+|:--:| 
+| *Example of trend-scanning labels on sine wave with gaussian noice:* |
+
 
     
