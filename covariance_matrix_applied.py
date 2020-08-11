@@ -247,7 +247,7 @@ if __name__ == '__main__':
     plt.show()
 
     bgbio_df = yf.Ticker("BGBIO.ol")
-    bg_bio_ticker_df = df.history(period="7y")
+    bg_bio_ticker_df = bgbio_df.history(period="7y")
                 
     bgbio = bg_bio_ticker_df['Close']
     df0 = pd.Series(bgbio[-200:])
@@ -256,9 +256,22 @@ if __name__ == '__main__':
     plt.scatter(df1.index, df0.loc[df1.index].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
     plt.colorbar()
     plt.show()
+    
+    S, pnames = get_OL_tickers_close()
 
-
-
+    #get t-statistics from all instruments on OL
+    S, pnames = get_OL_tickers_close(T=200,N=237)
+    abc = [None for i in range(0,237)]
+    for i in range(0,len(pnames)):
+        instrument = S[:,i]
+        df0 = pd.Series(instrument)
+        abc[i] = fl.getBinsFromTrend(df0.index, df0, [3,10,1])['tVal']
+        
+    tValLatest =  [abc[i].values[-1] for i in range(0, len(abc))]
+    #most significant t-value:
+    np.max(tValLatest)
+    pnames[np.argmax(tValLatest)]
+    
     
     
     import doctest
