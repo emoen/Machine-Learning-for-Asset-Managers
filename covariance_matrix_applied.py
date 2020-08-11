@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import yfinance as yf
 import numpy as np
+import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import os
@@ -11,6 +12,7 @@ import matplotlib
 import marcenko_pastur_pdf as mp
 import chap2_monte_carlo_experiment as mc
 import onc as onc
+import ch5_financial_labels as fl
 
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
@@ -177,7 +179,7 @@ if __name__ == '__main__':
     portfolio_name = pd.read_csv('csv/ol_names.csv', delimiter=',',header=None)[0].tolist()
     S_value = S_value[:,1:184] # S = S[:,6:9]
     portfolio_name = portfolio_name[1:184] #portfolio_name = portfolio_name[6:9]
-    if S_value.shape[0] <1:
+    if S_value.shape[0] < 1:
         S_value, portfolio_name = get_OL_tickers_close()
         np.savetxt('csv/ol184.csv', S_value, delimiter=',')
         np.savetxt('csv/ol_names.csv', np.asarray(portfolio_name), delimiter=',', fmt='%s')
@@ -233,6 +235,31 @@ if __name__ == '__main__':
     matplotlib.pyplot.gca().invert_yaxis()
     matplotlib.pyplot.colorbar()
     matplotlib.pyplot.show()
+    
+    #Chapter 5 Financial labels
+    #Lets try trend-following on PHO
+    pho = S_value[:,121]
+    df0 = pd.Series(pho[-50:])
+    df1 = fl.getBinsFromTrend(df0.index, df0, [3,10,1]) #[3,10,1] = range(3,10)
+    tValues = df1['tVal'].values
+    plt.scatter(df1.index, df0.loc[df1.index].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
+    plt.colorbar()
+    plt.show()
+
+    bgbio_df = yf.Ticker("BGBIO.ol")
+    bg_bio_ticker_df = df.history(period="7y")
+                
+    bgbio = bg_bio_ticker_df['Close']
+    df0 = pd.Series(bgbio[-200:])
+    df1 = fl.getBinsFromTrend(df0.index, df0, [3,20,1]) #[3,10,1] = range(3,10)
+    tValues = df1['tVal'].values
+    plt.scatter(df1.index, df0.loc[df1.index].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
+    plt.colorbar()
+    plt.show()
+
+
+
+    
     
     import doctest
     doctest.testmod()

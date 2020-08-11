@@ -68,6 +68,6 @@ if __name__ == '__main__':
     x = np.random.normal(size=size)
     e = np.random.normal(size=size)
     y = 0*x+e
-    nmi=mutualInfo(x,y,True)
-    corr=np.corrcoef(x,y)[0,1]
+    nmi = mutualInfo(x,y,True)
+    corr = np.corrcoef(x,y)[0,1]
 
