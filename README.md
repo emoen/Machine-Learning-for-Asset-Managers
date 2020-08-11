@@ -97,7 +97,7 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 
 | ![fig_5_2_trend_scanning_t_values.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_5_2_trend_scanning_t_values.png) | 
 |:--:| 
-| *trend-scanning with t-values which shows confidence in trend. 1 is high confidence and -1 is low confidence.* |
+| *trend-scanning with t-values which shows confidence in trend. 1 is high confidence going up and -1 is high confidence going down.* |
 
 
     
