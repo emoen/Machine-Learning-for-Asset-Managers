@@ -304,5 +304,7 @@ for i in range(0, len(abc)):
     np.max(tValLatest)
     pnames[np.argmax(tValLatest)]
     
+    plt.scatter(ticker_close.index, S[:,78], c=abc[78], cmap='viridis')
+    
     import doctest
     doctest.testmod()
