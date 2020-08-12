@@ -14,6 +14,8 @@ import chap2_monte_carlo_experiment as mc
 import onc as onc
 import ch5_financial_labels as fl
 
+import trend_scanning as ts
+
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
 #Review: [Book] Commented summary of Machine Learning for Asset Managers by Marcos Lopez de Prado
@@ -261,18 +263,46 @@ if __name__ == '__main__':
 
     #get t-statistics from all instruments on OL
     S, pnames = get_OL_tickers_close(T=200,N=237)
-    abc = [None for i in range(0,237)]
-    for i in range(0,len(pnames)):
-        instrument = S[:,i]
-        df0 = pd.Series(instrument)
-        abc[i] = fl.getBinsFromTrend(df0.index, df0, [3,10,1])['tVal']
-        
-    tValLatest =  [abc[i].values[-1] for i in range(0, len(abc))]
+    names = pd.DataFrame(pnames)
+    names.to_csv('csv/ol237.csv', sep=',', index=False, header=False)
+    np.savetxt("csv/ol_ticker237.csv", S, delimiter=',')
+    
+    np.argwhere(np.isnan(S))
+    S[182, 110] = S[181,110]
+
+
+#implementing from book
+abc = [None for i in range(0,237)]
+for i in range(0, 20):#len(pnames)):
+    instrument = S[:,i]
+    df0 = pd.Series(instrument)
+    print("running bins on:"+pnames[i]+" i:"+str(i))
+    abc[i] = fl.getBinsFromTrend(df0.index, df0, [3,10,1])['tVal']
+    
+    tValLatest =  [abc[i].values[-20] for i in range(0, len(abc))]
     #most significant t-value:
     np.max(tValLatest)
     pnames[np.argmax(tValLatest)]
     
+#mlfinlab impl
+abc = [None for i in range(0,237)]
+for i in range(0, len(abc)):
+    ticker_close = pd.DataFrame(S[:,i], columns={'ticker'})
+    print(i)
+    t_events = ticker_close.index
+    tr_scan_labels = ts.trend_scanning_labels(ticker_close, t_events, 20)
+    abc[i] = tr_scan_labels['t_value']
     
+
+    where_are_NaNs = np.isnan(abc)
+    abc = np.asarray(abc)
+    abc[where_are_NaNs] = 0  
+    np.where(abc==np.max(abc))
+    
+    tValLatest =  [abc[i,-20] for i in range(0, len(abc))]
+    #most significant t-value:
+    np.max(tValLatest)
+    pnames[np.argmax(tValLatest)]
     
     import doctest
     doctest.testmod()
