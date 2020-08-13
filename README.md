@@ -102,5 +102,7 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 ## Chapter 6 Feature Importance Analysis
 
 <i>"p-value does not measure the probability that neither the null nor the alternative hypothesis is true, or the significance of a result."</i>
-
+| ![fig_6_1_p_values_explanatory_vars.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_1_p_values_explanatory_vars.png) | 
+|:--:| 
+| *p-Values computed on a set of informative, redundant, and noisy explanatory variables. The explanatory variables has not the hightest p-values.* |
     
