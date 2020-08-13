@@ -270,35 +270,31 @@ if __name__ == '__main__':
     np.argwhere(np.isnan(S))
     S[182, 110] = S[181,110]
 
-
-#implementing from book
-abc = [None for i in range(0,237)]
-for i in range(0, 20):#len(pnames)):
-    instrument = S[:,i]
-    df0 = pd.Series(instrument)
-    print("running bins on:"+pnames[i]+" i:"+str(i))
-    abc[i] = fl.getBinsFromTrend(df0.index, df0, [3,10,1])['tVal']
+    #implementing from book
+    abc = [None for i in range(0,237)]
+    for i in range(0, 20):#len(pnames)):
+        instrument = S[:,i]
+        df0 = pd.Series(instrument)
+        print("running bins on:"+pnames[i]+" i:"+str(i))
+        abc[i] = fl.getBinsFromTrend(df0.index, df0, [3,10,1])['tVal']
     
     tValLatest =  [abc[i].values[-20] for i in range(0, len(abc))]
     #most significant t-value:
     np.max(tValLatest)
     pnames[np.argmax(tValLatest)]
+    #END / implementing from book
     
-#mlfinlab impl
-abc = [None for i in range(0,237)]
-for i in range(0, len(abc)):
-    ticker_close = pd.DataFrame(S[:,i], columns={'ticker'})
-    print(i)
-    t_events = ticker_close.index
-    tr_scan_labels = ts.trend_scanning_labels(ticker_close, t_events, 20)
-    abc[i] = tr_scan_labels['t_value']
+    #mlfinlab impl
+    S[181,110]=S[180,110] #nan
+    abc = [None for i in range(0,237)]
+    for i in range(0, len(abc)):
+        ticker_close = pd.DataFrame(S[:,i], columns={'ticker'})
+        print(i)
+        t_events = ticker_close.index
+        tr_scan_labels = ts.trend_scanning_labels(ticker_close, t_events, 20)
+        abc[i] = tr_scan_labels['t_value']
     
-
-    where_are_NaNs = np.isnan(abc)
     abc = np.asarray(abc)
-    abc[where_are_NaNs] = 0  
-    np.where(abc==np.max(abc))
-    
     tValLatest =  [abc[i,-20] for i in range(0, len(abc))]
     #most significant t-value:
     np.max(tValLatest)
