@@ -99,5 +99,8 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 |:--:| 
 | *trend-scanning with t-values which shows confidence in trend. 1 is high confidence going up and -1 is high confidence going down.* |
 
+## Chapter 6 Feature Importance Analysis
+
+<i>"p-value does not measure the probability that neither the null nor the alternative hypothesis is true, or the significance of a result."</i>
 
     
