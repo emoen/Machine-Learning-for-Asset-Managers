@@ -8,6 +8,7 @@ import pandas as pd
 import statsmodels.api as sm1
 
 #Code snippet 6.1 generating a set of informative, redundant, and noisy explanatory variables
+# returns matrix X, and vector y
 def getTestData(n_features=100, n_informative=25, n_redundant=25, n_samples=10000, random_state=0, sigmaStd=.0):
     #generate a random dataset for classification problem
     np.random.seed(random_state)
@@ -24,11 +25,11 @@ def getTestData(n_features=100, n_informative=25, n_redundant=25, n_samples=1000
 #code snippet 6.2 implementation of an ensembke MDI method
 def featImpMDI(fit, featNames):
     #feat importance based on IS mean impurity reduction
-    df0 = {i:tree.feature_importances_ for i, tree in enumerate(fit.enumerators_))
+    df0 = {i:tree.feature_importances_ for i, tree in enumerate(fit.enumerators_)}
     df0 = pd.DataFrame.from_dict(df0, orient='index')
     df0.columns = featNames
     df0 = df0.replace(0, np.nan) #because max_features=1
-    imp = pd.concat({'mean':df0.mean(), 'std':df0.std()*df0.shape[0]**-.5], axis=1) #CLT
+    imp = pd.concat({'mean':df0.mean(), 'std':df0.std()*df0.shape[0]**-.5}, axis=1) #CLT
     imp /= imp['mean'].sum()
     return imp
     
@@ -44,7 +45,22 @@ if __name__ == '__main__':
     
     #code snippet 6.2
     X,y = getTestData(40, 4, 30, 10000, sigmaStd=.1)
-    clf = DecisionTreeClassifier(criterion='entropy', max_features=1, class_weight='balanced', min_weight_fraction_leaf=0)
-    clf=BaggingClassifier(base_estimator=clf, n_estimators=1000, max_features=1., max_samples=1., oob_score=False)
-    fit=clf.fit(X,y)
-    imp=featImpMDI(fit, featNames=X.columns)
+    clf = DecisionTreeClassifier(criterion='entropy', 
+                                 max_features=1, 
+                                 class_weight='balanced', 
+                                 min_weight_fraction_leaf=0)
+                                 
+    clf = BaggingClassifier(base_estimator=clf, 
+                          n_estimators=1000, 
+                          max_features=1., 
+                          max_samples=1., 
+                          oob_score=False)
+    fit = clf.fit(X,y)
+    imp = featImpMDI(fit, featNames=X.columns)
+    
+    #print the graph Example 6.2 Example of MDI results
+    imp.sort_values('mean', inplace=True)
+    plt.figure(figsize=(10, imp.shape[0] / 5))
+    imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
+    plt.title('Figure 6.2 Example of MDI results')
+    plt.show()
