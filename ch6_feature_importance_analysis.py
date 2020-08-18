@@ -59,8 +59,8 @@ if __name__ == '__main__':
     imp = featImpMDI(fit, featNames=X.columns)
     
     #print the graph Example 6.2 Example of MDI results
-    imp.sort_values('mean', inplace=True)
-    plt.figure(figsize=(10, imp.shape[0] / 5))
-    imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
-    plt.title('Figure 6.2 Example of MDI results')
-    plt.show()
+imp.sort_values('mean', inplace=True)
+plt.figure(figsize=(10, imp.shape[0] / 5))
+imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
+plt.title('Figure 6.2 Example of MDI results')
+plt.show()
