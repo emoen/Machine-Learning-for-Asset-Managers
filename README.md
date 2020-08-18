@@ -105,4 +105,8 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 | ![fig_6_1_p_values_explanatory_vars.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_1_p_values_explanatory_vars.png) | 
 |:--:| 
 | *p-Values computed on a set of informative, redundant, and noisy explanatory variables. The explanatory variables has not the hightest p-values.* |
+
+| ![fig_6_2_mdi_example.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_2_mdi_example.png) | 
+|:--:| 
+| *MDI algorithm example* |
     
