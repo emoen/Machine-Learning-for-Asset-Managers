@@ -106,6 +106,12 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 |:--:| 
 | *p-Values computed on a set of informative, redundant, and noisy explanatory variables. The explanatory variables has not the hightest p-values.* |
 
+The MDI algorith deals with 3 out of 4 problems with p-values:
+1. MDI is not imposing any tree structure, algebraic specification, or relying on any stocastic or distributional characteristics of the residuals (e.g. y=b<sub>0</sub>+b<sub>1</sub>*x<sub>i</sub>+&epsilon;)
+2. betas are estimated from single sample, MDI relies on bootstrapping, so the variance can be reduced by the numbers of trees in the random forrest ensemble.
+3. In MDI the goal is not to estimate a coefficient of a given algebraic equation (b_hat_0, b_hat_1) describing the probability of a null-hypotheses.
+4. MDI does not correct of calculation in-sample, as there is no cross-validation.
+
 | ![fig_6_2_mdi_example.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_2_mdi_example.png) | 
 |:--:| 
 | *MDI algorithm example* |
