@@ -8,7 +8,7 @@ import pandas as pd
 import statsmodels.api as sm1
 
 #Code snippet 6.1 generating a set of informative, redundant, and noisy explanatory variables
-# returns matrix X, and vector y
+# returns matrix X of training samples, and vector y of class labels for the training samples
 def getTestData(n_features=100, n_informative=25, n_redundant=25, n_samples=10000, random_state=0, sigmaStd=.0):
     #generate a random dataset for classification problem
     np.random.seed(random_state)
@@ -32,8 +32,6 @@ def featImpMDI(fit, featNames):
     imp = pd.concat({'mean':df0.mean(), 'std':df0.std()*df0.shape[0]**-.5}, axis=1) #CLT
     imp /= imp['mean'].sum()
     return imp
-    
-
 
 if __name__ == '__main__':    
     X, y = getTestData(40, 5, 30, 10000, sigmaStd=.1)
@@ -44,7 +42,7 @@ if __name__ == '__main__':
     plt.show()
     
     #code snippet 6.2
-    X,y = getTestData(40, 4, 30, 10000, sigmaStd=.1)
+    X, y = getTestData(40, 4, 30, 10000, sigmaStd=.1)
     clf = DecisionTreeClassifier(criterion='entropy', 
                                  max_features=1, 
                                  class_weight='balanced', 
