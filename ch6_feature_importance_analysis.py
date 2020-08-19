@@ -2,6 +2,8 @@
 from sklearn.datasets import make_classification
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import BaggingClassifier
+from sklearn.metrics import log_loss
+from sklearn.model_selection._split import KFold
 import numpy as np
 import pandas as pd
 #import seaborn as sns
@@ -32,6 +34,27 @@ def featImpMDI(fit, featNames):
     imp = pd.concat({'mean':df0.mean(), 'std':df0.std()*df0.shape[0]**-.5}, axis=1) #CLT
     imp /= imp['mean'].sum()
     return imp
+    
+#code snippet 6.3 implementation of MDA - MDI with cross validation
+def featImpMDA(clf, X, y, n_splits=10):
+    #feat importance based on OOS score reduction
+    cvGen = KFold(n_splits=n_splits)
+    scr0, scr1=pd.Series(), pd.DataFrame(columns=X.columns)
+    for i, (train, test) in enumerate(cvGen.split(X=X)):
+        x0, y0 = X.iloc[train, :], y.iloc[train]
+        x1, y1 = X.iloc[test,:], y.iloc[test]
+        fit = clf.fit(X=X0, y=y0) # the fit occures
+        prob= fit.predict_proba(X1) #prediction before shuffles
+        scr0.loc[i]=-log_loss(y1, prob, labelslf.classes_)
+        for j in X.columns:
+            X1_ = X1.copy(deep=True)
+            np.random.shuffle(X1_[j].values) #shuffle one columns
+            prob = fit.predict_proba(X1_) #prediction after shuffle
+            scr1.loc[i,j] = -log_loss(y1, prob, labels=clf.classes_)
+    imp=(-1*scr1).add(scr0, axis=0)
+    imp = imp/(-1*scr1)
+    imp=pd.concat({'mean':imp.mean(), 'std':imp.std()*imp.shape[0]**-.5}, axis=1) #CLT
+    return imp
 
 if __name__ == '__main__':    
     X, y = getTestData(40, 5, 30, 10000, sigmaStd=.1)
@@ -57,8 +80,8 @@ if __name__ == '__main__':
     imp = featImpMDI(fit, featNames=X.columns)
     
     #print the graph Example 6.2 Example of MDI results
-imp.sort_values('mean', inplace=True)
-plt.figure(figsize=(10, imp.shape[0] / 5))
-imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
-plt.title('Figure 6.2 Example of MDI results')
-plt.show()
+    imp.sort_values('mean', inplace=True)
+    plt.figure(figsize=(10, imp.shape[0] / 5))
+    imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
+    plt.title('Figure 6.2 Example of MDI results')
+    plt.show()
