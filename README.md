@@ -116,7 +116,10 @@ The MDI algorith deals with 3 out of 4 problems with p-values:
 |:--:| 
 | *MDI algorithm example* |
 
+Figure 6.4 shows that ONC correctly recognizes that there are six relevant clusters(one cluster for each informative feature, plus one cluster of noise features), and it assigns the redundant features to the cluster that contains the informative feature from which the redundant features where derived. Given the low correlation across clusters, there is no need to replace the features with their residuals.
 | ![fig_6_6_feature_clustering.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_6_feature_clustering.png) | 
 |:--:| 
+
+Next, apply the clustered MDI method to this data.
 | *Figure 6.4 ONC clusters together with informative and redundant features.* |
     
