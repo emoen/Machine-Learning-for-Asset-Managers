@@ -152,8 +152,8 @@ if __name__ == '__main__':
     plt.show()
     
     #code snippet 6.6 - features clustering step
-X, y = getTestData(40, 5, 30, 10000, sigmaStd=.1)
-corr0, clstrs, silh = clusterKMeansBase(X.corr(), maxNumClusters=10, n_init=10)
-fig, ax = plt.subplots(figsize=(13,10))  
-sns.heatmap(corr0, cmap='viridis')
-plt.show()
+    X, y = getTestData(40, 5, 30, 10000, sigmaStd=.1)
+    corr0, clstrs, silh = clusterKMeansBase(X.corr(), maxNumClusters=10, n_init=10)
+    fig, ax = plt.subplots(figsize=(13,10))  
+    sns.heatmap(corr0, cmap='viridis')
+    plt.show()
