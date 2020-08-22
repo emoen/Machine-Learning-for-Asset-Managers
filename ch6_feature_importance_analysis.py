@@ -6,8 +6,11 @@ from sklearn.metrics import log_loss
 from sklearn.model_selection._split import KFold
 import numpy as np
 import pandas as pd
-#import seaborn as sns
+import seaborn as sns
 import statsmodels.api as sm1
+import matplotlib.pylab as plt
+
+from optimal_clustering import clusterKMeansBase 
 
 #Code snippet 6.1 generating a set of informative, redundant, and noisy explanatory variables
 # returns matrix X of training samples, and vector y of class labels for the training samples
@@ -147,3 +150,10 @@ if __name__ == '__main__':
     imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
     plt.title('Figure 6.3 Example of MDA results')
     plt.show()
+    
+    #code snippet 6.6 - features clustering step
+X, y = getTestData(40, 5, 30, 10000, sigmaStd=.1)
+corr0, clstrs, silh = clusterKMeansBase(X.corr(), maxNumClusters=10, n_init=10)
+fig, ax = plt.subplots(figsize=(13,10))  
+sns.heatmap(corr0, cmap='viridis')
+plt.show()
