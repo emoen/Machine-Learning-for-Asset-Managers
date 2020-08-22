@@ -115,4 +115,8 @@ The MDI algorith deals with 3 out of 4 problems with p-values:
 | ![fig_6_2_mdi_example.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_2_mdi_example.png) | 
 |:--:| 
 | *MDI algorithm example* |
+
+| ![fig_6_6_feature_clustering.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_6_feature_clustering.png) | 
+|:--:| 
+| *Figure 6.4 ONC clusters together with informative and redundant features.* |
     
