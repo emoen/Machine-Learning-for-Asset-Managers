@@ -25,7 +25,7 @@ def getTestData(n_features=100, n_informative=25, n_redundant=25, n_samples=1000
     i = np.random.choice(range(0, n_informative), size=n_redundant)
     for k, j in enumerate(i):
         X['R_'+str(k)] = X['I_' + str(j)] + np.random.normal(size=X.shape[0])*sigmaStd    
-    return X, y
+    return X, y 
 
 #code snippet 6.2 implementation of an ensembke MDI method
 def featImpMDI(fit, featNames):
@@ -62,18 +62,18 @@ def featImpMDA(clf, X, y, n_splits=10):
 #code snippet 6.4 - clustered MDI
 def groupMeanStd(df0, clstrs):
     out = pd.DataFrame(columns=['mean', 'std'])
-    for i, j in clstrs.iteritems():
+    for i, j in clstrs.items():
         df1 = df0[j].sum(axis=1)
         out.loc['C_'+str(i), 'mean'] = df1.mean()
-        out.loc['C_'+str(i), 'std'] = df1.std()*df1.shape[0]**-.5
+        out.loc['C_'+str(i), 'std'] = df1.std() * df1.shape[0]**-.5
     return out
 
 def featImpMDI_Clustered(fit, featNames, clstrs):
-    df0 = {i:tree.feature_importances_ for i, tree in enumerate(fit.estimator_)}
-    df0 = pd.DataFrame.from_dic(df0, orient='index')
+    df0 = {i:tree.feature_importances_ for i, tree in enumerate(fit.estimators_)}
+    df0 = pd.DataFrame.from_dict(df0, orient='index')
     df0.columns = featNames
     df0 = df0.replace(0, np.nan) #because max_features=1
-    imp = grouMeanStd(df0, clstrs)
+    imp = groupMeanStd(df0, clstrs)
     imp /= imp['mean'].sum()
     return imp
     
@@ -95,7 +95,7 @@ def featImpMDA_Clustered(clf, X, y, clstrs, n_splits=10):
             scr1.loc[i,j]=-log_loss(y1, prob, labels=clf.classes_)
         imp=(-1*scr1).add(scr0,axis=0)
         imp = imp/(-1*scr1)
-        imp = pd.concat({'mean:imp.mean(), std:imp.std()*imp.shape[0]**-.5}, axis=1)
+        imp = pd.concat({'mean':imp.mean(), 'std':imp.std()*imp.shape[0]**-.5}, axis=1)
         imp.index=['C_'+str(i) for i in imp.index]
     return imp
 
@@ -156,4 +156,25 @@ if __name__ == '__main__':
     corr0, clstrs, silh = clusterKMeansBase(X.corr(), maxNumClusters=10, n_init=10)
     fig, ax = plt.subplots(figsize=(13,10))  
     sns.heatmap(corr0, cmap='viridis')
+    plt.show()
+    
+    #code snippet 6.7 - calling the functions for clustered MDI
+    X, y = getTestData(40, 5, 30, 10000, sigmaStd=.1)
+    clf = DecisionTreeClassifier(criterion='entropy', 
+                                 max_features=1, 
+                                 class_weight='balanced', 
+                                 min_weight_fraction_leaf=0)
+                                 
+    clf = BaggingClassifier(base_estimator=clf, 
+                          n_estimators=1000, 
+                          max_features=1., 
+                          max_samples=1., 
+                          oob_score=False)
+    fit = clf.fit(X,y)
+    imp = featImpMDI_Clustered(fit, X.columns, clstrs)
+
+    imp.sort_values('mean', inplace=True)
+    plt.figure(figsize=(10, 5))
+    imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
+    plt.title('Figure 6.5 Clustered MDI')
     plt.show()
