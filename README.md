@@ -132,9 +132,6 @@ Clustered MDI works better han non-clustered MDI. Finally, apply the clustered M
 
 Conclusion: C_5 which is accosiated with noisy features is not important, and all other clusteres has similar importance.
 
-### Markowitz's curse
-The correlation matrix C is stable only when the correlation $\ro$ = 0 - when there is no correlation.
-
 ## Chapter 7 Portfolio Construction
 
 Convex portfolio optimization can calculate minimum variance portfolio and max sharp-ratio.
@@ -143,3 +140,6 @@ def Condition number: absolute value of the ratio between the maximum and minimu
 def trace = sum(diag(A)) - its the sum of the diagonal elements
 
 Highly correlated time-series implie high condition number of the correlation matrix.
+
+### Markowitz's curse
+The correlation matrix C is stable only when the correlation $\ro = 0$ - when there is no correlation.
