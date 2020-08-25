@@ -138,3 +138,5 @@ Convex portfolio optimization can calculate minimum variance portfolio and max s
 
 def Condition number: absolute value of the ratio between the maximum and minimum eigenvalues: A_n_n / A_m_m. The condition number says something about the instability of the instability caused by covariance structures.
 def trace = sum(diag(A)) - its the sum of the diagonal elements
+
+Highly correlated time-series implie high condition number of the correlation matrix.
