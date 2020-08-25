@@ -120,10 +120,30 @@ Figure 6.4 shows that ONC correctly recognizes that there are six relevant clust
 | ![fig_6_4_feature_clustering.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_4_feature_clustering.png) | 
 |:--:| 
 
-Next, apply the clustered MDI method to this data:
+Next, apply the clustered MDI method to the clustered data:
 | ![fig_6_5_clustered_MDI.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_5_clustered_MDI.png) | 
 |:--:| 
-| *Figure 6.4 ONC clusters together with informative and redundant features.* |
+| *Figure 6.5 Clustered MDI* |
 
-Finally, apply the clustered MDA method to this data:
-    
+Clustered MDI works better han non-clustered MDI. Finally, apply the clustered MDA method to this data:
+| ![fig_6_6_clustered_MDA.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_6_clustered_MDA.png) | 
+|:--:| 
+| *Figure 6.6 Clustered MDA* |
+
+Conclusion: C_5 which is accosiated with noisy features is not important, and all other clusteres has similar importance.
+
+## Chapter 7 Portfolio Construction
+
+Convex portfolio optimization can calculate minimum variance portfolio and max sharp-ratio.
+
+def Condition number: absolute value of the ratio between the maximum and minimum eigenvalues: A_n_n / A_m_m. The condition number says something about the instability of the instability caused by covariance structures.
+def trace = sum(diag(A)) - its the sum of the diagonal elements
+
+Highly correlated time-series implie high condition number of the correlation matrix.
+
+### Markowitz's curse
+The correlation matrix C is stable only when the correlation $\ro = 0$ - when there is no correlation.
+
+Hierarchical risk parity (HRP) outperforms Markowit in out-of-sample Monte-Carlo experimens, but is sub-optimal in-sample.
+
+Code-snippet 7.1 illustrates the signal-induced instability of the correlation matrix.
