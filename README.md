@@ -143,3 +143,7 @@ Highly correlated time-series implie high condition number of the correlation ma
 
 ### Markowitz's curse
 The correlation matrix C is stable only when the correlation $\ro = 0$ - when there is no correlation.
+
+Hierarchical risk parity (HRP) outperforms Markowit in out-of-sample Monte-Carlo experimens, but is sub-optimal in-sample.
+
+Code-snippet 7.1 illustrates the signal-induced instability of the correlation matrix.
