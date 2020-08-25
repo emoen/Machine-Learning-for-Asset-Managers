@@ -120,12 +120,13 @@ Figure 6.4 shows that ONC correctly recognizes that there are six relevant clust
 | ![fig_6_4_feature_clustering.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_4_feature_clustering.png) | 
 |:--:| 
 
-Next, apply the clustered MDI method to this data:
+Next, apply the clustered MDI method to the clustered data:
 | ![fig_6_5_clustered_MDI.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_5_clustered_MDI.png) | 
 |:--:| 
 | *Figure 6.5 Clustered MDI* |
 
-Finally, apply the clustered MDA method to this data:
+Clustered MDI works better han non-clustered MDI. Finally, apply the clustered MDA method to this data:
 | ![fig_6_6_clustered_MDA.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_6_clustered_MDA.png) | 
 |:--:| 
 | *Figure 6.6 Clustered MDA* |
+Conclusion: C_5 which is accosiated with noisy features is not important, and all other clusteres has similar importance.
