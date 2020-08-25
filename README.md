@@ -182,3 +182,10 @@ This demonstrates bringing down the intrablock correlation in only one of the tw
 | ![fig_7_2_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_1_block_diagonal.png) | 
 |:--:| 
 | *Figure 7.2 Heatmap of a dominant block-diagonal correlation matrix* |
+
+### The nested Clustered Optimization Algorithm (NCO)
+
+NCO provides a strategy for addressing the effect of Markowitz's curse on an existing mean-variance allocation method.
+1. step: cluster the correlation matrix
+2. step: compute optimal intracluster allocations, using the denoised covariance matrix
+
