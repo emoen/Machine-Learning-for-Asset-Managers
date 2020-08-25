@@ -129,4 +129,12 @@ Clustered MDI works better han non-clustered MDI. Finally, apply the clustered M
 | ![fig_6_6_clustered_MDA.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_6_clustered_MDA.png) | 
 |:--:| 
 | *Figure 6.6 Clustered MDA* |
+
 Conclusion: C_5 which is accosiated with noisy features is not important, and all other clusteres has similar importance.
+
+## Chapter 7 Portfolio Construction
+
+Convex portfolio optimization can calculate minimum variance portfolio and max sharp-ratio.
+
+def Condition number: absolute value of the ratio between the maximum and minimum eigenvalues: A_n_n / A_m_m. The condition number says something about the instability of the instability caused by covariance structures.
+def trace = sum(diag(A)) - its the sum of the diagonal elements
