@@ -162,3 +162,23 @@ array([[1. , 0.5, 0. , 0. ],
 | ![fig_7_1_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_1_block_diagonal.png) | 
 |:--:| 
 | *Figure 7.1 Heatmap of a block-diagonal correlation matrix* |
+
+Code-snippet 7.2 creates same block diagonal matrix but with one dominant block. However the condition number is the same.
+```
+>>> corr0 = block_diag(mc.formBlockMatrix(1,2, .5))
+>>> corr1 = mc.formBlockMatrix(1,2, .0)
+>>> corr0 = block_diag(corr0, corr1)
+>>> corr0
+array([[1. , 0.5, 0. , 0. ],
+       [0.5, 1. , 0. , 0. ],
+       [0. , 0. , 1. , 0. ],
+       [0. , 0. , 0. , 1. ]])
+>>> eVal, eVec = np.linalg.eigh(corr0)
+>>> matrix_condition_number = max(eVal)/min(eVal)
+>>> print(matrix_condition_number)
+3.0
+```
+This demonstrates bringing down the intrablock correlation in only one of the two blocks doesnt reduce the condition number. This shows that the instablility in Markowitz's solution can be traced back to the dominant blocks.
+| ![fig_7_2_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_1_block_diagonal.png) | 
+|:--:| 
+| *Figure 7.2 Heatmap of a dominant block-diagonal correlation matrix* |
