@@ -81,10 +81,10 @@ def featImpMDI_Clustered(fit, featNames, clstrs):
 def featImpMDA_Clustered(clf, X, y, clstrs, n_splits=10):
     cvGen = KFold(n_splits=n_splits)
     scr0, scr1 = pd.Series(dtype='float64'), pd.DataFrame(columns=clstrs.keys())
-    for i, (train, trest) in enumerate(cvGen.split(X=X)):
-        x0, y0, = X.iloc[train,:], y.iloc[train] 
-        x1, y1 = X.iloc[test, :], y.iloc[test]
-        fit = clt.fit(X=X0, y=y0)
+    for i, (train, test) in enumerate(cvGen.split(X=X)):
+        X0, y0, = X.iloc[train,:], y.iloc[train] 
+        X1, y1 = X.iloc[test, :], y.iloc[test]
+        fit = clf.fit(X=X0, y=y0)
         prob=fit.predict_proba(X1)
         scr0.loc[i] = -log_loss(y1, prob, labels=clf.classes_)
         for j in scr1.columns:
@@ -178,3 +178,23 @@ if __name__ == '__main__':
     imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
     plt.title('Figure 6.5 Clustered MDI')
     plt.show()
+    
+    #code snippet 6.8 - calling the functions for clustered MDA
+    clf = DecisionTreeClassifier(criterion='entropy', 
+                                 max_features=1, 
+                                 class_weight='balanced', 
+                                 min_weight_fraction_leaf=0)
+                                 
+    clf = BaggingClassifier(base_estimator=clf, 
+                          n_estimators=1000, 
+                          max_features=1., 
+                          max_samples=1., 
+                          oob_score=False)
+    fit = clf.fit(X,y)
+    imp = featImpMDA_Clustered(clf, X, y, clstrs, 10)
+
+imp.sort_values('mean', inplace=True)
+plt.figure(figsize=(10, 5))
+imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
+plt.title('Figure 6.6 Clustered MDA')
+plt.show()
