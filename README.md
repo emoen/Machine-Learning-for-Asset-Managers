@@ -123,7 +123,9 @@ Figure 6.4 shows that ONC correctly recognizes that there are six relevant clust
 Next, apply the clustered MDI method to this data:
 | ![fig_6_5_clustered_MDI.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_5_clustered_MDI.png) | 
 |:--:| 
-| *Figure 6.4 ONC clusters together with informative and redundant features.* |
+| *Figure 6.5 Clustered MDI* |
 
 Finally, apply the clustered MDA method to this data:
-    
+| ![fig_6_6_clustered_MDA.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_6_6_clustered_MDA.png) | 
+|:--:| 
+| *Figure 6.6 Clustered MDA* |
