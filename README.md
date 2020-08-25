@@ -147,3 +147,17 @@ The correlation matrix C is stable only when the correlation $\ro = 0$ - when th
 Hierarchical risk parity (HRP) outperforms Markowit in out-of-sample Monte-Carlo experimens, but is sub-optimal in-sample.
 
 Code-snippet 7.1 illustrates the signal-induced instability of the correlation matrix.
+````
+>>> corr0 = mc.formBlockMatrix(2, 2, .5)
+>>> corr0
+array([[1. , 0.5, 0. , 0. ],
+       [0.5, 1. , 0. , 0. ],
+       [0. , 0. , 1. , 0.5],
+       [0. , 0. , 0.5, 1. ]])
+>>> eVal, eVec = np.linalg.eigh(corr0)
+>>> print(max(eVal)/min(eVal))
+3.0
+```
+| ![fig_7_1_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_1_block_diagonal.png) | 
+|:--:| 
+| *Figure 7.1 Heatmap of a block-diagonal correlation matrix* |
