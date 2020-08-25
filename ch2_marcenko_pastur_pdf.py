@@ -4,6 +4,8 @@ import pandas as pd
 from sklearn.neighbors import KernelDensity
 import matplotlib.pylab as plt
 from scipy.optimize import minimize
+from scipy.linalg import block_diag
+from sklearn.covariance import LedoitWolf
 
 #snippet 2.1
 #Marcenko-Pastur pdf
@@ -78,7 +80,7 @@ def findMaxEval(eVal, q, bWidth):
     eMax = var*(1+(1./q)**.5)**2
     return eMax, var
     
-#snippet 2.5 - denoising by constant residual eigenvalue
+# code snippet 2.5 - denoising by constant residual eigenvalue
 # Remove noise from corr by fixing random eigenvalue
 # Operation invariante to trace(Correlation)
 # The Trace of a square matrix is the _Sum_ of its eigenvalues
@@ -91,7 +93,7 @@ def denoisedCorr(eVal, eVec, nFacts):
     corr1 = cov2corr(corr1) # Rescaling the correlation matrix to have 1s on the main diagonal
     return corr1
     
-# chapter 2.6 - detoning
+# code snippet 2.6 - detoning
 # ref: mlfinlab/portfolio_optimization/risk_estimators.py
 # This method assumes a sorted set of eigenvalues and eigenvectors.
 # The market component is the first eigenvector with highest eigenvalue.
@@ -125,7 +127,7 @@ def detoned_corr(corr, eigenvalues, eigenvectors, market_component=1):
     corr = cov2corr(corr)
     
     return corr
-    
+            
 def test_detone():
     # ------ Test detone --------
     cov_matrix = np.array([[0.01, 0.002, -0.001],
@@ -207,5 +209,3 @@ if __name__ == '__main__':
     plt.ylabel("Eigenvalue (log-scale)")
     plt.legend(loc="upper right")
     plt.show()
-
-    

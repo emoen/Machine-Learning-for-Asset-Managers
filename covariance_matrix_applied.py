@@ -10,7 +10,7 @@ import matplotlib.pylab as plt
 import matplotlib
 
 import marcenko_pastur_pdf as mp
-import chap2_monte_carlo_experiment as mc
+import ch2_monte_carlo_experiment as mc
 import onc as onc
 import ch5_financial_labels as fl
 

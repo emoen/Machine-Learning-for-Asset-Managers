@@ -10,7 +10,7 @@ import seaborn as sns
 import statsmodels.api as sm1
 import matplotlib.pylab as plt
 
-from optimal_clustering import clusterKMeansBase 
+from ch4_optimal_clustering import clusterKMeansBase 
 
 #Code snippet 6.1 generating a set of informative, redundant, and noisy explanatory variables
 # returns matrix X of training samples, and vector y of class labels for the training samples
@@ -193,8 +193,8 @@ if __name__ == '__main__':
     fit = clf.fit(X,y)
     imp = featImpMDA_Clustered(clf, X, y, clstrs, 10)
 
-imp.sort_values('mean', inplace=True)
-plt.figure(figsize=(10, 5))
-imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
-plt.title('Figure 6.6 Clustered MDA')
-plt.show()
+    imp.sort_values('mean', inplace=True)
+    plt.figure(figsize=(10, 5))
+    imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
+    plt.title('Figure 6.6 Clustered MDA')
+    plt.show()
