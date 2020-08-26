@@ -161,19 +161,20 @@ if __name__ == '__main__':
             
     # code snippet 2.3 - random matrix with signal
     alpha, nCols, nFact, q = .995, 1000, 100, 10
+    pdf0 = mpPDF(1., q=x.shape[0]/float(x.shape[1]), pts=N)
     cov = np.cov(np.random.normal(size=(nCols*q, nCols)), rowvar=0) #size = (1000*10,1000)
     cov = alpha*cov+(1-alpha)*getRndCov(nCols, nFact) # noise + signal
     corr0 = cov2corr(cov)
     eVal01, eVec01 = getPCA(corr0)
-    pdf2 = fitKDE(np.diag(eVal01), bWidth=.15) #empirical pdf
+    #pdf2 = fitKDE(np.diag(eVal01), bWidth=.15) #empirical pdf
 
     # Figure 2.1 Plot empirical:KDE and Marcenko-Pastur, and histogram
     fig = plt.figure()
     ax  = fig.add_subplot(111)
-    ax.hist(np.diag(eVal0), normed = True, bins=50) # Histogram the eigenvalues
+    ax.hist(np.diag(eVal01), density = True, bins=50) # Histogram the eigenvalues
 
     plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")
-    plt.plot(pdf1.keys(), pdf1, color='g', label="Empirical:KDE")
+    #plt.plot(pdf1.keys(), pdf1, color='g', label="Empirical:KDE")
     #plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
     plt.legend(loc="upper right")
     plt.show()
@@ -181,6 +182,21 @@ if __name__ == '__main__':
     # code snippet 2.4 - fitting the marcenko-pastur pdf - find variance
     eMax0, var0 = findMaxEval(np.diag(eVal01), q, bWidth=.01)
     nFacts0 = eVal01.shape[0]-np.diag(eVal01)[::-1].searchsorted(eMax0)
+
+    #code snippet 2.3 - with random matrix with signal
+    ######################
+    # Figure 2.1 Plot empirical:KDE and Marcenko-Pastur, and histogram
+    pdf0 = mpPDF(var0, q=x.shape[0]/float(x.shape[1]), pts=N)
+    fig = plt.figure()
+    ax  = fig.add_subplot(111)
+    ax.hist(np.diag(eVal01), density = True, bins=50) # Histogram the eigenvalues
+
+    plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")
+    #plt.plot(pdf1.keys(), pdf1, color='g', label="Empirical:KDE")
+    #plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
+    plt.legend(loc="upper right")
+    plt.show()    
+    ######################
 
     # code snippet 2.5 - denoising by constant residual eigenvalue
     corr1 = denoisedCorr(eVal01, eVec01, nFacts0)   

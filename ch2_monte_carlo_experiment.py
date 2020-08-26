@@ -4,7 +4,7 @@ import pandas as pd
 from scipy.linalg import block_diag
 from sklearn.covariance import LedoitWolf
 
-import marcenko_pastur_pdf as mp
+import ch2_marcenko_pastur_pdf as mp
 
 # Code snippet 2.7
 #Generate a block-diagnoal covariance matrix and a vector of means
