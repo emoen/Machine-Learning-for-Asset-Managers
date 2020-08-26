@@ -16,11 +16,11 @@ if __name__ == '__main__':
     eVal, eVec = np.linalg.eigh(corr0)
     matrix_condition_number = max(eVal)/min(eVal)
     print(matrix_condition_number) 
-    
+
     fig, ax = plt.subplots(figsize=(13,10))  
     sns.heatmap(corr0, cmap='viridis')
     plt.show()
-    
+
     # code snippet 7.2 - block-diagonal correlation matrix with a dominant block
     corr0 = block_diag(mc.formBlockMatrix(1,2, .5))
     corr1 = mc.formBlockMatrix(1,2, .0)
@@ -28,12 +28,18 @@ if __name__ == '__main__':
     eVal, eVec = np.linalg.eigh(corr0)
     matrix_condition_number = max(eVal)/min(eVal)
     print(matrix_condition_number) 
-    
+    fig, ax = plt.subplots(figsize=(13,10))  
+    sns.heatmap(corr1, cmap='viridis')
+    plt.show()
+
     # code snippet 7.3 - NCO method. Step 1. Correlation matrix clustering
+    nBlocks, bSize, bCorr = 2, 2, .5
+    np.random.seed(0)
+    mu0, cov0 = mc.formTrueMatrix(nBlocks, bSize, bCorr)
     cols = cov0.columns
-    cov1 = mp.denoisedCorr(cov0, q, bWidth=.01) #denoise cov
+    cov1 = mc.deNoiseCov(cov0, q, bWidth=.01) #denoise cov
     cov1 = pd.DataFrame(cov1, index=cols, columns=cols)
     corr1 = mp.cov2corr(cov1)
-    corr1, clstrs, silh = oc.clusterKMeansBase(corr0)
+    corr1, clstrs, silh = oc.clusterKMeansBase(pd.DataFrame(corr0))
     
     
