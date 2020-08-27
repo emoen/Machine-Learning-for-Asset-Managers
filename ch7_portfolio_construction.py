@@ -42,4 +42,11 @@ if __name__ == '__main__':
     corr1 = mp.cov2corr(cov1)
     corr1, clstrs, silh = oc.clusterKMeansBase(pd.DataFrame(corr0))
     
+    # code snippet 7.4 - intracluster optimal allocations
+    # step 2. compute intracluster allocations using the denoised cov matrix
+    wIntra = pd.DataFrame()
+    for i in clstrs:
+        wIntra.loc[clstrs[i], i] = minVarPort(cov1.loc[clstrs[i], clstrs[i]]).flatten()
+    cov2 = wIntra.T.dot(np.dot(cov1, wIntra)) #reduced covariance matrix
+    
     
