@@ -188,4 +188,6 @@ This demonstrates bringing down the intrablock correlation in only one of the tw
 NCO provides a strategy for addressing the effect of Markowitz's curse on an existing mean-variance allocation method.
 1. step: cluster the correlation matrix
 2. step: compute optimal intracluster allocations, using the denoised covariance matrix
+3. step: compute optimal intercluster allocations, using the reduced covariance matrix which is close to a diagonal matrix, so optimization problem is close to ideal 
+markowitz case when $\ro$ = 0
 
