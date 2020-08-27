@@ -4,10 +4,10 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_samples
 from sklearn.utils import check_random_state
 from scipy.linalg import block_diag
-
-import marcenko_pastur_pdf as mp
 import matplotlib.pylab as plt
 import matplotlib
+
+import ch2_marcenko_pastur_pdf as mp
 
 '''
 Optimal Number of Clusters (ONC Algorithm)
