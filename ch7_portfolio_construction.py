@@ -94,15 +94,15 @@ if __name__ == '__main__':
     mu0, cov0 = mc.formTrueMatrix(nBlocks, bSize, bCorr)
     
     # code snippet 7.7 - Drawing an empirical vector of means and covariance matrix
-nObs, nSims, shrink, minVarPortf = 1000, 1000, False, True
-np.random.seed(0)
-w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
-w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
-for i in range(0, nSims):
-    mu1, cov1 = mc.simCovMu(mu0, cov0, nObs, shrink=shrink)
-    if minVarPortf:
-        mu1 = None
-    w1.loc[i] = mc.optPort(cov1, mu1).flatten()
-    w1_d.loc[i] = optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten()
+    nObs, nSims, shrink, minVarPortf = 1000, 1000, False, True
+    np.random.seed(0)
+    w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
+    w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
+    for i in range(0, nSims):
+        mu1, cov1 = mc.simCovMu(mu0, cov0, nObs, shrink=shrink)
+        if minVarPortf:
+            mu1 = None
+        w1.loc[i] = mc.optPort(cov1, mu1).flatten()
+        w1_d.loc[i] = optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten()
     
     
