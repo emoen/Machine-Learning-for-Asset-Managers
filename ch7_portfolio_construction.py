@@ -114,5 +114,12 @@ if __name__ == '__main__':
             mu1 = None
         w1.loc[i] = mc.optPort(cov1, mu1).flatten()
         w1_d.loc[i] = optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten()
+        
+    # code snippet 7.9 - Estimation of allocation errors
+    w0 = optPort(cov0, None if minVarPortf else mu0)
+    w0 = np.repeat(w0.T, w1.shape[0], axis=0) #true allocation
+    rmsd = np.mean((w1-w0).values.flatten()**2)**.5 #RMSE
+    rmsd_d = np.mean((w1_d-w0).values.flatten()**2)**.5 #RMSE
+    
     
     
