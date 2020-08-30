@@ -191,3 +191,20 @@ NCO provides a strategy for addressing the effect of Markowitz's curse on an exi
 3. step: compute optimal intercluster allocations, using the reduced covariance matrix which is close to a diagonal matrix, so optimization problem is close to ideal 
 markowitz case when $\ro$ = 0
 
+## Chapter 8 Testing set overfitting
+
+Backtesting is a historical simulation of how an investment strategy would have performed in the past. Backtesting suffers from selection bias under multiple testing, as researchers run millions of tests on historical data and presents the best ones (overfitted). This chapter studies how to measure the effect of selection bias. 
+
+### Precision and recall
+### Precision and recall under multiple testing
+### The sharpe ratio
+### The 'False Strategy' theorem
+### Experimental results
+### The deflated sharpe ratio
+### Type II errors under multiple testing
+### The interaction between type I and type II errors
+
+
+## Appendix A: Testing on Synthetic data
+
+Either from resampling or monte carlo
