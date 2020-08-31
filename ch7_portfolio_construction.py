@@ -92,19 +92,7 @@ if __name__ == '__main__':
     nBlocks, bSize, bCorr = 10, 50, .5
     np.random.seed(0)
     mu0, cov0 = mc.formTrueMatrix(nBlocks, bSize, bCorr)
-
-    # code snippet 7.7 - Drawing an empirical vector of means and covariance matrix
-    nObs, nSims, shrink, minVarPortf = 1000, 1000, False, True
-    np.random.seed(0)
-    w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
-    w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
-    for i in range(0, nSims):
-        mu1, cov1 = mc.simCovMu(mu0, cov0, nObs, shrink=shrink)
-        if minVarPortf:
-            mu1 = None
-        w1.loc[i] = mc.optPort(cov1, mu1).flatten()
-        w1_d.loc[i] = optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten()
-        
+       
     # code snippet 7.8 - drawing an empirical vector of means and covariance matrix
     nObs, nSims, shrink, minVarPortf = 1000, 1000, False, True
     np.random.seed(0)
@@ -112,14 +100,20 @@ if __name__ == '__main__':
         mu1, cov1 = mc.simCovMu(mu0, cov0, nObs, shrink=shrink)
         if minVarPortf:
             mu1 = None
-        w1.loc[i] = mc.optPort(cov1, mu1).flatten()
-        w1_d.loc[i] = optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten()
+        w1.loc[i] = mc.optPort(cov1, mu1).flatten() #markowitc
+        w1_d.loc[i] = optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten() #nco
         
     # code snippet 7.9 - Estimation of allocation errors
-    w0 = optPort(cov0, None if minVarPortf else mu0)
+    w0 = mc.optPort(cov0, None if minVarPortf else mu0)
     w0 = np.repeat(w0.T, w1.shape[0], axis=0) #true allocation
     rmsd = np.mean((w1-w0).values.flatten()**2)**.5 #RMSE
     rmsd_d = np.mean((w1_d-w0).values.flatten()**2)**.5 #RMSE
+    '''
+    >>> rmsd
+    0.020737753489610305 #markowitc
+    >>> rmsd_d
+    0.015918559234396952 #nco
+    '''
     
     
     
