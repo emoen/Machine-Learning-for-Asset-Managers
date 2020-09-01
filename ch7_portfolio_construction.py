@@ -14,6 +14,7 @@ def minVarPort(cov):
     return mc.optPort(cov, mu = None)
 
 # code snippet 7.6 - function implementing the NCO algorithm
+# Long only portfolio uses allocate_cvo()
 def optPort_nco(cov, mu=None, maxNumClusters=None):
     cov = pd.DataFrame(cov)
     if mu is not None:
@@ -23,18 +24,55 @@ def optPort_nco(cov, mu=None, maxNumClusters=None):
     corr1, clstrs, _ = oc.clusterKMeansBase(corr1, maxNumClusters, n_init=10)
     wIntra = pd.DataFrame(0, index=cov.index, columns=clstrs.keys())
     for i in clstrs:
-        cov_ = cov.loc[clstrs[i], clstrs[i]].values
+        cov_cluster = cov.loc[clstrs[i], clstrs[i]].values
         if mu is None:
-            mu_ = None
+            mu_cluster = None
         else: 
-            mu_ = mu.loc[clstrs[i]].values.reshape(-1,1)
-        wIntra.loc[clstrs[i],i] = mc.optPort(cov_, mu_).flatten()
+            mu_cluster = mu.loc[clstrs[i]].values.reshape(-1,1)
+        
+        #wIntra.loc[clstrs[i],i] = mc.optPort(cov_cluster, mu_cluster).flatten()
+        
+        # Estimating the Convex Optimization Solution in a cluster (step 2)
+        w_intra_clusters.loc[clusters[i], i] = allocate_cvo(cov_cluster, mu_cluster).flatten()        
     
-    cov_ = wIntra.T.dot(np.dot(cov, wIntra)) #reduce covariance matrix
-    mu_ = (None if mu is None else wIntra.T.dot(mu))
-    wInter = pd.Series(mc.optPort(cov_, mu_).flatten(), index=cov_.index)
+    cov_inter_cluster = wIntra.T.dot(np.dot(cov, wIntra)) #reduce covariance matrix
+    mu_inter_cluster = (None if mu is None else wIntra.T.dot(mu))
+    
+    #wInter = pd.Series(mc.optPort(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)
+    # Optimal allocations across the reduced covariance matrix (step 3)
+    w_inter_clusters = pd.Series(self.allocate_cvo(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)    
+    
     nco = wIntra.mul(wInter, axis=1).sum(axis=1).values.reshape(-1,1)
     return nco
+    
+def allocate_cvo(cov, mu_vec=None):
+    """
+    Estimates the Convex Optimization Solution (CVO).
+    Uses the covariance matrix and the mu - optimal solution.
+    If mu is the vector of expected values from variables, the result will be
+    a vector of weights with maximum Sharpe ratio.
+    If mu is a vector of ones, the result will be a vector of weights with
+    minimum variance.
+    :param cov: (np.array) Covariance matrix of the variables.
+    :param mu_vec: (np.array) Expected value of draws from the variables for maximum Sharpe ratio.
+                          None if outputting the minimum variance portfolio.
+    :return: (np.array) Weights for optimal allocation.
+    """
+
+    # Calculating the inverse covariance matrix
+    inv_cov = np.linalg.inv(cov)
+
+    # Generating a vector of size of the inverted covariance matrix
+    ones = np.ones(shape=(inv_cov.shape[0], 1))
+
+    if mu_vec is None:  # To output the minimum variance portfolio
+        mu_vec = ones
+
+    # Calculating the analytical solution using CVO - weights
+    w_cvo = np.dot(inv_cov, mu_vec)
+    w_cvo /= np.dot(mu_vec.T, w_cvo)
+
+    return w_cvo    
    
 if __name__ == '__main__': 
     # code snippet 7.1 - Composition of block-diagonal correlation matric
@@ -96,6 +134,8 @@ if __name__ == '__main__':
     # code snippet 7.8 - drawing an empirical vector of means and covariance matrix
     nObs, nSims, shrink, minVarPortf = 1000, 1000, False, True
     np.random.seed(0)
+    w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))	
+    w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
     for i in range(0, nSims):
         mu1, cov1 = mc.simCovMu(mu0, cov0, nObs, shrink=shrink)
         if minVarPortf:

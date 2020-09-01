@@ -9,10 +9,11 @@ import math
 import matplotlib.pylab as plt
 import matplotlib
 
-import marcenko_pastur_pdf as mp
+import ch_2_marcenko_pastur_pdf as mp
 import ch2_monte_carlo_experiment as mc
 import onc as onc
 import ch5_financial_labels as fl
+import ch7_portfolio_construction as pc
 
 import trend_scanning as ts
 
@@ -301,6 +302,14 @@ if __name__ == '__main__':
     pnames[np.argmax(tValLatest)]
     
     plt.scatter(ticker_close.index, S[:,78], c=abc[78], cmap='viridis')
+
+    # Chapter 7 - apply the Nested Clustered Optimization (NCO) algorithm
+    T, N = 237, 235
+    #x = np.random.normal(0, 1, size = (T, N))
+    S, pnames = get_OL_tickers_close(T, N)
+    nSims, nObs, shrink, minVarPortf = T, N, False, True
+    w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
+    w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
+    w1.loc[i] = mc.optPort(cov1, mu1).flatten()
+    w1_d.loc[i] = pc.optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten()
     
-    import doctest
-    doctest.testmod()
