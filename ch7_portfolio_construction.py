@@ -15,6 +15,7 @@ def minVarPort(cov):
 
 # code snippet 7.6 - function implementing the NCO algorithm
 # Long only portfolio uses allocate_cvo()
+# Method assumes input - detoned covariance matrix
 def optPort_nco(cov, mu=None, maxNumClusters=None):
     cov = pd.DataFrame(cov)
     if mu is not None:
@@ -22,7 +23,8 @@ def optPort_nco(cov, mu=None, maxNumClusters=None):
     
     corr1 = mp.cov2corr(cov)
     corr1, clstrs, _ = oc.clusterKMeansBase(corr1, maxNumClusters, n_init=10)
-    wIntra = pd.DataFrame(0, index=cov.index, columns=clstrs.keys())
+    #wIntra = pd.DataFrame(0, index=cov.index, columns=clstrs.keys())
+    w_intra_clusters = pd.DataFrame(0, index=cov.index, columns=clstrs.keys())
     for i in clstrs:
         cov_cluster = cov.loc[clstrs[i], clstrs[i]].values
         if mu is None:
@@ -33,16 +35,16 @@ def optPort_nco(cov, mu=None, maxNumClusters=None):
         #wIntra.loc[clstrs[i],i] = mc.optPort(cov_cluster, mu_cluster).flatten()
         
         # Estimating the Convex Optimization Solution in a cluster (step 2)
-        w_intra_clusters.loc[clusters[i], i] = allocate_cvo(cov_cluster, mu_cluster).flatten()        
+        w_intra_clusters.loc[clstrs[i], i] = allocate_cvo(cov_cluster, mu_cluster).flatten()        
     
-    cov_inter_cluster = wIntra.T.dot(np.dot(cov, wIntra)) #reduce covariance matrix
-    mu_inter_cluster = (None if mu is None else wIntra.T.dot(mu))
+    cov_inter_cluster = w_intra_clusters.T.dot(np.dot(cov, w_intra_clusters)) #reduce covariance matrix
+    mu_inter_cluster = (None if mu is None else w_intra_clusters.T.dot(mu))
     
     #wInter = pd.Series(mc.optPort(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)
     # Optimal allocations across the reduced covariance matrix (step 3)
-    w_inter_clusters = pd.Series(self.allocate_cvo(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)    
+    w_inter_clusters = pd.Series(allocate_cvo(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)    
     
-    nco = wIntra.mul(wInter, axis=1).sum(axis=1).values.reshape(-1,1)
+    nco = w_intra_clusters.mul(wInter, axis=1).sum(axis=1).values.reshape(-1,1)
     return nco
     
 def allocate_cvo(cov, mu_vec=None):
@@ -58,20 +60,20 @@ def allocate_cvo(cov, mu_vec=None):
                           None if outputting the minimum variance portfolio.
     :return: (np.array) Weights for optimal allocation.
     """
-
+    
     # Calculating the inverse covariance matrix
     inv_cov = np.linalg.inv(cov)
-
+    
     # Generating a vector of size of the inverted covariance matrix
     ones = np.ones(shape=(inv_cov.shape[0], 1))
-
+    
     if mu_vec is None:  # To output the minimum variance portfolio
         mu_vec = ones
-
+    
     # Calculating the analytical solution using CVO - weights
     w_cvo = np.dot(inv_cov, mu_vec)
     w_cvo /= np.dot(mu_vec.T, w_cvo)
-
+    
     return w_cvo    
    
 if __name__ == '__main__': 
@@ -134,8 +136,8 @@ if __name__ == '__main__':
     # code snippet 7.8 - drawing an empirical vector of means and covariance matrix
     nObs, nSims, shrink, minVarPortf = 1000, 1000, False, True
     np.random.seed(0)
-    w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))	
-    w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
+    w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, nBlocks*bSize))	
+    w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, nBlocks*bSize))
     for i in range(0, nSims):
         mu1, cov1 = mc.simCovMu(mu0, cov0, nObs, shrink=shrink)
         if minVarPortf:

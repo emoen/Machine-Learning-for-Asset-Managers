@@ -9,13 +9,15 @@ import math
 import matplotlib.pylab as plt
 import matplotlib
 
-import ch_2_marcenko_pastur_pdf as mp
+import ch2_marcenko_pastur_pdf as mp
 import ch2_monte_carlo_experiment as mc
 import onc as onc
 import ch5_financial_labels as fl
 import ch7_portfolio_construction as pc
 
 import trend_scanning as ts
+
+import ch2_fitKDE_find_best_bandwidth as best_bandwidth
 
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
@@ -307,9 +309,20 @@ if __name__ == '__main__':
     T, N = 237, 235
     #x = np.random.normal(0, 1, size = (T, N))
     S, pnames = get_OL_tickers_close(T, N)
-    nSims, nObs, shrink, minVarPortf = T, N, False, True
-    w1 = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
-    w1_d = pd.DataFrame(0, index=range(0, nSims), columns=range(0, len(cov1[1])))
-    w1.loc[i] = mc.optPort(cov1, mu1).flatten()
-    w1_d.loc[i] = pc.optPort_nco(cov1, mu1, int(cov1.shape[0]/2)).flatten()
+    np.argwhere(np.isnan(S))
+    S[204, 109]=S[203, 109]
+
+    cov0 = np.cov(S, rowvar=0, ddof=1)
+    q = float(S.shape[0])/float(S.shape[1])#T/N
+    #eMax0, var0 = mp.findMaxEval(np.diag(eVal0), q, bWidth=.01)
+
+    corr0 = mp.cov2corr(cov0)
+    eVal0, eVec0 = mp.getPCA(corr0)
+    bWidth = best_bandwidth.findOptimalBWidth(np.diag(eVal0))
+    bWidth=0.1
+    cov1_d = mc.deNoiseCov(cov0, q, bWidth)
+    mu1 = None
+
+    min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
+    min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
     
