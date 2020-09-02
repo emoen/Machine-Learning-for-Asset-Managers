@@ -325,7 +325,7 @@ if __name__ == '__main__':
     # Test if bWidth found makes sense
     pdf0 = mp.mpPDF(1., q=T/float(N), pts=N)
     pdf1 = mp.fitKDE(np.diag(eVal0), bWidth=bWidth['bandwidth']) #empirical pdf
-    pdf1 = mp.fitKDE(np.diag(eVal0), bWidth=0.1)
+    #pdf1 = mp.fitKDE(np.diag(eVal0), bWidth=0.1)
 
     fig = plt.figure()
     ax  = fig.add_subplot(111)
@@ -334,12 +334,12 @@ if __name__ == '__main__':
     plt.plot(pdf1.keys(), pdf1, color='g', label="Empirical:KDE")
     plt.legend(loc="upper right")
     plt.show()
-    
-    N = 100
-    T = 1000
+        
+    N = 1000
+    T = 10000
     x = np.random.normal(0, 1, size = (T, N))
     cor = np.corrcoef(x, rowvar=0)
-    eVal0, eVec0 = mp.getPCA(corr0)
+    eVal0, eVec0 = mp.getPCA(cor)
     bWidth = best_bandwidth.findOptimalBWidth(np.diag(eVal0))
     #{'bandwidth': 4.328761281083057}
     ###############
