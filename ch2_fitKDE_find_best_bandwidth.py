@@ -24,6 +24,8 @@ grid search tools. Here we will use GridSearchCV to optimize the
 bandwidth for the preceding dataset. Because we are looking at such a small dataset, 
 we will use leave-one-out cross-validation, which minimizes the reduction in 
 training set size for each cross-validation trial:
+
+https://jakevdp.github.io/PythonDataScienceHandbook/05.13-kernel-density-estimation.html
 '''
 
 ''' This is also excersize 2.7 in the book:
