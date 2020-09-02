@@ -44,7 +44,7 @@ def optPort_nco(cov, mu=None, maxNumClusters=None):
     # Optimal allocations across the reduced covariance matrix (step 3)
     w_inter_clusters = pd.Series(allocate_cvo(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)    
     
-    nco = w_intra_clusters.mul(wInter, axis=1).sum(axis=1).values.reshape(-1,1)
+    nco = w_intra_clusters.mul(w_intra_clusters, axis=1).sum(axis=1).values.reshape(-1,1)
     return nco
     
 def allocate_cvo(cov, mu_vec=None):
