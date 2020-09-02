@@ -20,6 +20,14 @@ Denoising a random matrix with signal using the constant residual eigenvalue met
 
 Detoned covariance matrix can be used to calculate minimum variance portfolio. The efficient frontier is the upper portion of the minimum variance frontier starting at the minimum variance portfolio. A denoised covariance matrix is less unstable to change.
 
+Note: Excersize 2.7: "Extend function fitKDE in code snippet 2.2, so that it estimates through
+cross-validation the optimal value of bWidth (bandwidth)".
+
+The script ch2_fitKDE_find_bandwidth.py implements this procedure and produces the (green) KDE in figure 2.3:
+| ![gaussian_mp_excersize_2_7.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/gaussian_mp_excersize_2_7.png) | 
+|:--:| 
+| *Figure 2.3:  Calculated bandwidth(green line) together with histogram, and pdf. The green line is smoother. Bandwidth found: 0.03511191734215131 * |
+
 ## Chapter 3 Distance Metrics
 
 * definition of a metric: 
