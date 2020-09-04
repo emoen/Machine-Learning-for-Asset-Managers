@@ -28,6 +28,13 @@ The script ch2_fitKDE_find_bandwidth.py implements this procedure and produces t
 |:--:| 
 | *Figure 2.3:  Calculated bandwidth(green line) together with histogram, and pdf. The green line is smoother. Bandwidth found: 0.03511191734215131* |
 
+From code snippet 2.3 -  with random matrix with signal: the histogram is how the eigenvalues of a random matrix with signal is distributed. Then the variance of the theoretical probability density function is calculated using the $fitKDE$ as the empirical probability density function. So finding a good value for bandwidth in fitKDE is needed to find the likeliest variance of the theoretical mp-pdf.
+| ![fig_2_3_mp_with_signal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_2_3_mp_with_signal.png) | 
+|:--:| 
+| *Figure 2.4: histogram and pdf of eigenvalues with signal* |
+
+
+
 ## Chapter 3 Distance Metrics
 
 * definition of a metric: 
