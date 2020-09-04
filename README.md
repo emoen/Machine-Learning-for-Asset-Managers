@@ -10,15 +10,30 @@ The project is for my own learning. If you want to use the consepts from the boo
 Marcenko-Pasture theoretical probability density function, and empirical density function:
 | ![marcenko-pastur.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/gaussian_mp.png) | 
 |:--:| 
-| *Marcenko-Pasture theoretical probability density function, and empirical density function:* |
+| *Figure 2.1:Marcenko-Pasture theoretical probability density function, and empirical density function:* |
 
 
 Denoising a random matrix with signal using the constant residual eigenvalue method. This is done by fixing random eigenvalues. See code snippet 2.5
 | ![eigenvalue_method.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/figure_2_3_eigenvalue_method.png) | 
 |:--:| 
-| *A comparison of eigenvalues before and after applying the residual eigenvalue method:* |
+| *Figure 2.2: A comparison of eigenvalues before and after applying the residual eigenvalue method:* |
 
 Detoned covariance matrix can be used to calculate minimum variance portfolio. The efficient frontier is the upper portion of the minimum variance frontier starting at the minimum variance portfolio. A denoised covariance matrix is less unstable to change.
+
+Note: Excersize 2.7: "Extend function fitKDE in code snippet 2.2, so that it estimates through
+cross-validation the optimal value of bWidth (bandwidth)".
+
+The script ch2_fitKDE_find_bandwidth.py implements this procedure and produces the (green) KDE in figure 2.3:
+| ![gaussian_mp_excersize_2_7.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/gaussian_mp_excersize_2_7.png) | 
+|:--:| 
+| *Figure 2.3:  Calculated bandwidth(green line) together with histogram, and pdf. The green line is smoother. Bandwidth found: 0.03511191734215131* |
+
+From code snippet 2.3 -  with random matrix with signal: the histogram is how the eigenvalues of a random matrix with signal is distributed. Then the variance of the theoretical probability density function is calculated using the $fitKDE$ as the empirical probability density function. So finding a good value for bandwidth in fitKDE is needed to find the likeliest variance of the theoretical mp-pdf.
+| ![fig_2_3_mp_with_signal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_2_3_mp_with_signal.png) | 
+|:--:| 
+| *Figure 2.4: histogram and pdf of eigenvalues with signal* |
+
+
 
 ## Chapter 3 Distance Metrics
 
