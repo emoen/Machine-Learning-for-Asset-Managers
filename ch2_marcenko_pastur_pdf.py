@@ -173,11 +173,11 @@ if __name__ == '__main__':
     ax  = fig.add_subplot(111)
     ax.hist(np.diag(eVal01), density = True, bins=50) # Histogram the eigenvalues
 
-    plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")
+    #plt.plot(pdf0.keys(), pdf0, color='r', label="Marcenko-Pastur pdf")
     #plt.plot(pdf1.keys(), pdf1, color='g', label="Empirical:KDE")
     #plt.plot(x_range, pdf2, color='b', label="Eigenvalues of random-matrix with signal")
-    plt.legend(loc="upper right")
-    plt.show()
+    #plt.legend(loc="upper right")
+    #plt.show()
 
     # code snippet 2.4 - fitting the marcenko-pastur pdf - find variance
     eMax0, var0 = findMaxEval(np.diag(eVal01), q, bWidth=.01)
