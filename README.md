@@ -215,6 +215,8 @@ Backtesting is a historical simulation of how an investment strategy would have 
 ### The sharpe ratio
 ### The 'False Strategy' theorem
 ### Experimental results
+
+A monte carlo experiment shows that the distribution of the max sharp ratio increases (E[max(sharp_ratio)] = 3.26) even when the expected sharp ratio is 0 (E[sharp_ratio]). So an investment strategy will seem promissing even when there are no good strategy.
 ### The deflated sharpe ratio
 ### Type II errors under multiple testing
 ### The interaction between type I and type II errors
