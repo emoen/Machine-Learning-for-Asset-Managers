@@ -194,7 +194,7 @@ array([[1. , 0.5, 0. , 0. ],
 3.0
 ```
 This demonstrates bringing down the intrablock correlation in only one of the two blocks doesnt reduce the condition number. This shows that the instablility in Markowitz's solution can be traced back to the dominant blocks.
-| ![fig_7_2_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_1_block_diagonal.png) | 
+| ![fig_7_2_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_2_block_diagonal.png) | 
 |:--:| 
 | *Figure 7.2 Heatmap of a dominant block-diagonal correlation matrix* |
 
