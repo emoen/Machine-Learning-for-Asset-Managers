@@ -194,7 +194,7 @@ array([[1. , 0.5, 0. , 0. ],
 3.0
 ```
 This demonstrates bringing down the intrablock correlation in only one of the two blocks doesnt reduce the condition number. This shows that the instablility in Markowitz's solution can be traced back to the dominant blocks.
-| ![fig_7_2_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_1_block_diagonal.png) | 
+| ![fig_7_2_block_diagonal.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_7_2_block_diagonal.png) | 
 |:--:| 
 | *Figure 7.2 Heatmap of a dominant block-diagonal correlation matrix* |
 
@@ -215,6 +215,8 @@ Backtesting is a historical simulation of how an investment strategy would have 
 ### The sharpe ratio
 ### The 'False Strategy' theorem
 ### Experimental results
+
+A monte carlo experiment shows that the distribution of the max sharp ratio increases (E[max(sharp_ratio)] = 3.26) even when the expected sharp ratio is 0 (E[sharp_ratio]). So an investment strategy will seem promissing even when there are no good strategy.
 ### The deflated sharpe ratio
 ### Type II errors under multiple testing
 ### The interaction between type I and type II errors
