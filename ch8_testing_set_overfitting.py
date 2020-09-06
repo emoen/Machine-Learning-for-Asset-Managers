@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import norm, percentileofscore
+import scipy.stats as ss
 
 
 
@@ -49,6 +50,18 @@ def getMeanStdError(nSims0, nSims1, nTrials, stdSR=1, meanSR=0):
     out['stdErr'] = err.groupby('nTrials')['err'].std()
     out = pd.DataFrame.from_dict(out, orient='columns')
     return out
+    
+# code snippet 8.3 - Type I (False positive), with numerical example (Type II False negative)
+def getZStat(sr, t, sr_=0, skew=0, kurt=3):
+    z = (sr-sr_)*(t-1)**.5
+    z /= (1-skew*sr+(kurt-1)/4.*sr**2)**.5
+    return z
+    
+def type1Err(z, k=1):
+    #false positive rate
+    alpha = ss.norm.cdf(-z)
+    alpha_k = 1-(1-alpha)**k #multi-testing correction
+    return alpha_k
 
 
 if __name__ == '__main__': 
@@ -80,3 +93,14 @@ if __name__ == '__main__':
     nTrials=list(set(np.logspace(1, 6, 1000).astype(int)))
     nTrials.sort()
     stats=getMeanStdError(nSims0=1000, nSims1=100, nTrials=nTrials, stdSR=1)
+    
+    # code snippet 8.3
+    #Numerical example
+    t, skew, kurt, k, freq=1250, -3, 10, 10, 250
+    sr = 1.25/freq**.5
+    sr_ = 1./freq**.5
+    z = getZStat(sr, t, 0, skew, kurt)
+    alpha_k = type1Err(z, k=k)
+    print(alpha_k)
+    #>>> print(alpha_k)
+    #0.060760769078662125
