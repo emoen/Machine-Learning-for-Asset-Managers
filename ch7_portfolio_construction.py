@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import block_diag
 import matplotlib.pyplot as mp1
-import seaborn as sns
+#import seaborn as sns
 
 import ch2_monte_carlo_experiment as mc
 import ch2_marcenko_pastur_pdf as mp
