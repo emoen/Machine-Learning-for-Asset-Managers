@@ -1,9 +1,8 @@
 import numpy as np
+#import cupy as np
 import pandas as pd
 from scipy.stats import norm, percentileofscore
 import scipy.stats as ss
-
-
 
 # code snippet 8.1 - experimental validation of the false strategy theorem
 def getExpectedMaxSR(nTrials, meanSR, stdSR):
@@ -63,6 +62,17 @@ def type1Err(z, k=1):
     alpha_k = 1-(1-alpha)**k #multi-testing correction
     return alpha_k
 
+# code snippet 8.4 - Type II error (false negative) - with numerical example
+def getTheta(sr, t, sr_=0., skew=0., kurt=3):
+    theta = sr_*(t-1)**.5
+    theta /= (1-skew*sr+(kurt-1)/.4*sr**2)**.5
+    return theta
+    
+def type2Err(alpha_k, k, theta):
+    #false negative rate
+    z = ss.norm.ppf((1-alpha_k)**(1./k)) #Sidak's correction
+    beta = ss.norm.cdf(z-theta)
+    return beta
 
 if __name__ == '__main__': 
     nTrials = list(set(np.logspace(1, 6, 1000).astype(int)))
@@ -104,3 +114,19 @@ if __name__ == '__main__':
     print(alpha_k)
     #>>> print(alpha_k)
     #0.060760769078662125
+    
+    # code snippet 8.4 
+    #numerical example
+    t, skew, kurt, k, freq = 1250, -3, 10, 10, 250
+    sr = 1.25/freq**.5
+    sr_ = 1./freq**.5
+    z = getZStat(sr, t, 0, skew, kurt)
+    alpha_k = type1Err(z, k=k)
+    theta = getTheta(sr, t, sr_, skew, kurt)
+    beta = type2Err(alpha_k, k, theta)
+    beta_k = beta**k
+    print(beta_k)
+    #>>> beta_k
+    #0.039348420332089205
+    
+    
