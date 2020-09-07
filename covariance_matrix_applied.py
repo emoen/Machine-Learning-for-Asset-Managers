@@ -84,7 +84,7 @@ def denoise_OL(S, do_plot=True):
     if do_plot:
         fig = plt.figure()
         ax  = fig.add_subplot(111)
-        ax.hist(np.diag(eVal0), bins=100) #, normed = True)  #normed = True, 
+        ax.hist(np.diag(eVal0), density = True, bins=100) #, normed = True)  #normed = True, 
         
         pdf0 = mp.mpPDF(var0, q=S.shape[0]/float(S.shape[1]), pts=N)
         pdf1 = mp.fitKDE( np.diag(eVal0), bWidth=.005) #empirical pdf
@@ -306,6 +306,24 @@ if __name__ == '__main__':
     plt.scatter(ticker_close.index, S[:,78], c=abc[78], cmap='viridis')
 
     # Chapter 7 - apply the Nested Clustered Optimization (NCO) algorithm
+    N = 234 
+    T = 936
+    S, instrument_returns = calculate_returns(S_value)
+    _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
+    np.argsort(instrument_returns)
+    #26,  84, 167,  35,  76, 169,  31, 137,  28,  64,  36,  37,  92, 116], dtype=int64)
+    
+    eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S)
+    q = float(S.shape[0])/float(S.shape[1])#T/N
+    bWidth = best_bandwidth.findOptimalBWidth(np.diag(eVal0))
+    cov1_d = mc.deNoiseCov(np.cov(S), q, bWidth['bandwidth'])
+    
+    mu1 = None
+    min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
+    min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
+
+
+    ########
     T, N = 237, 235
     #x = np.random.normal(0, 1, size = (T, N))
     S, pnames = get_OL_tickers_close(T, N)
@@ -319,6 +337,9 @@ if __name__ == '__main__':
     corr0 = mp.cov2corr(cov0)
     eVal0, eVec0 = mp.getPCA(corr0)
     bWidth = best_bandwidth.findOptimalBWidth(np.diag(eVal0))
+    
+    min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
+    min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
     
     
     ##################
