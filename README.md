@@ -213,7 +213,13 @@ Backtesting is a historical simulation of how an investment strategy would have 
 ### Precision and recall
 ### Precision and recall under multiple testing
 ### The sharpe ratio
+
+Sharpe ratio = mu/sigma
+
 ### The 'False Strategy' theorem
+
+A researcher may run many historical simulations and report only the best one (max sharp ratio). The distribution of max sharpe ratio is not the same as the expected sharpe ratio. Hence selection bias under multiple replications (SBuMT).
+
 ### Experimental results
 
 A monte carlo experiment shows that the distribution of the max sharp ratio increases (E[max(sharp_ratio)] = 3.26) even when the expected sharp ratio is 0 (E[sharp_ratio]). So an investment strategy will seem promissing even when there are no good strategy.
