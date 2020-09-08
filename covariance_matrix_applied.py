@@ -177,6 +177,42 @@ def calculate_returns( S, percentageAsProduct=False ):
     
     return ret, cum_sums
     
+def testNCO():
+    # Chapter 7 - apply the Nested Clustered Optimization (NCO) algorithm
+    N = 5
+    T = 5
+    S_value = np.array([[1.,2,3,4,5],
+                    [1.1,3,2,3,5],
+                    [1.2,4.,1.3,4,5],
+                    [1.3,5,1,3,5],
+                    [1.4,6,1,4,5.5],
+                    [1.5,7,1,3,5.5]])
+    S, instrument_returns = calculate_returns(S_value)
+    _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
+    np.argsort(instrument_returns)
+    #array([2, 3, 4, 0, 1], dtype=int64)
+    instrument_returns
+    #array([ 0.5       ,  2.5       , -0.66666667, -0.25      ,  0.1       ])
+    
+    eVal0, _ = getPCA(np.cov(S_value,rowvar=0, ddof=1))
+    #eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S_value)
+    q = float(S.shape[0])/float(S.shape[1])#T/N
+    bWidth = best_bandwidth.findOptimalBWidth(np.diag(eVal0))
+    #cov1_d = mc.deNoiseCov(np.cov(S_value,rowvar=0, ddof=1), q, bWidth['bandwidth'])
+    
+    mu1 = None
+    cov1_d = np.cov(S,rowvar=0, ddof=1)
+    min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
+    min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()      
+    '''
+    >>> min_var_markowitz
+    array([ 1.06869282, -0.05708545,  0.03451679,  0.00133102, -0.04745517])
+    >>> min_var_NCO
+    array([1.18787119, 0.00808112, 0.02246385, 0.00876234, 1.54625948])
+    >>> instrument_returns
+    array([ 0.5       ,  2.5       , -0.66666667, -0.25      ,  0.1       ])
+    '''    
+    
 if __name__ == '__main__':
     N = 234 #3
     T = 936

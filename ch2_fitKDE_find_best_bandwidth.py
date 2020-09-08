@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 from sklearn.neighbors import KernelDensity
 from sklearn.model_selection import learning_curve,GridSearchCV
