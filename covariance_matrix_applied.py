@@ -19,6 +19,8 @@ import trend_scanning as ts
 
 import ch2_fitKDE_find_best_bandwidth as best_bandwidth
 
+import nco as nco
+
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
 #Review: [Book] Commented summary of Machine Learning for Asset Managers by Marcos Lopez de Prado
@@ -182,11 +184,11 @@ def testNCO():
     N = 5
     T = 5
     S_value = np.array([[1.,2,3,4,5],
-                    [1.1,3,2,3,5],
-                    [1.2,4.,1.3,4,5],
-                    [1.3,5,1,3,5],
-                    [1.4,6,1,4,5.5],
-                    [1.5,7,1,3,5.5]])
+                        [1.1,3,2,3,5],
+                        [1.2,4.,1.3,4,5],
+                        [1.3,5,1,3,5],
+                        [1.4,6,1,4,5.5],
+                        [1.5,7,1,3,5.5]])
     S, instrument_returns = calculate_returns(S_value)
     _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
     np.argsort(instrument_returns)
@@ -204,6 +206,10 @@ def testNCO():
     cov1_d = np.cov(S,rowvar=0, ddof=1)
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()      
+    mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
+
+    cov1_d = np.cov(S_value,rowvar=0, ddof=1)    
+    mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
     '''
     >>> min_var_markowitz
     array([ 1.06869282, -0.05708545,  0.03451679,  0.00133102, -0.04745517])
@@ -211,6 +217,11 @@ def testNCO():
     array([1.18787119, 0.00808112, 0.02246385, 0.00876234, 1.54625948])
     >>> instrument_returns
     array([ 0.5       ,  2.5       , -0.66666667, -0.25      ,  0.1       ])
+    >>> mlfinlab_NCO
+    array([-0.27372046,  0.00308304,  0.00840394,  0.56060186,  0.70163162])
+    #on S_value - so the time series
+    >>> mlfinlab_NCO
+    array([ 1.11111111e+00, -1.11111111e-01, -1.60963389e-17,  8.99486247e-17, -6.97001845e-17])
     '''    
     
 if __name__ == '__main__':
@@ -357,6 +368,7 @@ if __name__ == '__main__':
     mu1 = None
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
+    
 
     '''>>> np.argsort(min_var_markowitz)
     array([ 22,  10, 115, 151, 158, 175,  83,  23, 180, 102,  62,  57, 119,
