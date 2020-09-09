@@ -355,6 +355,7 @@ if __name__ == '__main__':
     # Chapter 7 - apply the Nested Clustered Optimization (NCO) algorithm
     N = 234 
     T = 936
+    S_value = np.loadtxt('csv/ol184.csv', delimiter=',')
     S, instrument_returns = calculate_returns(S_value)
     _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
     np.argsort(instrument_returns)
@@ -369,6 +370,11 @@ if __name__ == '__main__':
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
     
+    # calulate on time-series not returns
+    cov1_d = np.cov(S_value,rowvar=0, ddof=1)   
+    min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
+    min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
+    #note pnames = pnames[1:] - first element is obx
 
     '''>>> np.argsort(min_var_markowitz)
     array([ 22,  10, 115, 151, 158, 175,  83,  23, 180, 102,  62,  57, 119,
