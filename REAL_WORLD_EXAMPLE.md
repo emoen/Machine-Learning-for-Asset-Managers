@@ -112,8 +112,8 @@ Return on investment and volatility (std)
 | function/stock | 0   | 1  | 2  | 3 | 4   | 
 |----------------|-----|----|----|---|-----|
 | ROI            | .5  | .1 | -.67 | -.25 | .1  | 
-| Volatility     | .01 | .04|, .15 | .29  | .04 | 
-| markowitz      | .01 | .04|, .15 | .29  | .04 | 
+| Volatility     | .01 | .04| .15  | .29  | .04 | 
+| markowitz      | 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
 
 Covariance matrix:
 | stock/stock | 0   | 1  | 2  | 3 | 4   | 
