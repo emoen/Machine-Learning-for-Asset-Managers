@@ -107,5 +107,6 @@ Lets compare markowitz minimum variance portfolio with minimum variance portfoli
 | t.5             | 1.4 | 1 | 1  | 4 | 5.5 | 
 | t.6             | 1.5 | 1 | 1  | 3 | 5.5 | 
 |:--:| 
+| * * |
 
 
