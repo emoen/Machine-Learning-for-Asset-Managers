@@ -94,3 +94,48 @@ Running the ONC algorith on Oslo Børs with 183 instruments and time frame 934:
 |:--:| 
 | * There are 2 clusters. A small cluster of 8 instruments which are the salmon farming companies like AUSS.ol, BAKKA.ol, GSF.ol, LSG.ol and SALM.ol: * |
 
+## Chapter 7 Portfolio Construction
+
+### Markowitz Portfolio and NCO Example
+
+Lets compare markowitz minimum variance portfolio with minimum variance portfolio from NCO algorithm on a small worked example of 5 stock time series.
+| time-step/stock | 0   | 1 | 2  | 3 | 4   | 
+|-----------------|-----|---|----|---|-----|
+| t.1             | 1   | 1 | 3  | 4 | 5   | 
+| t.2             | 1.1 | 1 | 2  | 3 | 5   | 
+| t.3             | 1.2 | 1 | 1.3| 4 | 5   | 
+| t.4             | 1.3 | 1 | 1  | 3 | 5   | 
+| t.5             | 1.4 | 1 | 1  | 4 | 5.5 | 
+| t.6             | 1.5 | 1.1 | 1 | 3 | 5.5 | 
+
+Covariance matrixes are generally evalueted on returns and not price as price as even random walks has spurious correlations. While returns are stationary (mean 0). Therefore returns are calculated:
+| time-step/stock | 0   | 1 | 2  |   3   | 4  | 
+|-----------------|-----|---|----|-------|----|
+| t.1             | -   | - |   -   | -   | -  | 
+| t.2             | .1  | 0 | -.33 | -.25| 0  | 
+| t.3             | .09 | 0 | -.35 | .33 | 0  | 
+| t.4             | .08 | 0 | 0    | -.25| 0  | 
+| t.5             | .08 | 0 | 0    | .33 | 0.1| 
+| t.6             | .07 | .1 | 0   | -.25| 0  | 
+
+
+Return on investment and volatility (std)
+| function/stock | 0   | 1  | 2  | 3 | 4   | 
+|----------------|-----|----|----|---|-----|
+| ROI            | .5  | .1 | -.67 | -.25 | .1  | 
+| Volatility     | .17 | .04| .74  | .5  | .24 | 
+| markowitz      | 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
+| NCO            | 0.92342949|  0.04993295|  0.04785576|  0.00165416| -0.02287237 |
+
+Return Covariance matrix:
+| stock/stock | 0   | 1  | 2  | 3 | 4   | 
+|-------------|-----|----|----|---|-----|
+| 0 | 0.00012774 |-0.00032726| -0.00178085 | -0.0001758 | -0.00018989 |
+| 1 | -0.00032726 |  0.002   |  0.00457051 | -0.00583333 | -0.0005    |
+| 2 |-0.00178085 |  0.00457051 | 0.02993721 | 0.00228098 | 0.00457051|
+| 3 |-0.0001758 | -0.00583333 |  0.00228098 |  0.10208333 |  0.00875|
+| 4 |-0.00018989 | -0.0005 | 0.00457051 | 0.00875 | 0.002|
+
+
+
+
