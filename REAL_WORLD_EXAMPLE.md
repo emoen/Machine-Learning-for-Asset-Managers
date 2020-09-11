@@ -106,7 +106,18 @@ Lets compare markowitz minimum variance portfolio with minimum variance portfoli
 | t.3             | 1.2 | 1 | 1.3| 4 | 5   | 
 | t.4             | 1.3 | 1 | 1  | 3 | 5   | 
 | t.5             | 1.4 | 1 | 1  | 4 | 5.5 | 
-| t.6             | 1.5 | 1.1 | 1  | 3 | 5.5 | 
+| t.6             | 1.5 | 1.1 | 1 | 3 | 5.5 | 
+
+Covariance matrixes are generally evalueted on returns and not price as price as even random walks has spurious correlations. While returns are stationary (mean 0). Therefore returns are calculated:
+| time-step/stock | 0   | 1 | 2  |   3   | 4  | 
+|-----------------|-----|---|----|-------|----|
+| t.1             | -   | - |   -   | -   | -  | 
+| t.2             | .1  | 0 | -.33 | -.25| 0  | 
+| t.3             | .09 | 0 | -.35 | .33 | 0  | 
+| t.4             | .08 | 0 | 0    | -.25| 0  | 
+| t.5             | .08 | 0 | 0    | .33 | 0.1| 
+| t.6             | .07 | .1 | 0   | -.25| 0  | 
+
 
 Return on investment and volatility (std)
 | function/stock | 0   | 1  | 2  | 3 | 4   | 
@@ -115,17 +126,7 @@ Return on investment and volatility (std)
 | Volatility     | .17 | .04| .74  | .5  | .24 | 
 | markowitz      | 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
 
-Return time series:
-```
->>> S
-array([[ 0.1       ,  0.        , -0.33333333, -0.25      ,  0.        ],
-       [ 0.09090909,  0.        , -0.35      ,  0.33333333,  0.        ],
-       [ 0.08333333,  0.        , -0.23076923, -0.25      ,  0.        ],
-       [ 0.07692308,  0.        ,  0.        ,  0.33333333,  0.1       ],
-       [ 0.07142857,  0.1       ,  0.        , -0.25      ,  0.        ]])
-       
-```
-Covariance matrix:
+Return Covariance matrix:
 | stock/stock | 0   | 1  | 2  | 3 | 4   | 
 |-------------|-----|----|----|---|-----|
 | 0 | 0.00012774 |-0.00032726| -0.00178085 | -0.0001758 | -0.00018989 |
