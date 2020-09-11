@@ -106,13 +106,13 @@ Lets compare markowitz minimum variance portfolio with minimum variance portfoli
 | t.3             | 1.2 | 1 | 1.3| 4 | 5   | 
 | t.4             | 1.3 | 1 | 1  | 3 | 5   | 
 | t.5             | 1.4 | 1 | 1  | 4 | 5.5 | 
-| t.6             | 1.5 | 1 | 1  | 3 | 5.5 | 
+| t.6             | 1.5 | 1.1 | 1  | 3 | 5.5 | 
 
 Return on investment and volatility (std)
 | function/stock | 0   | 1  | 2  | 3 | 4   | 
 |----------------|-----|----|----|---|-----|
 | ROI            | .5  | .1 | -.67 | -.25 | .1  | 
-| Volatility     | .01 | .04| .15  | .29  | .04 | 
+| Volatility     | .17 | .04| .74  | .5  | .24 | 
 | markowitz      | 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
 
 Covariance matrix:
