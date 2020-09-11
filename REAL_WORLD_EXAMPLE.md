@@ -104,7 +104,7 @@ Running the ONC algorith on Oslo Børs with 183 instruments and time frame 934:
 | Content Cell  | Content Cell  |
 
 Lets compare markowitz minimum variance portfolio with minimum variance portfolio from NCO algorithm on a small worked example of 5 stock time series.
-| time-step/stock | 0   | 1 | 2  | 3 | 4   | 
+| time-step stock | 0   | 1 | 2  | 3 | 4   | 
 |------------------------------------------|
 | t.1             | 1   | 1 | 3  | 4 | 5   | 
 | t.2             | 1.1 | 1 | 2  | 3 | 5   | 
