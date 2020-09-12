@@ -5,7 +5,7 @@ written by Prof. Marcos López de Prado.
 
 The project is for my own learning. If you want to use the consepts from the book - you should head over to Hudson & Thames. They have implemented these consepts and many more in [mlfinlab](https://github.com/hudson-and-thames/mlfinlab). Edit: seems like some of theyr work - like jupyter notebooks - has gone behind a paywall.
 
-For practical application see: [https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/REAL_WORLD_EXAMPLE.md|Real world example]. 
+For practical application see: [Real world example](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/REAL_WORLD_EXAMPLE.md).
 
 ## Chapter 2 Denoising and Detoning
 
