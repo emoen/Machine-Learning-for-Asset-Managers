@@ -118,15 +118,6 @@ Covariance matrixes are generally evalueted on returns and not price as price as
 | t.5             | .08 | 0 | 0    | .33 | 0.1| 
 | t.6             | .07 | .1 | 0   | -.25| 0  | 
 
-
-Return on investment and volatility (std)
-| function/stock | 0   | 1  | 2  | 3 | 4   | 
-|----------------|-----|----|----|---|-----|
-| ROI            | .5  | .1 | -.67 | -.25 | .1  | 
-| Volatility     | .17 | .04| .74  | .5  | .24 | 
-| markowitz      | 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
-| NCO            | 0.92342949|  0.04993295|  0.04785576|  0.00165416| -0.02287237 |
-
 Return Covariance matrix:
 | stock/stock | 0   | 1  | 2  | 3 | 4   | 
 |-------------|-----|----|----|---|-----|
@@ -136,6 +127,23 @@ Return Covariance matrix:
 | 3 |-0.0001758 | -0.00583333 |  0.00228098 |  0.10208333 |  0.00875|
 | 4 |-0.00018989 | -0.0005 | 0.00457051 | 0.00875 | 0.002|
 
+Return on investment and volatility (std)
+| function/stock | 0   | 1  | 2  | 3 | 4   | 
+|----------------|-----|----|----|---|-----|
+| ROI            | .5  | .1 | -.67 | -.25 | .1  | 
+| Volatility     | .17 | .04| .74  | .5  | .24 | 
+| Markowitz      | 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
+| NCO            | 0.92342949|  0.04993295|  0.04785576|  0.00165416| -0.02287237 |
+| M Expected ret |-0.0250346| 0.111758771| 0.009465804| -0.01020999| -0.009415984|
+| M Expected sum | 0.0765640| -| -| -| -|
+| M volatility   |0.020303852| -0.02056317| 0.050509720| 0.011609958| -0.034456939|
+| M sum vol      | 0.02740342|   |  |  |  |
+| NCO Expected ret|0.00173010| 0.124913494| -0.03988751| -0.14265565| 0.0003460207|
+| NCO Expected sum|-0.05555356| -| -| -| -|
+| NCO volatility |0.009334934| 0.001997318| 0.007406020| 0.000472716| -0.000914895|
+| NCO sum vol    |0.018296094|   |  |  |  |
+
+Expected return of NCO is lower, as expected, but Min var markowitz volatility is higher, which is unexpected.
 
 
 
