@@ -6,6 +6,8 @@ from sklearn.covariance import LedoitWolf
 
 import ch2_marcenko_pastur_pdf as mp
 
+import cvxpy as cp
+
 # Code snippet 2.7
 #Generate a block-diagnoal covariance matrix and a vector of means
 def formBlockMatrix(nBlocks, bSize, bCorr):
@@ -73,7 +75,8 @@ def optPort(cov, mu = None):
     return w
     
 #optPort with long only curtesy of Brady Preston
-def optPort(cov,mu=None):
+#requires: import cvxpy as cp
+'''def optPort(cov,mu=None):
     n = cov.shape[0]
     if mu is None:mu = np.abs(np.random.randn(n, 1))
     w = cp.Variable(n)
@@ -82,7 +85,7 @@ def optPort(cov,mu=None):
     constraints = [cp.sum(w) == 1, w >= 0]
     prob = cp.Problem(cp.Minimize(risk),constraints)
     prob.solve(verbose=True)
-    return np.array(w.value.flat).round(4)
+    return np.array(w.value.flat).round(4)'''
 
 #According to the question 'Tangent portfolio weights without short sales?' 
 #there is no analytical solution to the GMV problem with no short-sales constraints
