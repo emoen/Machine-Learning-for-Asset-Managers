@@ -143,9 +143,7 @@ Return on investment and volatility (std)
 | NCO volatility |0.009334934| 0.001997318| 0.007406020| 0.000472716| -0.000914895|
 | NCO sum vol    |0.018296094|   |  |  |  |
 
-
-
-
+Expected return of NCO is lower, as expected, but Min var markowitz volatility is higher, which is unexpected.
 
 
 
