@@ -96,6 +96,8 @@ Running the ONC algorith on Oslo Børs with 183 instruments and time frame 934:
 
 ## Chapter 7 Portfolio Construction
 
+Modern portfolio theory, or mean-variance analysis, is a mathematical framework for assembling a portfolio of assets such that the expected return is maximized for a given level of risk. It uses the variance of asset prices as a proxy for risk.
+
 ### Markowitz Portfolio and NCO Example
 
 Lets compare markowitz minimum variance portfolio with minimum variance portfolio from NCO algorithm on a small worked example of 5 stock time series.
