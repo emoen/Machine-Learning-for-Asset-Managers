@@ -198,22 +198,12 @@ def testNCO():
     
     S, instrument_returns = calculate_returns(S_value)
     _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
-    np.argsort(instrument_returns)
-    #array([2, 3, 4, 0, 1], dtype=int64)
-    instrument_returns
-    #array([ 0.5       ,  2.5       , -0.66666667, -0.25      ,  0.1       ])
-    
-    eVal0, _ = getPCA(np.cov(S_value,rowvar=0, ddof=1))
-    #eVal0, eVec0, denoised_eVal, denoised_eVec, denoised_corr, var0 = denoise_OL(S_value)
-    q = float(S.shape[0])/float(S.shape[1])#T/N
-    bWidth = best_bandwidth.findOptimalBWidth(np.diag(eVal0))
-    #cov1_d = mc.deNoiseCov(np.cov(S_value,rowvar=0, ddof=1), q, bWidth['bandwidth'])
     
     mu1 = None
     cov1_d = np.cov(S_value ,rowvar=0, ddof=1)
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
-    min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()      
-    mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
+    min_var_NCO = pc.optPort_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()  
+    mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()
 
     cov1_d = np.cov(S,rowvar=0, ddof=1)    
     mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
@@ -221,7 +211,7 @@ def testNCO():
     expected_return_markowitz = [min_var_markowitz[i]*instrument_returns[i] for i in range(0,cov1_d.shape[0])]
     e_m = sum(expected_return_markowitz)
     expected_return_NCO = [min_var_NCO[i]*instrument_returns[i] for i in range(0,cov1_d.shape[0])]
-    e_m = sum(expected_return_markowitz)
+    e_NCO = sum(expected_return_markowitz)
     vol = getVolatility(S_value)
     m_minVol = [min_var_markowitz[i]*vol[i] for i in range(0, cov1_d.shape[0])] 
     NCO_minVol = [mlfinlab_NCO[i]*vol[i] for i in range(0, cov1_d.shape[0])]   
@@ -377,41 +367,6 @@ if __name__ == '__main__':
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, int(cov1_d.shape[0]/2)).flatten()
     #note pnames = pnames[1:] - first element is obx
-
-    '''>>> np.argsort(min_var_markowitz)
-    array([ 22,  10, 115, 151, 158, 175,  83,  23, 180, 102,  62,  57, 119,
-       114,   6,  68,  33, 113,  92, 137,  96,   8, 106,  29,  76,  77,
-         7, 116, 127,  20, 121,  93, 125,  72, 148, 162,  43,  99, 130,
-       108, 122, 100,  66,   5, 161, 168,  94,  18,  39,  15, 150,  88,
-        41,  95, 120,  52,  98, 118,  13, 105, 164, 132,  44,  53,  12,
-        35, 124, 101, 107,  40, 140,  63, 111, 159,  27, 160,  59, 128,
-        38,  90,  91,  11,   0, 117, 142, 146,  60,  36,  45,  65,  19,
-        70, 179, 169,  78, 157,  64,  42,  89,  28,  21,  74, 123,  69,
-        87, 145, 172, 182, 129, 176, 104, 166,  26, 173,   3,  80, 133,
-        49,  32,  81, 178,  82,  55,  24,  56,  73,  97,  51,  79,  58,
-        71,  16, 134, 163,  31,  30, 135, 141,  25,  48, 131, 171,  50,
-       136,  84, 103, 126,  34, 155,  14,   9, 177, 109,  47,  46, 181,
-       167, 138,   2, 153,  67, 139,  61, 110,  37, 156,  54,  86, 143,
-       147, 152,   1,   4, 165, 154, 112, 144, 149,  75, 170,  17, 174,
-        85], dtype=int64)
-        
-        >>> np.argsort(min_var_NCO)
-    array([107,  91,  94,  59,  35, 172, 101,  27, 140, 150, 124,  63, 132,
-       118,  53,  44,  28, 128,   0,   7, 164,  12, 117,  39,  11, 108,
-       159, 168,  41, 125, 129,  78, 146,  45,  88,  52,  99, 120, 142,
-        66,   5,  32,  98,  74, 169, 160,  70,  40,  77,  29, 179, 182,
-       157,  90,  93,  49,  26,  60,  19,  65,  15, 100,  38,  43,  42,
-        64, 162,   6,  21,  81,  69,   3, 123, 130, 178, 122,   8, 173,
-       127, 148,  20, 133, 145,  72,  89,  18,  13,  82,  36,  51, 121,
-       163,  73, 171, 161, 116, 131, 176, 137,  56,  96, 111,  58, 113,
-        25,  83, 119, 105, 180, 106,  76,  92,  50, 134,  55,  68,  71,
-        97,  95,  33,  57, 114, 166,  87,  79, 177,  10, 109,  23,  84,
-       175,  34,  62,  24, 158, 110, 126, 135,  80,  16,  31,  48,  30,
-       102,  14, 141, 104, 167,  67, 151, 136, 138,  22, 103, 139,  37,
-         1, 181, 143, 115,  46,   2,  47,   9,  61, 155,  86, 152,  54,
-       153, 147, 149, 144, 156, 154,   4, 165, 170, 112,  75,  17, 174,
-        85], dtype=int64)
-        '''
 
     ########
     T, N = 237, 235

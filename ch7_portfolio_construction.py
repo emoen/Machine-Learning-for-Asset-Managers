@@ -22,6 +22,8 @@ def optPort_nco(cov, mu=None, maxNumClusters=None):
         mu = pd.Series(mu[:,0])
     
     corr1 = mp.cov2corr(cov)
+    
+    # Optimal partition of clusters (step 1)
     corr1, clstrs, _ = oc.clusterKMeansBase(corr1, maxNumClusters, n_init=10)
     #wIntra = pd.DataFrame(0, index=cov.index, columns=clstrs.keys())
     w_intra_clusters = pd.DataFrame(0, index=cov.index, columns=clstrs.keys())
@@ -32,19 +34,22 @@ def optPort_nco(cov, mu=None, maxNumClusters=None):
         else: 
             mu_cluster = mu.loc[clstrs[i]].values.reshape(-1,1)
         
-        #wIntra.loc[clstrs[i],i] = mc.optPort(cov_cluster, mu_cluster).flatten()
+        #Long/Short
+        #w_intra_clusters.loc[clstrs[i],i] = mc.optPort(cov_cluster, mu_cluster).flatten()
         
-        # Estimating the Convex Optimization Solution in a cluster (step 2)
+        # Long only: Estimating the Convex Optimization Solution in a cluster (step 2)
         w_intra_clusters.loc[clstrs[i], i] = allocate_cvo(cov_cluster, mu_cluster).flatten()        
     
     cov_inter_cluster = w_intra_clusters.T.dot(np.dot(cov, w_intra_clusters)) #reduce covariance matrix
     mu_inter_cluster = (None if mu is None else w_intra_clusters.T.dot(mu))
     
-    #wInter = pd.Series(mc.optPort(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)
-    # Optimal allocations across the reduced covariance matrix (step 3)
+    #Long/Short
+    #w_inter_clusters = pd.Series(mc.optPort(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)
+    # Long only: Optimal allocations across the reduced covariance matrix (step 3)
     w_inter_clusters = pd.Series(allocate_cvo(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)    
     
-    nco = w_intra_clusters.mul(w_intra_clusters, axis=1).sum(axis=1).values.reshape(-1,1)
+    # Final allocations - dot-product of the intra-cluster and inter-cluster allocations (step 4)
+    nco =   w_intra_clusters.mul(w_inter_clusters, axis=1).sum(axis=1).values.reshape(-1,1)
     return nco
     
 def allocate_cvo(cov, mu_vec=None):
