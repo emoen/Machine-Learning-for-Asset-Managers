@@ -195,12 +195,12 @@ def testNCO():
                         [1.5,7,1,  3,5.5]])
     S_value[:,1] =1
     S_value[5,1] =1.1
-    
+
     S, instrument_returns = calculate_returns(S_value)
     _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
     
     mu1 = None
-    cov1_d = np.cov(S_value ,rowvar=0, ddof=1)
+    cov1_d = np.cov(S ,rowvar=0, ddof=1)
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()  
     mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()
