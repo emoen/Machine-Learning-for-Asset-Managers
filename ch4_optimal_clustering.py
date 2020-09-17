@@ -19,20 +19,17 @@ https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3167017
 #base clustering
 def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10): #,2, 10
     x, silh = ((1-corr0.fillna(0))/2.)**.5, pd.Series(dtype='float64') #observations matrixs
-    maxNumClusters = min(maxNumClusters, x.shape[0]-1)
+    maxNumClusters = min(maxNumClusters, round(x.shape[0]/2))
     for init in range(n_init):
         for i in range(2, maxNumClusters+1):
-            #print(i)
             kmeans_ = KMeans(n_clusters=i, n_init=1) #n_jobs=None, n_init=1) #n_jobs=None - use all CPUs
             kmeans_ = kmeans_.fit(x)
             silh_ = silhouette_samples(x, kmeans_.labels_)
-            print(silh_)
             stat = (silh_.mean()/silh_.std(), silh.mean()/silh.std())
             if np.isnan(stat[1]) or stat[0] > stat[1]:
                 silh, kmeans = silh_, kmeans_
     
     newIdx = np.argsort(kmeans.labels_)
-    print(newIdx)
     corr1 = corr0.iloc[newIdx] #reorder rows
     
     corr1 = corr1.iloc[:, newIdx] #reorder columns
