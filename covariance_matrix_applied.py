@@ -201,6 +201,15 @@ def testNCO():
     
     mu1 = None
     cov1_d = np.cov(S ,rowvar=0, ddof=1)
+    
+    #test baseClustering
+    corr1 = mp.cov2corr(cov)
+    a,b,c=nco.NCO()._cluster_kmeans_base(pd.DataFrame(corr1))
+    d,e,f=clusterKMeansBase(pd.DataFrame(corr1))
+    #b={0: [2, 0], 1: [1], 2: [3, 4]}
+    #e={0: [1, 2], 1: [3, 4], 2: [0]}
+
+
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()  
     mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()
