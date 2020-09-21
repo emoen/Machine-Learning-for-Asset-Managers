@@ -25,78 +25,17 @@ https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3167017
 #members of their original clusters in kmeans.lables_.
 #This behavior is normal, as the ordering of cluster labels is dependent on the initialization. 
 #Cluster 0 from the first run could be labeled cluster 1 in the second run and vice versa. 
-#This doesn’t affect clustering evaluation metrics.
-def clusterKMeansBase(corr, max_num_clusters=10, n_init=10):
-        dist_matrix = ((1 - corr.fillna(0)) / 2) ** (1 / 2)
-
-        # Series for Silhouette Coefficients - cluster fit measure
-        silh_coef_optimal = pd.Series(dtype='float64')
-
-        # If maximum number of clusters undefined, it's equal to half the number of elements
-        if max_num_clusters is None:
-            max_num_clusters = int(np.ceil(corr.shape[0] / 2))
-
-        max_num_clusters = min(max_num_clusters, int(np.ceil(dist_matrix.shape[0]/2)))
-        print(max_num_clusters)
-        # Iterating over the allowed iteration times for k-means
-        for init in range(1, 10): #n_init):
-            #print("init:"+str(init))
-            # Iterating through every number of clusters
-            for num_clusters in range(2, max_num_clusters):
-                #print("n_clusters:"+str(num_clusters)+" init+1:"+str(init+1))
-                #print("x:"+str(dist_matrix))
-                # Computing k-means clustering
-                kmeans = KMeans(n_clusters=num_clusters, n_init=init+1)
-                kmeans = kmeans.fit(dist_matrix)
-
-                # Computing a Silhouette Coefficient - cluster fit measure
-                silh_coef = silhouette_samples(dist_matrix, kmeans.labels_)
-                #print(silh_coef.shape)
-                #print("silh:"+str(silh_coef))
-                print(kmeans.labels_)
-
-                # Metrics to compare numbers of clusters
-                stat = (silh_coef.mean() / silh_coef.std(), silh_coef_optimal.mean() / silh_coef_optimal.std())
-
-                # If this is the first metric or better than the previous
-                # we set it as the optimal number of clusters
-                if np.isnan(stat[1]) or stat[0] > stat[1]:
-                    silh_coef_optimal = silh_coef
-                    kmeans_optimal = kmeans
-
-        # Sorting labels of clusters
-        new_index = np.argsort(kmeans_optimal.labels_)
-        print(new_index)
-
-        # Reordering correlation matrix rows
-        corr = corr.iloc[new_index]
-
-        # Reordering correlation matrix columns
-        corr = corr.iloc[:, new_index]
-
-        # Preparing cluster members as dict
-        clusters = {i: corr.columns[np.where(kmeans_optimal.labels_ == i)[0]].tolist() for \
-                    i in np.unique(kmeans_optimal.labels_)}
-
-        # Silhouette Coefficient series
-        silh_coef_optimal = pd.Series(silh_coef_optimal, index=dist_matrix.index)
-
-        return corr, clusters, silh_coef_optimal
-        
-def clusterKMeansBase2(corr0, maxNumClusters=10, n_init=10): #,2, 10
+#This doesn’t affect clustering evaluation metrics.      
+def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10): 
     dist_matrix = ((1-corr0.fillna(0))/2.)**.5
     silh_coef_optimal = pd.Series(dtype='float64') #observations matrixs
-    maxNumClusters = min(maxNumClusters, int(np.ceil(dist_matrix.shape[0]/2)))
+    maxNumClusters = min(maxNumClusters, int(np.floor(dist_matrix.shape[0]/2)))
+    print("maxNumClusters:"+str(maxNumClusters))
     for init in range(1, 10): #n_init):
-        for num_clusters in range(2, maxNumClusters):
-            #print("n_clusters:"+str(num_clusters)+" init+1:"+str(init+1))
-            #print("dist matrix:"+str(dist_matrix))
+        for num_clusters in range(2, maxNumClusters+1):
             kmeans_ = KMeans(n_clusters=num_clusters, n_init=init+1) #n_jobs=None, n_init=1) #n_jobs=None - use all CPUs
             kmeans_ = kmeans_.fit(dist_matrix)
             silh_coef = silhouette_samples(dist_matrix, kmeans_.labels_)
-            #print(silh_coef.shape)
-            #print(silh_coef)
-            print(kmeans_.labels_)
             
             stat = (silh_coef.mean()/silh_coef.std(), silh_coef_optimal.mean()/silh_coef_optimal.std())
             

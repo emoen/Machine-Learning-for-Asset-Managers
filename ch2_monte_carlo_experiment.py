@@ -6,7 +6,7 @@ from sklearn.covariance import LedoitWolf
 
 import ch2_marcenko_pastur_pdf as mp
 
-import cvxpy as cp
+#import cvxpy as cp
 
 # Code snippet 2.7
 #Generate a block-diagnoal covariance matrix and a vector of means

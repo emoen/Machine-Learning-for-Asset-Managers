@@ -260,8 +260,9 @@ class NCO:
         # If maximum number of clusters undefined, it's equal to half the number of elements
         print("corr shape:"+str(corr.shape))
         if max_num_clusters is None:
-            max_num_clusters = round(corr.shape[0] / 2)
+            max_num_clusters = round(np.floor(corr.shape[0] / 2))
 
+        print("max_num_clusters:"+str(max_num_clusters))
         # Iterating over the allowed iteration times for k-means
         for init in range(1, n_init):
             # Iterating through every number of clusters

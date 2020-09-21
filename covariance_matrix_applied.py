@@ -198,12 +198,12 @@ def testNCO():
 
     S, instrument_returns = calculate_returns(S_value)
     _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
-    
+
     mu1 = None
     cov1_d = np.cov(S ,rowvar=0, ddof=1)
-    
+
     #test baseClustering
-    corr1 = mp.cov2corr(cov)
+    corr1 = mp.cov2corr(cov1_d)
     a,b,c=nco.NCO()._cluster_kmeans_base(pd.DataFrame(corr1))
     d,e,f=clusterKMeansBase(pd.DataFrame(corr1))
     #b={0: [2, 0], 1: [1], 2: [3, 4]}
