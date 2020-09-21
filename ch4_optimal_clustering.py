@@ -31,9 +31,9 @@ def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
     silh_coef_optimal = pd.Series(dtype='float64') #observations matrixs
     maxNumClusters = min(maxNumClusters, int(np.floor(dist_matrix.shape[0]/2)))
     print("maxNumClusters:"+str(maxNumClusters))
-    for init in range(1, 10): #n_init):
+    for init in range(1, n_init):
         for num_clusters in range(2, maxNumClusters+1):
-            kmeans_ = KMeans(n_clusters=num_clusters, n_init=init+1) #n_jobs=None, n_init=1) #n_jobs=None - use all CPUs
+            kmeans_ = KMeans(n_clusters=num_clusters, n_init=init) #n_jobs=None, n_init=1) #n_jobs=None - use all CPUs
             kmeans_ = kmeans_.fit(dist_matrix)
             silh_coef = silhouette_samples(dist_matrix, kmeans_.labels_)
             
