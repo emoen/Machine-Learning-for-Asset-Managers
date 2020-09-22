@@ -110,7 +110,7 @@ Lets compare markowitz minimum variance portfolio with minimum variance portfoli
 | t.5             | 1.4 | 1 | 1  | 4 | 5.5 | 
 | t.6             | 1.5 | 1.1 | 1 | 3 | 5.5 | 
 
-Covariance matrixes are generally evalueted on returns and not price as price as even random walks has spurious correlations. While returns are stationary (mean 0). Therefore returns are calculated:
+Covariance matrixes are generally evalueted on returns and not price as - even random walks has spurious correlations. While returns are stationary (mean 0). Therefore correlation is calculated on returns:
 | time-step/stock | 0   | 1 | 2  |   3   | 4  | 
 |-----------------|-----|---|----|-------|----|
 | t.1             | -   | - |   -   | -   | -  | 
@@ -134,8 +134,8 @@ Return on investment and volatility (std)
 |----------------|-----|----|----|---|-----|
 | ROI            | .5  | .1 | -.67 | -.25 | .1  | 
 | Volatility     | .17 | .04| .74  | .5  | .24 | 
-| Markowitz      | 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
-| NCO            | 0.92342949|  0.04993295|  0.04785576|  0.00165416| -0.02287237 |
+| NCO allocations| 0.92342949|  0.04993295|  0.04785576|  0.00165416| -0.02287237 |
+| Markowitz alloc| 2.00849581| -0.51407928|  0.32638057|  0.04062639| -0.86142349 | 
 | M Expected ret |-0.0250346| 0.111758771| 0.009465804| -0.01020999| -0.009415984|
 | M Expected sum | 0.0765640| -| -| -| -|
 | M volatility   |0.020303852| -0.02056317| 0.050509720| 0.011609958| -0.034456939|
@@ -145,7 +145,7 @@ Return on investment and volatility (std)
 | NCO volatility |0.009334934| 0.001997318| 0.007406020| 0.000472716| -0.000914895|
 | NCO sum vol    |0.018296094|   |  |  |  |
 
-Expected return of NCO is lower, as expected, but Min var markowitz volatility is higher, which is unexpected.
+Expected return of NCO (-0.06) is lower than markowitz (0.08), as expected. Minimum variance Markowitz volatility (0.02) is higher than NCO volatility(0.01), which is unexpected.
 
 
 
