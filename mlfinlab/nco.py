@@ -6,7 +6,7 @@ from sklearn.covariance import LedoitWolf
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_samples
 from scipy.linalg import block_diag
-from risk_estimators import RiskEstimators
+from mlfinlab.risk_estimators import RiskEstimators
 
 
 class NCO:

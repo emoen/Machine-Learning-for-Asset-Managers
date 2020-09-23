@@ -6,7 +6,7 @@ Implementation of Trend-Scanning labels described in `Advances in Financial Mach
 import pandas as pd
 import numpy as np
 
-from sadf import get_betas
+from mlfinlab.sadf import get_betas
 
 
 def trend_scanning_labels(price_series: pd.Series, t_events: list = None, look_forward_window: int = 20,

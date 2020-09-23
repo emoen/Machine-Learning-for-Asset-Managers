@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.neighbors import KernelDensity
 from sklearn.covariance import MinCovDet, EmpiricalCovariance, ShrunkCovariance, LedoitWolf, OAS
 from scipy.optimize import minimize
-from returns_estimators import ReturnsEstimators
+from mlfinlab.returns_estimators import ReturnsEstimators
 
 
 class RiskEstimators:

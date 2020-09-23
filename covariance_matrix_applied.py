@@ -9,17 +9,15 @@ import math
 import matplotlib.pylab as plt
 import matplotlib
 
+import ch2_fitKDE_find_best_bandwidth as best_bandwidth
 import ch2_marcenko_pastur_pdf as mp
 import ch2_monte_carlo_experiment as mc
 import onc as onc
 import ch5_financial_labels as fl
 import ch7_portfolio_construction as pc
 
-import trend_scanning as ts
-
-import ch2_fitKDE_find_best_bandwidth as best_bandwidth
-
-import nco as nco
+import mlfinlab.trend_scanning as ts
+import mlfinlab.nco as nco
 
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
