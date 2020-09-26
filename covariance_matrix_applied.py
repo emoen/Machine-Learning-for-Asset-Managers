@@ -19,6 +19,10 @@ import ch7_portfolio_construction as pc
 import mlfinlab.trend_scanning as ts
 import mlfinlab.nco as nco
 
+#import mlfinlab as ml # used for testing code
+from mlfinlab.portfolio_optimization.mean_variance import MeanVarianceOptimisation
+from mlfinlab.portfolio_optimization.returns_estimators import ReturnsEstimators
+
 #Resources:
 #Random matrix theory: https://calculatedcontent.com/2019/12/03/towards-a-new-theory-of-learning-statistical-mechanics-of-deep-neural-networks/
 #Review: [Book] Commented summary of Machine Learning for Asset Managers by Marcos Lopez de Prado
@@ -179,6 +183,24 @@ def calculate_returns( S, percentageAsProduct=False ):
 
 def getVolatility(S): #std of instruments
     return [np.std(S[:,i]) for i in range(0, S.shape[1])]
+    
+def test_exception_in_plotting_efficient_frontier(S_value):
+    # pylint: disable=invalid-name, protected-access
+    """
+    Test raising of exception when plotting the efficient frontier.
+    """
+
+    mvo = MeanVarianceOptimisation()
+    pd_price = pd.DataFrame(S_value)
+    pd_price.index = pd.RangeIndex(start=0, stop=6, step=1)
+    expected_returns = ReturnsEstimators().calculate_mean_historical_returns(asset_prices=pd_price, resample_by='W')
+    covariance = ReturnsEstimators().calculate_returns(asset_prices=self.data, resample_by='W').cov()
+    plot = mvo.plot_efficient_frontier(covariance=covariance,
+                                       max_return=1.0,
+                                       expected_asset_returns=expected_returns)
+    assert len(plot._A) == 41
+    plot.savefig('books_read.png')
+    print("read books")
         
     
 def testNCO():
@@ -209,6 +231,11 @@ def testNCO():
 
 
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
+    
+    #compare min_var_markowitz with mlfinlab impl
+    ml.
+    
+    
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()  
     mlfinlab_NCO= nco.NCO().allocate_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()
 
