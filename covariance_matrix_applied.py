@@ -190,11 +190,11 @@ def test_exception_in_plotting_efficient_frontier(S_value):
     Test raising of exception when plotting the efficient frontier.
     """
 
-    mvo = MeanVarianceOptimisation()
-    pd_price = pd.DataFrame(S_value)
-    pd_price.index = pd.RangeIndex(start=0, stop=6, step=1)
-    expected_returns = ReturnsEstimators().calculate_mean_historical_returns(asset_prices=pd_price, resample_by='W')
-    covariance = ReturnsEstimators().calculate_returns(asset_prices=self.data, resample_by='W').cov()
+mvo = MeanVarianceOptimisation()
+pd_price = pd.DataFrame(S_value)
+pd_price.index = pd.RangeIndex(start=0, stop=6, step=1)
+expected_returns = ReturnsEstimators().calculate_mean_historical_returns(asset_prices=pd_price, resample_by=None) #'W')
+    covariance = ReturnsEstimators().calculate_returns(asset_prices=pd_price, resample_by=None).cov()
     plot = mvo.plot_efficient_frontier(covariance=covariance,
                                        max_return=1.0,
                                        expected_asset_returns=expected_returns)
@@ -218,7 +218,9 @@ def testNCO():
 
     S, instrument_returns = calculate_returns(S_value)
     _, instrument_returns = calculate_returns(S_value, percentageAsProduct=True)
-
+    
+    np.testing.assert_almost_equal(S, pd.DataFrame(S_value).pct_change().dropna(how="all"))
+    
     mu1 = None
     cov1_d = np.cov(S ,rowvar=0, ddof=1)
 
