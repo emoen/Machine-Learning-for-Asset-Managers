@@ -45,7 +45,7 @@ def get_OL_tickers_close(T=936, N=234):
     # N - num stocks in portfolio, T lookback time
     ol = pd.read_csv('csv/ol_ticker.csv', sep='\t', header=None)
     ticker_names = ol[0]
-    S = np.empty([T, N])
+    closePrice = np.empty([T, N])
     covariance_matrix = np.empty([T, N])
     portfolio_name = [ [ None ] for x in range( N ) ]
     ticker_adder = 0
@@ -61,7 +61,7 @@ def get_OL_tickers_close(T=936, N=234):
             if ticker=='AVM': print("****AVM*********")
             if ticker_df.shape[0] > T and ticker!='EMAS' and ticker != 'AVM':  # only read tickers with more than 30 days history
                 #1.Stock Data
-                S[:,ticker_adder] = ticker_df['Close'][-T:].values # inserted from oldest tick to newest tick
+                closePrice[:,ticker_adder] = ticker_df['Close'][-T:].values # inserted from oldest tick to newest tick
                 portfolio_name[ticker_adder] = ol_ticker
                 ticker_adder += 1
             else:
@@ -69,7 +69,7 @@ def get_OL_tickers_close(T=936, N=234):
         except ValueError:
             print("no history:"+ol_ticker)
     
-    return S, portfolio_name
+    return closePrice, portfolio_name
     
 def denoise_OL(S, do_plot=True):
     
@@ -103,64 +103,6 @@ def denoise_OL(S, do_plot=True):
     
     return eVal0, eVec0, eVal1, eVec1, corr1, var0
 
-def correlation_from_covariance(covariance):
-    v = np.sqrt(np.diag(covariance))
-    outer_v = np.outer(v, v)
-    correlation = covariance / outer_v
-    correlation[covariance == 0] = 0
-    return correlation
-
-def calculate_correlation(S, T=936, N=234):
-    """ Create covariance matrix 
-    >>> import numpy as np
-    >>> n = 3
-    >>> T = 3
-    >>> S = np.array([[1,2,3],[6,4,2],[9,1,5]])
-    >>> M = np.mean(S, axis=1) # mean of row (over all T (columns))
-    >>> M
-    array([2, 4, 5])
-    >>> demeaned_S = S - M[:,None]
-    >>> print(demeaned_S)
-    [[-1  0  1]
-     [ 2  0 -2]
-     [ 4 -4  0]]
-    >>> demeaned_S= demeaned_S.astype('float32')
-    >>> covariance = np.dot(demeaned_S, demeaned_S.T) * (1.0/(n-1))
-    >>> print(covariance)
-    [[ 1. -2. -2.]
-     [-2.  4.  4.]
-     [-2.  4. 16.]]
-    >>> np.testing.assert_array_equal(covariance, np.cov(S))
-    >>> stds = np.std(S, axis=1, ddof=1)
-    >>> stds_m = np.outer(stds, stds)
-    >>> covariance = covariance.astype('float32')
-    >>> correlation = np.divide(covariance, stds_m)
-    >>> np.testing.assert_array_equal(correlation, np.corrcoef(S))
-    >>> print(correlation)
-    >>> print(correlation_from_covariance(covariance))
-    """
-
-    #2.Average Price Of Stock
-    M = np.sum(S, axis=1)/T #sum along row
-    #3.Demeaning The Prices
-    de_meaned_S = S - M[:,None]
-    #4.Covariance Matrix
-    #Once we have the de-meaned price series, we establish the
-    #covariance of different stocks by multiplying the transpose of
-    #the de-meaned price series with itself and divide it by 'm'
-    covariance = (np.dot(de_meaned_S, de_meaned_S.T))/(N-1)
-    # The eigen-values of the covariance matrix is distributed like Marcenko-Pasture dist.
-    #any any eigenvalues outside distribution is signal else noise.
-    
-    #Standard Model: Markowitz’ Curse
-    #The condition number of a covariance, correlation (or normal, thus diagonalizable) matrix is the absolute
-    #value of the ratio between its maximal and minimal (by moduli) eigenvalues. This number is lowest for a diagonal
-    #correlation matrix, which is its own inverse.        
-    corr = correlation_from_covariance(covariance)
-    eigenvalue, eigenvector = np.linalg.eig(np.corrcoef(S))
-    eigenvalue = abs(eigenvalue)
-    condition_num = max(eigenvalue) - min(eigenvalue)
-
 #consider using log-returns
 def calculate_returns( S, percentageAsProduct=False ):
     ret = np.zeros((S.shape[0]-1, S.shape[1]))
@@ -190,21 +132,19 @@ def test_exception_in_plotting_efficient_frontier(S_value):
     Test raising of exception when plotting the efficient frontier.
     """
 
-mvo = MeanVarianceOptimisation()
-pd_price = pd.DataFrame(S_value)
-pd_price.index = pd.RangeIndex(start=0, stop=6, step=1)
-expected_returns = ReturnsEstimators().calculate_mean_historical_returns(asset_prices=pd_price, resample_by=None) #'W')
+    mvo = MeanVarianceOptimisation()
+    pd_price = pd.DataFrame(S_value)
+    pd_price.index = pd.RangeIndex(start=0, stop=6, step=1)
+    expected_returns = ReturnsEstimators().calculate_mean_historical_returns(asset_prices=pd_price, resample_by=None) #'W')
     covariance = ReturnsEstimators().calculate_returns(asset_prices=pd_price, resample_by=None).cov()
-    plot = mvo.plot_efficient_frontier(covariance=covariance,
-                                       max_return=1.0,
-                                       expected_asset_returns=expected_returns)
+    plot = mvo.plot_efficient_frontier(covariance=covariance, max_return=1.0, expected_asset_returns=expected_returns)
     assert len(plot._A) == 41
     plot.savefig('books_read.png')
     print("read books")
         
     
+# Chapter 7 - apply the Nested Clustered Optimization (NCO) algorithm    
 def testNCO():
-    # Chapter 7 - apply the Nested Clustered Optimization (NCO) algorithm
     N = 5
     T = 5
     S_value = np.array([[1., 2,3,  4,5],
@@ -226,8 +166,8 @@ def testNCO():
 
     #test baseClustering
     corr1 = mp.cov2corr(cov1_d)
-    a,b,c=nco.NCO()._cluster_kmeans_base(pd.DataFrame(corr1))
-    d,e,f=clusterKMeansBase(pd.DataFrame(corr1))
+    a,b,c = nco.NCO()._cluster_kmeans_base(pd.DataFrame(corr1))
+    d,e,f = clusterKMeansBase(pd.DataFrame(corr1))
     #b={0: [2, 0], 1: [1], 2: [3, 4]}
     #e={0: [1, 2], 1: [3, 4], 2: [0]}
 
@@ -235,7 +175,7 @@ def testNCO():
     min_var_markowitz = mc.optPort(cov1_d, mu1).flatten()
     
     #compare min_var_markowitz with mlfinlab impl
-    ml.
+    #ml.
     
     
     min_var_NCO = pc.optPort_nco(cov1_d, mu1, max(int(cov1_d.shape[0]/2), 2)).flatten()  
