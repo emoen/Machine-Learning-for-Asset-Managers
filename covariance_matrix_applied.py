@@ -133,10 +133,13 @@ def test_exception_in_plotting_efficient_frontier(S_value):
     """
 
     mvo = MeanVarianceOptimisation()
-    pd_price = pd.DataFrame(S_value)
-    pd_price.index = pd.RangeIndex(start=0, stop=6, step=1)
-    expected_returns = ReturnsEstimators().calculate_mean_historical_returns(asset_prices=pd_price, resample_by=None) #'W')
-    covariance = ReturnsEstimators().calculate_returns(asset_prices=pd_price, resample_by=None).cov()
+    pdPrice = pd.DataFrame(S_value)
+    pdPrice.index = pd.RangeIndex(start=0, stop=6, step=1)
+    dates = ['2019-01-01','2019-02-01','2019-03-01','2019-04-01','2019-05-01','2019-06-01']
+    pdPrice['Datetime'] = pd.to_datetime(dates)
+    pdPrice.set_index('Datetime')
+    expected_returns = ReturnsEstimators().calculate_mean_historical_returns(asset_prices=pdPrice, resample_by=None) #'W')
+    covariance = ReturnsEstimators().calculate_returns(asset_prices=pdPrice, resample_by=None).cov()
     plot = mvo.plot_efficient_frontier(covariance=covariance, max_return=1.0, expected_asset_returns=expected_returns)
     assert len(plot._A) == 41
     plot.savefig('books_read.png')
