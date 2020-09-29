@@ -3,6 +3,10 @@
 # Machine-Learning-for-Asset-Managers - Oslo Børs
 Lets apply the lessons from the book to real world data using the data from the last 936 trading days from Oslo Børs. That means we have 183 instruments
 
+Note: building mlfinlab
+$ pip install -r requirements.txt
+$ pylint mlfinlab --rcfile=.pylintrc -f text
+
 ## Chapter 2 Denoising and Detoning
 
 S_value contains the time-series of instruments. One instrument per column.
