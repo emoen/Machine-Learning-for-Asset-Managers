@@ -6,6 +6,8 @@ Lets apply the lessons from the book to real world data using the data from the 
 Note: building mlfinlab
 $ pip install -r requirements.txt
 $ pylint mlfinlab --rcfile=.pylintrc -f text
+$ bash coverage     
+Runs the unit-tests
 
 ## Chapter 2 Denoising and Detoning
 
