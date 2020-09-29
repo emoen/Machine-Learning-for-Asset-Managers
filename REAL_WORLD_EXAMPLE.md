@@ -4,18 +4,18 @@
 Lets apply the lessons from the book to real world data using the data from the last 936 trading days from Oslo Børs. That means we have 183 instruments
 
 Note: building mlfinlab
-'''
+```
 $ pip install -r requirements.txt
 $ pylint mlfinlab --rcfile=.pylintrc -f text
 $ bash coverage     
-'''
+```
 Runs the unit-tests. Alternative:
-'''
+```
 pip install pytest
 pip install coverage
 pip install pytest-cov
 pytest --cov=foo --cov=bar
-'''
+```
 
 ## Chapter 2 Denoising and Detoning
 
