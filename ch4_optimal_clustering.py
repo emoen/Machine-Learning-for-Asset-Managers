@@ -33,7 +33,7 @@ def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
     print("maxNumClusters:"+str(maxNumClusters))
     for init in range(1, n_init):
         for num_clusters in range(2, maxNumClusters+1):
-            kmeans_ = KMeans(n_clusters=num_clusters, n_init=init) #n_jobs=None, n_init=1) #n_jobs=None - use all CPUs
+            kmeans_ = KMeans(n_clusters=num_clusters, n_init=1) #n_jobs=None, n_init=1) #n_jobs=None - use all CPUs
             kmeans_ = kmeans_.fit(dist_matrix)
             silh_coef = silhouette_samples(dist_matrix, kmeans_.labels_)
             
