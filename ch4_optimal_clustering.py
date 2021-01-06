@@ -49,7 +49,7 @@ def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10):
     corr1 = corr0.iloc[newIdx] #reorder rows
     
     corr1 = corr1.iloc[:, newIdx] #reorder columns
-    clstrs = {i:corr1.columns[np.where(kmeans.labels_==i)[0]].tolist() for i in np.unique(kmeans.labels_)} #cluster members
+    clstrs = {i:corr0.columns[np.where(kmeans.labels_==i)[0]].tolist() for i in np.unique(kmeans.labels_)} #cluster members
     silh_coef_optimal = pd.Series(silh_coef_optimal, index=dist_matrix.index)
     
     return corr1, clstrs, silh_coef_optimal
