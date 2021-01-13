@@ -128,7 +128,6 @@ def clusterKMeansTop(corr0: pd.DataFrame, maxNumClusters=None, n_init=10):
     else:
         keysRedo = [j for i in redoClusters for j in clstrs[i]]
         corrTmp = corr0.loc[keysRedo, keysRedo]
-        tStatMean = np.mean([clusterTstats[i] for i in redoClusters])
         _, clstrs2, _ = clusterKMeansTop(corrTmp, maxNumClusters=min(maxNumClusters, corrTmp.shape[1]-1), n_init=n_init)
         print("clstrs2.len, stat:"+str(len(clstrs2.keys())))
         #Make new outputs, if necessary
