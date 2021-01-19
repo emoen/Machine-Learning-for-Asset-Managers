@@ -34,23 +34,26 @@ def clusterKMeansBase(corr0, maxNumClusters=10, debug=False):
     kmeans, stat = None, None
     maxNumClusters = min(maxNumClusters, int(np.floor(dist_matrix.shape[0]/2)))
     print("maxNumClusters"+str(maxNumClusters))
-    for num_clusters in range(4, maxNumClusters+1):
-        #(maxNumClusters + 2 - num_clusters) # go in reverse order to view more sub-optimal solutions
-        kmeans_ = KMeans(n_clusters=num_clusters, n_init=10, random_state=3425) #n_jobs=None #n_jobs=None - use all CPUs
-        kmeans_ = kmeans_.fit(dist_matrix)
-        silh_coef = silhouette_samples(dist_matrix, kmeans_.labels_)
-        stat = (silh_coef.mean()/silh_coef.std(), silh_coef_optimal.mean()/silh_coef_optimal.std())
+    for init in range(0, n_init):
+    #The [outer] loop repeats the first loop multiple times, thereby obtaining different initializations. Ref: de Prado and Lewis (2018)
+    #DETECTION OF FALSE INVESTMENT STRATEGIES USING UNSUPERVISED LEARNING METHODS
+        for num_clusters in range(4, maxNumClusters+1):
+            #(maxNumClusters + 2 - num_clusters) # go in reverse order to view more sub-optimal solutions
+            kmeans_ = KMeans(n_clusters=num_clusters, n_init=10) #, random_state=3425) #n_jobs=None #n_jobs=None - use all CPUs
+            kmeans_ = kmeans_.fit(dist_matrix)
+            silh_coef = silhouette_samples(dist_matrix, kmeans_.labels_)
+            stat = (silh_coef.mean()/silh_coef.std(), silh_coef_optimal.mean()/silh_coef_optimal.std())
 
-        # If this metric better than the previous set as the optimal number of clusters
-        if np.isnan(stat[1]) or stat[0] > stat[1]:
-            silh_coef_optimal = silh_coef
-            kmeans = kmeans_
-            if debug==True:
-                print(kmeans)
-                print(stat)
-                silhouette_avg = silhouette_score(dist_matrix, kmeans_.labels_)
-                print("For n_clusters ="+ str(num_clusters)+ "The average silhouette_score is :"+ str(silhouette_avg))
-                print("********")
+            # If this metric better than the previous set as the optimal number of clusters
+            if np.isnan(stat[1]) or stat[0] > stat[1]:
+                silh_coef_optimal = silh_coef
+                kmeans = kmeans_
+                if debug==True:
+                    print(kmeans)
+                    print(stat)
+                    silhouette_avg = silhouette_score(dist_matrix, kmeans_.labels_)
+                    print("For n_clusters ="+ str(num_clusters)+ "The average silhouette_score is :"+ str(silhouette_avg))
+                    print("********")
     
     newIdx = np.argsort(kmeans.labels_)
     #print(newIdx)
