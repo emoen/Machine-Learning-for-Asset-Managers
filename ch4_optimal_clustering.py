@@ -27,7 +27,7 @@ https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3167017
  [0 1 1 0 0]
  [1 0 0 1 1] is equivelant
 '''
-def clusterKMeansBase(corr0, maxNumClusters=10, debug=False):
+def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10, debug=False):
     corr0[corr0 > 1] = 1
     dist_matrix = ((1-corr0.fillna(0))/2.)**.5
     silh_coef_optimal = pd.Series(dtype='float64') #observations matrixs
