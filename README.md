@@ -7,6 +7,16 @@ The project is for my own learning. If you want to use the consepts from the boo
 
 For practical application see: [Real world example](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/REAL_WORLD_EXAMPLE.md).
 
+Note: In chapter 4 - there is a bug in the implementation of "Optimal Number of Clusters" algorithm (ONC) in the book (the code from the paper is different but is also not correct)
+https://quant.stackexchange.com/questions/60486/bug-found-in-optimal-number-of-clusters-algorithm-from-de-prado-and-lewis-201
+
+The divide and conquer method of subspaces used by ONC can be problematic because if you embed a subspace into a space with a large eigen-value
+it can distort the clusters found in the subspace. ONC does precisely that - it embeds subspaces into the a space consisting of the largest 
+eigenvalues found in the correlation matrix. An outline can be found here: 
+https://math.stackexchange.com/questions/4013808/metric-on-clustering-of-correlation-matrix-using-silhouette-score/4050616#4050616
+
+Other clustering algorithms should be investigated like hierarchical clustering.
+
 ## Chapter 2 Denoising and Detoning
 
 Marcenko-Pasture theoretical probability density function, and empirical density function:
