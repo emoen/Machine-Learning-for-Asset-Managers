@@ -8,7 +8,8 @@ The project is for my own learning. If you want to use the consepts from the boo
 For practical application see: [Real world example](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/REAL_WORLD_EXAMPLE.md).
 
 Note: In chapter 4 - there is a bug in the implementation of "Optimal Number of Clusters" algorithm (ONC) in the book 
-(the code from the paper is different but is also not correct)
+(the code from the paper - DETECTION OF FALSE INVESTMENT STRATEGIES USING UNSUPERVISED LEARNING METHODS, de Prado and Lewis (2018) -  
+is different but is also incorrect )
 https://quant.stackexchange.com/questions/60486/bug-found-in-optimal-number-of-clusters-algorithm-from-de-prado-and-lewis-201
 
 The divide and conquer method of subspaces used by ONC can be problematic because if you embed a subspace into a space with a large eigen-value.
@@ -112,7 +113,7 @@ Generating of random block correlation matrices is used to simulate instruments 
 * Time-bar method
 * Volume-bar method
 
-Tiple-Barrier Method involves holding a possition until
+Tiple-Barrier Method involves holding a position until
 1. Unrealized profit target achieved
 2. unrealized loss limit reached
 3. Position is held beyond a maximum number of bars
@@ -134,8 +135,8 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 |:--:| 
 | *p-Values computed on a set of informative, redundant, and noisy explanatory variables. The explanatory variables has not the hightest p-values.* |
 
-The MDI algorith deals with 3 out of 4 problems with p-values:
-1. MDI is not imposing any tree structure, algebraic specification, or relying on any stocastic or distributional characteristics of the residuals (e.g. y=b<sub>0</sub>+b<sub>1</sub>*x<sub>i</sub>+&epsilon;)
+"Backtesting is not a research tool. Feature importance is." (Lopez de Prado) The Mean Decrease Impurity (MDI) algorithm deals with 3 out of 4 problems with p-values:
+1. MDI is not imposing any tree structure, algebraic specification, or relying on any stochastic or distributional characteristics of the residuals (e.g. y=b<sub>0</sub>+b<sub>1</sub>*x<sub>i</sub>+&epsilon;)
 2. betas are estimated from single sample, MDI relies on bootstrapping, so the variance can be reduced by the numbers of trees in the random forrest ensemble.
 3. In MDI the goal is not to estimate a coefficient of a given algebraic equation (b_hat_0, b_hat_1) describing the probability of a null-hypotheses.
 4. MDI does not correct of calculation in-sample, as there is no cross-validation.
@@ -158,21 +159,21 @@ Clustered MDI works better han non-clustered MDI. Finally, apply the clustered M
 |:--:| 
 | *Figure 6.6 Clustered MDA* |
 
-Conclusion: C_5 which is accosiated with noisy features is not important, and all other clusteres has similar importance.
+Conclusion: C_5 which is associated with noisy features is not important, and all other clusters has similar importance.
 
 ## Chapter 7 Portfolio Construction
 
 Convex portfolio optimization can calculate minimum variance portfolio and max sharp-ratio.
 
-def Condition number: absolute value of the ratio between the maximum and minimum eigenvalues: A_n_n / A_m_m. The condition number says something about the instability of the instability caused by covariance structures.
-def trace = sum(diag(A)) - its the sum of the diagonal elements
+Definition Condition number: absolute value of the ratio between the maximum and minimum eigenvalues: A_n_n / A_m_m. The condition number says something about the instability of the instability caused by covariance structures.
+Definition trace = sum(diag(A)) - its the sum of the diagonal elements
 
-Highly correlated time-series implie high condition number of the correlation matrix.
+Highly correlated time-series implies high condition number of the correlation matrix.
 
 ### Markowitz's curse
 The correlation matrix C is stable only when the correlation $\ro = 0$ - when there is no correlation.
 
-Hierarchical risk parity (HRP) outperforms Markowit in out-of-sample Monte-Carlo experimens, but is sub-optimal in-sample.
+Hierarchical risk parity (HRP) outperforms Markowit in out-of-sample Monte-Carlo experiments, but is sub-optimal in-sample.
 
 Code-snippet 7.1 illustrates the signal-induced instability of the correlation matrix.
 ```
