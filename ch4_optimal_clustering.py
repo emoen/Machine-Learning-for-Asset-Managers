@@ -37,7 +37,7 @@ def clusterKMeansBase(corr0, maxNumClusters=10, n_init=10, debug=False):
     for init in range(0, n_init):
     #The [outer] loop repeats the first loop multiple times, thereby obtaining different initializations. Ref: de Prado and Lewis (2018)
     #DETECTION OF FALSE INVESTMENT STRATEGIES USING UNSUPERVISED LEARNING METHODS
-        for num_clusters in range(4, maxNumClusters+1):
+        for num_clusters in range(2, maxNumClusters+1):
             #(maxNumClusters + 2 - num_clusters) # go in reverse order to view more sub-optimal solutions
             kmeans_ = KMeans(n_clusters=num_clusters, n_init=10) #, random_state=3425) #n_jobs=None #n_jobs=None - use all CPUs
             kmeans_ = kmeans_.fit(dist_matrix)
@@ -137,7 +137,7 @@ def clusterKMeansTop(corr0: pd.DataFrame, maxNumClusters=None, n_init=10):
         dict_redo_clstrs = {i:clstrs[i] for i in clstrs.keys() if i not in redoClusters}
         corrNew, clstrsNew, silhNew = makeNewOutputs(corr0, dict_redo_clstrs, clstrs2)
         newTstatMean = np.mean([np.mean(silhNew[clstrsNew[i]])/np.std(silhNew[clstrsNew[i]]) for i in clstrsNew.keys()]) 
-        if newTstatMean <= tStatMean: 
+        if newTstatMean <= tStatMean:
             print("newTstatMean <= tStatMean"+str(newTstatMean)+ " (len:newClst)"+str(len(clstrsNew.keys()))+" <= "+str(tStatMean)+ " (len:Clst)"+str(len(clstrs.keys())))
             return corr1, clstrs, silh
         else: 
