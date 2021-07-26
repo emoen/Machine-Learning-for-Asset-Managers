@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm, percentileofscore
 import scipy.stats as ss
+import matplotlib.pylab as plt
+
+# code in chapter 8 is from the paper:
+#THE DEFLATED SHARPE RATIO: CORRECTING FOR SELECTION BIAS, BACKTEST OVERFITTING AND NON-NORMALITY by David H. Bailey and Marcos López de Prado
 
 # code snippet 8.1 - experimental validation of the false strategy theorem
 def getExpectedMaxSR(nTrials, meanSR, stdSR):
@@ -26,7 +30,6 @@ def getDistMaxSR(nSims, nTrials, stdSR, meanSR):
         out_ = sr.max(axis=1).to_frame('max{SR}')
         out_['nTrials'] = nTrials_
         out = out.append(out_, ignore_index=True)
-    print(i)
     return out
     
 # code snippet 8.2 - mean and standard deviation of the prediction errors
@@ -40,7 +43,8 @@ def getMeanStdError(nSims0, nSims1, nTrials, stdSR=1, meanSR=0):
     sr0.index.name='nTrials'
     err=pd.DataFrame()
     for i in range(0, int(nSims1)):
-        sr1 = getDistDSR(nSims=1000, nTrials=nTrials, meanSR=0, stdSR=1)
+        #sr1 = getDistDSR(nSims=1000, nTrials=nTrials, meanSR=0, stdSR=1)
+        sr1 = getDistMaxSR(nSims=1000, nTrials=nTrials, meanSR=0, stdSR=1)
         sr1=sr1.groupby('nTrials').mean()
         err_=sr0.join(sr1).reset_index()
         err_['err'] = err_['max{SR}']/err_['E[max{SR}]']-1.
@@ -92,11 +96,6 @@ if __name__ == '__main__':
     plt.colorbar();
 
     ax.legend(loc='lower right')
-    plt.show()
-    
-    plt.figure(figsize=(10, 5))
-    imp['mean'].plot(kind='barh', color='b', alpha=0.25, xerr=imp['std'], error_kw={'ecolor': 'r'})
-    plt.title('Figure 6.5 Clustered MDI')
     plt.show()
     
     # code snippet 8.2
