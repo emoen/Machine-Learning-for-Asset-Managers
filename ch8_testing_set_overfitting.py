@@ -1,9 +1,10 @@
 import numpy as np
-#import cupy as np
+import cupy  #Requires Cuda environment (and numpy). Also set CUPY_CACHE_DIR=/gpfs/gpfs0/deep/cupy, pip install cupy-cuda112
 import pandas as pd
 from scipy.stats import norm, percentileofscore
 import scipy.stats as ss
 import matplotlib.pylab as plt
+import matplotlib.mlab as mlab
 
 # code in chapter 8 is from the paper:
 #THE DEFLATED SHARPE RATIO: CORRECTING FOR SELECTION BIAS, BACKTEST OVERFITTING AND NON-NORMALITY by David H. Bailey and Marcos López de Prado
@@ -78,30 +79,41 @@ def type2Err(alpha_k, k, theta):
     beta = ss.norm.cdf(z-theta)
     return beta
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
+    # code snippet 8.1
     nTrials = list(set(np.logspace(1, 6, 1000).astype(int)))
     nTrials.sort()
     sr0 = pd.Series({i:getExpectedMaxSR(i, meanSR=0, stdSR=1) for i in nTrials}) #prior
     sr1 = getDistMaxSR(nSims=1000, nTrials = nTrials, meanSR=0, stdSR=1) #observed
-    
-    #dashes = [10, 5, 100, 5] 
+    # Note: running it takes alot of memory
+    #    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+    #    --- ---       20   0    38.1g  10.1g  227180 R 100.3   0.2  220:19.07 python
+
+
+    #dashes = [10, 5, 100, 5]
     fig, ax = plt.subplots()
-    line1, = ax.plot(range(0, nTrials), sr0, '--', linewidth=2, label='E[max{SR}} (prioer)')
+    line1, = ax.plot(nTrials, sr0, '--', linewidth=2, label='E[max{SR}} (prioer)')
     #line1.set_dashes(dashes)
 
     #line2, = ax.plot(x, -1 * np.sin(x), dashes=[30, 5, 10, 5],
     #                 label='Dashes set proactively')
     #line1, = ax.plot(range(0, nTrials), sr0, '--', linewidth=2, label='E[max{SR}} (prioer)')
-    plt.contour(range(0, nTrials), sr1, 20, cmap='RdGy')
-    plt.colorbar();
+    x_domain = np.linspace(10, len(nTrials), len(sr1['max{SR}'].values))
+    z = np.column_stack( (x_domain, sr1['max{SR}'].values) )
+    X,Y = np.meshgrid(nTrials, sr1['max{SR}'].values)
 
+    plt.contour(x_domain, sr1['max{SR}'].values, z, cmap='RdGy')
+    plt.colorbar();
     ax.legend(loc='lower right')
     plt.show()
+
+    sr1.plot(x='nTrials', y='max{SR}')
+    plt.savefig('foo2.png')
     
     # code snippet 8.2
-    nTrials=list(set(np.logspace(1, 6, 1000).astype(int)))
+    nTrials = list(set(np.logspace(1, 6, 1000).astype(int)))
     nTrials.sort()
-    stats=getMeanStdError(nSims0=1000, nSims1=100, nTrials=nTrials, stdSR=1)
+    stats = getMeanStdError(nSims0=1000, nSims1=100, nTrials=nTrials, stdSR=1)
     
     # code snippet 8.3
     #Numerical example

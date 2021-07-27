@@ -2,8 +2,9 @@
 import numpy as np
 import pandas as pd
 from scipy.linalg import block_diag
+import matplotlib.pylab as plt
 import matplotlib.pyplot as mp1
-#import seaborn as sns
+import seaborn as sns
 
 import ch2_monte_carlo_experiment as mc
 import ch2_marcenko_pastur_pdf as mp
@@ -49,7 +50,7 @@ def optPort_nco(cov, mu=None, maxNumClusters=None):
     w_inter_clusters = pd.Series(allocate_cvo(cov_inter_cluster, mu_inter_cluster).flatten(), index=cov_inter_cluster.index)    
     
     # Final allocations - dot-product of the intra-cluster and inter-cluster allocations (step 4)
-    nco =   w_intra_clusters.mul(w_inter_clusters, axis=1).sum(axis=1).values.reshape(-1,1)
+    nco = w_intra_clusters.mul(w_inter_clusters, axis=1).sum(axis=1).values.reshape(-1,1)
     return nco
     
 def allocate_cvo(cov, mu_vec=None):
