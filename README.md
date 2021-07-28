@@ -247,7 +247,7 @@ When more than one trial takes place, the expected value of the maximum Sharpe R
 | *Figure 8.1 Comparison of experimental and theoretical results from False Strategy Theorem* |
 
 ### The Deflated Sharpe Ratio
-The main conclusion from the False Strategy Theorem is that, unless $max<sub>k</sub>{SR<sub>k</sub>}>>E[max<sub>k</sub>{SR<sub>k</sub>}], the discovered strategy is likely to be false positive.
+The main conclusion from the False Strategy Theorem is that, unless $max<sub>k</sub>{$\hat{SR}$<sub>k</sub>}>>E[max<sub>k</sub>{$\hat{SR}$<sub>k</sub>}], the discovered strategy is likely to be false positive.
 
 ### Type II errors under multiple testing
 ### The interaction between type I and type II errors
