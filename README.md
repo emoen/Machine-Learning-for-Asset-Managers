@@ -228,7 +228,7 @@ Backtesting is a historical simulation of how an investment strategy would have 
 ### Precision and recall under multiple testing
 ### The sharpe ratio
 
-Sharpe ratio = $\mu$ / $\sigma$
+Sharpe Ratio = μ/σ
 
 ### The 'False Strategy' theorem
 
