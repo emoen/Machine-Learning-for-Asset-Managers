@@ -94,7 +94,6 @@ if __name__ == '__main__':
     ######### PLOT fig 8.1 ####################
     nnSR0 = list(itertools.chain.from_iterable(itertools.repeat(x, 100) for x in sr0.values))
     deviationFromExpectation = abs(sr1['max{SR}'] - nnSR0)
-    norm = mpl.colors.Normalize(vmin=0, vmax=max(deviationFromExpectation))
 
     ax = sr1.plot.scatter(x='nTrials', y='max{SR}', label='Max{SR} (observed)', c=deviationFromExpectation, cmap=mpl.cm.viridis.reversed()) #c: Array of values to use for marker colors.
     ax.set_xscale('log')
@@ -104,9 +103,9 @@ if __name__ == '__main__':
     ######### end #######################
     
     # code snippet 8.2
-    nTrials = list(set(np.logspace(1, 6, 1000).astype(int)))
+    nTrials = list(set(np.logspace(1, 6, 100).astype(int)))
     nTrials.sort()
-    stats = getMeanStdError(nSims0=1000, nSims1=100, nTrials=nTrials, stdSR=1)
+    stats = getMeanStdError(nSims0=100, nSims1=10, nTrials=nTrials, stdSR=1)
     
     # code snippet 8.3
     #Numerical example
