@@ -236,7 +236,15 @@ A researcher may run many historical simulations and report only the best one (m
 
 ### Experimental results
 
-A monte carlo experiment shows that the distribution of the max sharp ratio increases (E[max(sharp_ratio)] = 3.26) even when the expected sharp ratio is 0 (E[sharp_ratio]). So an investment strategy will seem promissing even when there are no good strategy.
+A monte carlo experiment shows that the distribution of the max sharp ratio increases (E[max(sharp_ratio)] = 3.26) even when the expected sharp ratio is 0 (E[sharp_ratio])! 
+So an investment strategy will seem promising even when there are no good strategy.
+
+When more than one trial takes place, the expected value of the maximum Sharpe Ratio is greater than the expected value 
+ of the Sharpe Ratio, from a random trial (when true Sharpe Ratio=0 and variance > 0).
+| ![maxSR_across_uniform_strategies_8_1.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/maxSR_across_uniform_strategies_8_1.png) | 
+|:--:| 
+| *Figure 8.1 Comparison of experimental and theoretical results from False Strategy Theorem* |
+
 ### The deflated sharpe ratio
 ### Type II errors under multiple testing
 ### The interaction between type I and type II errors
