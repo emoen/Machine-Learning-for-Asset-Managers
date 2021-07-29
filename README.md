@@ -16,7 +16,7 @@ written by Prof. Marcos López de Prado.
 
 The project is for my own learning. If you want to use the consepts from the book - you should head over to Hudson & Thames. They have implemented these consepts and many more in [mlfinlab](https://github.com/hudson-and-thames/mlfinlab). Edit: seems like some of theyr work - like jupyter notebooks - has gone behind a paywall.
 
-For practical application see: [Real world example](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/REAL_WORLD_EXAMPLE.md).
+For practical application see the repository: [Machine-Learning-for-Asset-Managers-Oslo-Bors](https://github.com/emoen/Machine-Learning-for-Asset-Managers-Oslo-Bors).
 
 Note: In chapter 4 - there is a bug in the implementation of "Optimal Number of Clusters" algorithm (ONC) in the book 
 (the code from the paper - DETECTION OF FALSE INVESTMENT STRATEGIES USING UNSUPERVISED LEARNING METHODS, de Prado and Lewis (2018) -  
