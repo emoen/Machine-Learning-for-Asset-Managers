@@ -2,12 +2,12 @@
 
 Install library with <pre>pip install -U git+https://github.com/emoen/Machine-Learning-for-Asset-Managers</pre>
 
-'''
+<code>
 >>> from Machine_Learning_for_Asset_Managers import ch2_fitKDE_find_best_bandwidth as c
 >>> import numpy as np
 >>> c.findOptimalBWidth(np.asarray([21,3]))
 {'bandwidth': 10.0}
-'''
+<code>
 
 # Machine-Learning-for-Asset-Managers
 
