@@ -4,7 +4,7 @@ import pandas as pd
 from scipy.linalg import block_diag
 from sklearn.covariance import LedoitWolf
 
-import ch2_marcenko_pastur_pdf as mp
+from Machine_Learning_for_Asset_Managers import ch2_marcenko_pastur_pdf as mp
 
 #import cvxpy as cp
 

@@ -7,7 +7,7 @@ from scipy.linalg import block_diag
 import matplotlib.pylab as plt
 import matplotlib
 
-import ch2_marcenko_pastur_pdf as mp
+from Machine_Learning_for_Asset_Managers import ch2_marcenko_pastur_pdf as mp
 
 '''
 Optimal Number of Clusters (ONC Algorithm)

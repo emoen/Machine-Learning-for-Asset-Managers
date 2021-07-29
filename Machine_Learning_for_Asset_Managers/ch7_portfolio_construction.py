@@ -6,9 +6,9 @@ import matplotlib.pylab as plt
 import matplotlib.pyplot as mp1
 import seaborn as sns
 
-import ch2_monte_carlo_experiment as mc
-import ch2_marcenko_pastur_pdf as mp
-import ch4_optimal_clustering as oc
+from Machine_Learning_for_Asset_Managers import ch2_monte_carlo_experiment as mc
+from Machine_Learning_for_Asset_Managers import ch2_marcenko_pastur_pdf as mp
+from Machine_Learning_for_Asset_Managers import ch4_optimal_clustering as oc
 
 
 def minVarPort(cov):

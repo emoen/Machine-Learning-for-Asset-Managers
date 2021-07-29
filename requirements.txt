@@ -1,0 +1,15 @@
+###### Requirements without Version Specifiers ######`
+sklearn
+numpy
+pandas
+matplotlib
+scipy
+statsmodels
+seaborn
+
+# chapter 8 requires
+#cupy - version depends on your cuda environment
+#itertools
+
+
+###### Requirements with Version Specifiers ######`
