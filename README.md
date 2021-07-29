@@ -7,7 +7,7 @@ Install library with 'pip install -U git+https://github.com/emoen/Machine-Learni
 >>> import numpy as np
 >>> c.findOptimalBWidth(np.asarray([21,3]))
 {'bandwidth': 10.0}
-<pre>
+</pre>
 
 # Machine-Learning-for-Asset-Managers
 
