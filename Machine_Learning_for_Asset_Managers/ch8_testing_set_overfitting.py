@@ -103,9 +103,14 @@ if __name__ == '__main__':
     ######### end #######################
     
     # code snippet 8.2
-    nTrials = list(set(np.logspace(1, 6, 100).astype(int)))
+    nTrials = list(set(np.logspace(1, 6, 1000).astype(int)))
     nTrials.sort()
-    stats = getMeanStdError(nSims0=100, nSims1=10, nTrials=nTrials, stdSR=1)
+    stats = getMeanStdError(nSims0=1000, nSims1=100, nTrials=nTrials, stdSR=1)
+
+    ######### plot fig 8.2 ##############
+    ax = stats.plot()
+    ax.set_xscale('log')
+    ax.figure.savefig('/gpfs/gpfs0/deep/fig82.png')
     
     # code snippet 8.3
     #Numerical example

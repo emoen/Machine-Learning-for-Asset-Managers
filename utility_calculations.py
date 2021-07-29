@@ -67,8 +67,9 @@ def correlation_from_covariance(covariance):
 if __name__ == '__main__':
     N = 234 
     T = 936
-    StockPrice = np.loadtxt('csv/ol184.csv', delimiter=',')
-    portfolio_name = pd.read_csv('csv/ol_names.csv', delimiter=',',header=None)[0].tolist()
-    StockPrice = StockPrice[:,1:184]
-    returns = pd.DataFrame(StockPrice).pct_change().dropna(how="all")
+    stockPrice = np.loadtxt('csv/ol184.csv', delimiter=',')
+    ol = pd.read_csv('csv/ol_ticker.csv', sep='\t', header=None)
+    portfolio_name = ol[0]
+    stockPrice = stockPrice[:,1:184]
+    returns = pd.DataFrame(stockPrice).pct_change().dropna(how="all")
     calculate_correlation(returns.to_numpy(), T=936, N=234)    

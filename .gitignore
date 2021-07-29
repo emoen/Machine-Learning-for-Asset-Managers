@@ -1,3 +1,6 @@
 /.idea
 /venv/
 __pycache__
+/Machine_Learning_for_Asset_Managers.egg-info
+/build
+/dist

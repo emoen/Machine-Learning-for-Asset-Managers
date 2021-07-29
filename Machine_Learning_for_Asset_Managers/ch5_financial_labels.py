@@ -40,7 +40,6 @@ def getBinsFromTrend(molecule, close, span):
     '''
     out = pd.DataFrame(index=molecule, columns=['t1', 'tVal', 'bin'])
     hrzns = range(*span)
-    print(hrzns)
     for dt0 in molecule:
         df0 = pd.Series(dtype='float64')
         iloc0 = close.index.get_loc(dt0)
@@ -49,8 +48,8 @@ def getBinsFromTrend(molecule, close, span):
         for hrzn in hrzns:
             dt1 = close.index[iloc0+hrzn-1]
             df1 = close.loc[dt0:dt1]
-            df0.loc[dt1] = tValLinR(df1.values)
-        dt1=df0.replace([-np.inf, np.inf, np.nan], 0).abs().idxmax()
+            df0.loc[dt1] = tValLinR(df1.values) #calculates t-statistics on period
+        dt1=df0.replace([-np.inf, np.inf, np.nan], 0).abs().idxmax() #get largest t-statistics calculated over span period
         out.loc[dt0, ['t1', 'tVal', 'bin']] = df0.index[-1], df0[dt1], np.sign(df0[dt1]) #prevent leakage
     out['t1'] = pd.to_datetime(out['t1'])
     out['bin'] = pd.to_numeric(out['bin'], downcast='signed')
