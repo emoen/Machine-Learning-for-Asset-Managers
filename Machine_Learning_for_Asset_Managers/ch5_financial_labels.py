@@ -57,9 +57,11 @@ def getBinsFromTrend(molecule, close, span):
 
 if __name__ == '__main__':
     #snippet 5.3
+    idx_range_from = 3
+    idx_range_to = 10
     df0 = pd.Series(np.random.normal(0, .1, 100)).cumsum()
     df0 += np.sin(np.linspace(0, 10, df0.shape[0]))
-    df1 = getBinsFromTrend(df0.index, df0, [3,10,1]) #[3,10,1] = range(3,10)
+    df1 = getBinsFromTrend(df0.index, df0, [idx_range_from,idx_range_to,1]) #[3,10,1] = range(3,10)
     tValues = df1['tVal'].values
 
     doNormalize = False
@@ -73,7 +75,7 @@ if __name__ == '__main__':
         tValues[plus_one] = tValues[plus_one] / np.max(tValues)
 
 
-    plt.scatter(df1.index, df0.loc[df1.index].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
+    plt.scatter(df1.index, df0.loc[df1.index+(idx_range_to+idx_range_from+1)].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
     plt.colorbar()
     plt.show()
     plt.savefig('fig5.2.png')
