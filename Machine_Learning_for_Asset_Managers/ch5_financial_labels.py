@@ -3,6 +3,7 @@ import statsmodels.api as sm1
 import numpy as np
 import pandas as pd
 import matplotlib.pylab as plt
+from sklearn import linear_model, datasets
 
 #Trend scanning method
 
@@ -53,6 +54,10 @@ def getBinsFromTrend(molecule, close, span):
         out.loc[dt0, ['t1', 'tVal', 'bin']] = df0.index[-1], df0[dt1], np.sign(df0[dt1]) #prevent leakage
     out['t1'] = pd.to_datetime(out['t1'])
     out['bin'] = pd.to_numeric(out['bin'], downcast='signed')
+
+    #deal with massive t-Value outliers - they dont provide more confidence and they ruin the scatter plot
+    out[out['tVal']>20] = 20 #cutoff tValues > 20
+    out[out['tVal']<-20] = -20 # cutoff tValues < -20
     return out.dropna(subset=['bin'])
 
 if __name__ == '__main__':
@@ -62,11 +67,11 @@ if __name__ == '__main__':
     df0 = pd.Series(np.random.normal(0, .1, 100)).cumsum()
     df0 += np.sin(np.linspace(0, 10, df0.shape[0]))
     df1 = getBinsFromTrend(df0.index, df0, [idx_range_from,idx_range_to,1]) #[3,10,1] = range(3,10)
-    tValues = df1['tVal'].values
+    tValues = df1['tVal'].values #tVal
 
     doNormalize = False
     #normalise t-values to -1, 1
-    if doNormalize: 
+    if doNormalize:
         np.min(tValues)
         minusArgs = [i for i in range(0, len(tValues)) if tValues[i] < 0]
         tValues[minusArgs] = tValues[minusArgs] / (np.min(tValues)*(-1.0))
@@ -74,14 +79,14 @@ if __name__ == '__main__':
         plus_one = [i for i in range(0, len(tValues)) if tValues[i] > 0]
         tValues[plus_one] = tValues[plus_one] / np.max(tValues)
 
-
-    plt.scatter(df1.index, df0.loc[df1.index+(idx_range_to+idx_range_from+1)].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
+    #+(idx_range_to-idx_range_from+1)
+    plt.scatter(df1.index, df0.loc[df1.index].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
     plt.colorbar()
     plt.show()
     plt.savefig('fig5.2.png')
     plt.clf()
     plt.close()
     plt.scatter(df1.index, df0.loc[df1.index].values, c=df1['bin'].values, cmap='vipridis')
-    
+
     #Test methods
     ols_tvalue = tValLinR( np.array([3.0, 3.5, 4.0]) )
