@@ -34,30 +34,45 @@ def getBinsFromTrend(molecule, close, span):
       - bin: Sign of the trend
     The t-statistics for each tick has a different look-back window.
       
-    - dt0 start time in look-forward window
+    - idx start time in look-forward window
     - dt1 stop time in look-forward window
     - df1 is the look-forward window
     - iloc ? 
     '''
-    out = pd.DataFrame(index=molecule, columns=['t1', 'tVal', 'bin'])
+    out = pd.DataFrame(index=molecule, columns=['t1', 'tVal', 'bin', 'windowSize'])
     hrzns = range(*span)
-    for dt0 in molecule:
-        df0 = pd.Series(dtype='float64')
-        iloc0 = close.index.get_loc(dt0)
-        if iloc0+max(hrzns) > close.shape[0]:
-            continue
+    windowSize = span[1] - span[0]
+    maxWindow = span[1]-1
+    minWindow = span[0]
+    for idx in close.index:
+        idx += maxWindow
+        if idx >= len(close):
+            break
+        df_tval = pd.Series(dtype='float64')
+        iloc0 = close.index.get_loc(idx)
+        #if iloc0+max(hrzns) > close.shape[0]:
+        #    continue
         for hrzn in hrzns:
-            dt1 = close.index[iloc0+hrzn-1]
-            df1 = close.loc[dt0:dt1]
-            df0.loc[dt1] = tValLinR(df1.values) #calculates t-statistics on period
-        dt1=df0.replace([-np.inf, np.inf, np.nan], 0).abs().idxmax() #get largest t-statistics calculated over span period
-        out.loc[dt0, ['t1', 'tVal', 'bin']] = df0.index[-1], df0[dt1], np.sign(df0[dt1]) #prevent leakage
+            dt1 = close.index[iloc0-hrzn+1]
+            df1 = close.loc[dt1:idx]
+            df_tval.loc[dt1] = tValLinR(df1.values) #calculates t-statistics on period
+        dt1 = df_tval.replace([-np.inf, np.inf, np.nan], 0).abs().idxmax() #get largest t-statistics calculated over span period
+
+        print(df_tval.index[-1])
+        print(dt1)
+        print(abs(df_tval.values).argmax() + minWindow)
+        out.loc[idx, ['t1', 'tVal', 'bin', 'windowSize']] = df_tval.index[-1], df_tval[dt1], np.sign(df_tval[dt1]), abs(df_tval.values).argmax() + minWindow #prevent leakage
     out['t1'] = pd.to_datetime(out['t1'])
     out['bin'] = pd.to_numeric(out['bin'], downcast='signed')
 
     #deal with massive t-Value outliers - they dont provide more confidence and they ruin the scatter plot
-    out[out['tVal']>20] = 20 #cutoff tValues > 20
-    out[out['tVal']<-20] = -20 # cutoff tValues < -20
+    tValueVariance = out['tVal'].values.var()
+    tMax = 20
+    if tValueVariance < tMax:
+        tMax = tValueVariance
+
+    out.loc[out['tVal'] > tMax, 'tVal'] = tMax #cutoff tValues > 20
+    out.loc[out['tVal'] < (-1)*tMax, 'tVal'] = (-1)*tMax #cutoff tValues < -20
     return out.dropna(subset=['bin'])
 
 if __name__ == '__main__':
@@ -81,6 +96,7 @@ if __name__ == '__main__':
 
     #+(idx_range_to-idx_range_from+1)
     plt.scatter(df1.index, df0.loc[df1.index].values, c=tValues, cmap='viridis') #df1['tVal'].values, cmap='viridis')
+    plt.plot(df0.index, df0.values, color='gray')
     plt.colorbar()
     plt.show()
     plt.savefig('fig5.2.png')
