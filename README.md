@@ -139,6 +139,13 @@ Trend-scanning method: the idea is to identify trends and let them run for as lo
 |:--:| 
 | *trend-scanning with t-values which shows confidence in trend. 1 is high confidence going up and -1 is high confidence going down.* |
 
+An alternative to look-forward algorithm as presented in the book is to use look-backward from the latest data-point to the window-size. E.g. if the latest data-point is at index 20 - and the window size is between 3 and 10 days. The  look-backward algorithm will scan window at index 17 to 20 all the way back to index 11 to 20. Hence only considering the most recent information.
+
+
+| ![fig_5_2_trend_scanning_t_values2.png](https://github.com/emoen/Machine-Learning-for-Asset-Managers/blob/master/img/fig_5_2_trend_scanning_t_values2.png) | 
+|:--:| 
+| *trend-scanning with t-values using look-backwards* |
+
 ## Chapter 6 Feature Importance Analysis
 
 <i>"p-value does not measure the probability that neither the null nor the alternative hypothesis is true, or the significance of a result."</i>
