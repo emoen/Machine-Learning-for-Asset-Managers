@@ -120,7 +120,7 @@ if __name__ == '__main__':
     # step 2. compute intracluster allocations using the denoised cov matrix
     wIntra = pd.DataFrame(0, index=cov0.index, columns=clstrs.keys())
     for i in clstrs:
-        wIntra.loc[clstrs[i], i] = minVarPort(cov1.loc[clstrs[i], clstrs[i]]).flatten()
+        wIntra.loc[clstrs[i], i] = minVarPort(corr1.loc[clstrs[i], clstrs[i]]).flatten()
         
     cov2 = wIntra.T.dot(np.dot(cov1, wIntra)) #reduced covariance matrix
     
