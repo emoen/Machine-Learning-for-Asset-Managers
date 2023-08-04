@@ -35,10 +35,11 @@ def varInfo(x,y, bins, norm=False):
     return vXY
 
 #codesnippet 3.4 Correlation and normalized mutual information of two independent gaussian random variables
-def mutualInfor(x,y, norm=False):
+def mutualInfo(x,y, norm=False):
     #mutual information
     bXY = numBins(x.shape[0], corr = np.corrcoef(x,y)[0,1])
-    cXY = np.histogram2d(x,y, bXY)[0]
+    bins = bXY
+    cXY = np.histogram2d(x,y, bins)[0]
     iXY = mutual_info_score(None, None, contingency=cXY)
     if norm:
         hX = ss.entropy(np.histogram(x, bins)[0]) #marginal 
