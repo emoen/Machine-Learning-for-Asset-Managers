@@ -30,7 +30,7 @@ def getTestData(n_features=100, n_informative=25, n_redundant=25, n_samples=1000
 #code snippet 6.2 implementation of an ensembke MDI method
 def featImpMDI(fit, featNames):
     #feat importance based on IS mean impurity reduction
-    df0 = {i:tree.feature_importances_ for i, tree in enumerate(fit.enumerators_)}
+    df0 = {i:tree.feature_importances_ for i, tree in enumerate(fit.estimators_)}
     df0 = pd.DataFrame.from_dict(df0, orient='index')
     df0.columns = featNames
     df0 = df0.replace(0, np.nan) #because max_features=1
