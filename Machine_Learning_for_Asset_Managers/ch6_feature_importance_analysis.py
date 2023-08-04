@@ -10,7 +10,7 @@ import seaborn as sns
 import statsmodels.api as sm1
 import matplotlib.pylab as plt
 
-from ch4_optimal_clustering import clusterKMeansBase 
+from .ch4_optimal_clustering import clusterKMeansBase 
 
 #Code snippet 6.1 generating a set of informative, redundant, and noisy explanatory variables
 # returns matrix X of training samples, and vector y of class labels for the training samples
