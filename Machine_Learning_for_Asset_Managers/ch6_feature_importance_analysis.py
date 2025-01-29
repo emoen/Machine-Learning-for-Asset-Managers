@@ -10,6 +10,7 @@ import seaborn as sns
 import statsmodels.api as sm1
 import matplotlib.pylab as plt
 
+#from .ch2_marcenko_pastur_pdf import ch2_marcenko_pastur_pdf as mp
 from .ch4_optimal_clustering import clusterKMeansBase 
 
 #Code snippet 6.1 generating a set of informative, redundant, and noisy explanatory variables
@@ -115,7 +116,7 @@ if __name__ == '__main__':
                                  class_weight='balanced', 
                                  min_weight_fraction_leaf=0)
                                  
-    clf = BaggingClassifier(base_estimator=clf, 
+    clf = BaggingClassifier(estimator=clf, 
                           n_estimators=1000, 
                           max_features=1., 
                           max_samples=1., 
@@ -137,7 +138,7 @@ if __name__ == '__main__':
                                  class_weight='balanced', 
                                  min_weight_fraction_leaf=0)
                                  
-    clf = BaggingClassifier(base_estimator=clf, 
+    clf = BaggingClassifier(estimator=clf, 
                           n_estimators=1000, 
                           max_features=1., 
                           max_samples=1., 
@@ -165,7 +166,7 @@ if __name__ == '__main__':
                                  class_weight='balanced', 
                                  min_weight_fraction_leaf=0)
                                  
-    clf = BaggingClassifier(base_estimator=clf, 
+    clf = BaggingClassifier(estimator=clf, 
                           n_estimators=1000, 
                           max_features=1., 
                           max_samples=1., 
@@ -185,7 +186,7 @@ if __name__ == '__main__':
                                  class_weight='balanced', 
                                  min_weight_fraction_leaf=0)
                                  
-    clf = BaggingClassifier(base_estimator=clf, 
+    clf = BaggingClassifier(estimator=clf, 
                           n_estimators=1000, 
                           max_features=1., 
                           max_samples=1., 
