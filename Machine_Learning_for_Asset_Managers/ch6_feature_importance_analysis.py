@@ -55,9 +55,9 @@ def featImpMDA(clf, X, y, n_splits=10):
             np.random.shuffle(X1_[j].values) #shuffle one columns
             prob = fit.predict_proba(X1_) #prediction after shuffle
             scr1.loc[i,j] = -log_loss(y1, prob, labels=clf.classes_)
-    imp=(-1*scr1).add(scr0, axis=0)
-    imp = imp/(-1*scr1)
-    imp=pd.concat({'mean':imp.mean(), 'std':imp.std()*imp.shape[0]**-.5}, axis=1) #CLT
+        imp=(-1*scr1).add(scr0, axis=0)
+        imp = imp/(-1*scr1)
+        imp=pd.concat({'mean':imp.mean(), 'std':imp.std()*imp.shape[0]**-.5}, axis=1) #CLT
     return imp
     
 #code snippet 6.4 - clustered MDI
